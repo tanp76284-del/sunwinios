@@ -10,77 +10,74 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect width='180' height='180' rx='40' fill='%230a0a0f'/><text x='90' y='115' text-anchor='middle' font-size='90' font-weight='bold' fill='%23ffd700'>👑</text></svg>">
     <meta name="theme-color" content="#0a0a0f">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>👑 PHUC SIX V10.1</title>
+    <title>👑 PHUC SIX V11</title>
     <style>
         :root{--bg:#0a0a0f;--card:#151520;--gold:#ffd700;--tai:#e74c3c;--xiu:#2ecc71;--orange:#ff6b00;--safe:env(safe-area-inset-bottom,0px)}
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
         body{background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial;min-height:100vh;padding:6px;padding-bottom:calc(6px+var(--safe));max-width:750px;margin:0 auto;user-select:none;-webkit-user-select:none}
-        .header{text-align:center;padding:12px 15px;background:var(--card);border-radius:12px;border:2px solid var(--gold);margin-bottom:6px}
-        .header h1{font-size:clamp(1.3em,4vw,1.5em);background:linear-gradient(45deg,#ffd700,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
-        .live{font-size:.65em;color:#aaa}.live .d{color:var(--xiu);animation:pulse 1.5s infinite}
+        
+        .header{text-align:center;padding:14px 15px;background:var(--card);border-radius:14px;border:2px solid var(--gold);margin-bottom:8px;box-shadow:0 0 25px rgba(255,215,0,.1)}
+        .header h1{font-size:1.6em;background:linear-gradient(45deg,#ffd700,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900;letter-spacing:1px}
+        .header .live{font-size:.62em;color:#888;margin-top:3px}.live .dot{color:var(--xiu);animation:pulse 1.5s infinite}
         @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
         
-        .last{padding:10px;background:var(--card);border-radius:10px;text-align:center;margin-bottom:6px}
-        .last .ph{font-size:.6em;color:#888}.last .dices{font-size:1.6em;letter-spacing:5px;margin:3px 0}
-        .last .total{font-size:1.1em;font-weight:900}.last .result{font-size:1.4em;font-weight:900;margin-top:2px}
-        .result.TAI{color:var(--tai)}.result.XIU{color:var(--xiu)}
+        .check-banner{padding:8px 12px;border-radius:8px;text-align:center;margin-bottom:6px;font-weight:bold;font-size:.82em}
+        .check-banner.dung{background:#1a3a2a;border:1px solid #2ecc71;color:#2ecc71}
+        .check-banner.sai{background:#3a1a1a;border:1px solid #e74c3c;color:#e74c3c}
+        .check-banner.cho{background:#222;border:1px solid #444;color:#888}
         
-        .pred-box{padding:16px;border-radius:12px;text-align:center;margin-bottom:6px}
-        .pred-box.TAI{background:linear-gradient(135deg,#c0392b,#e74c3c);box-shadow:0 0 30px rgba(231,76,60,.3)}
-        .pred-box.XIU{background:linear-gradient(135deg,#1e8449,#27ae60);box-shadow:0 0 30px rgba(46,204,113,.3)}
-        .pred-box h2{font-size:2em;font-weight:900;letter-spacing:2px}
-        .pred-box .sub{font-size:.7em;opacity:.9;margin-top:3px}
+        .last-box{padding:12px;background:var(--card);border-radius:12px;text-align:center;margin-bottom:8px;border:1px solid rgba(255,255,255,.08)}
+        .last-box .ph{font-size:.62em;color:#888}.last-box .dices{font-size:1.8em;letter-spacing:6px;margin:5px 0}
+        .last-box .total{font-size:1.1em;font-weight:900}.last-box .kq{font-size:1.6em;font-weight:900;margin-top:4px}
+        .kq.TAI{color:var(--tai)}.kq.XIU{color:var(--xiu)}
         
-        .check-banner{padding:8px 12px;border-radius:8px;text-align:center;margin-bottom:6px;font-weight:bold;font-size:.85em}
-        .check-banner.dung{background:#1e8449;border:2px solid #2ecc71}
-        .check-banner.sai{background:#c0392b;border:2px solid #e74c3c}
-        .check-banner.cho{background:#333;border:2px solid #555}
+        .pred-main{padding:20px;border-radius:14px;text-align:center;margin-bottom:8px;animation:fadeIn .3s}
+        .pred-main.TAI{background:linear-gradient(135deg,#c0392b,#e74c3c);box-shadow:0 0 40px rgba(231,76,60,.4)}
+        .pred-main.XIU{background:linear-gradient(135deg,#1e8449,#27ae60);box-shadow:0 0 40px rgba(46,204,113,.4)}
+        .pred-main h2{font-size:2.4em;font-weight:900;letter-spacing:3px}
+        .pred-main .conf{font-size:.85em;opacity:.9;margin-top:4px}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         
-        .dice-box{padding:10px;background:var(--card);border-radius:10px;margin-bottom:6px;border:1px solid rgba(255,107,0,.3)}
-        .dice-box h3{font-size:.75em;color:var(--orange);margin-bottom:6px}
-        .dice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-        .dice-col{text-align:center;padding:8px 4px;background:rgba(0,0,0,.3);border-radius:8px}
-        .dice-col .pos{font-size:.6em;color:#888}.dice-col .val{font-size:1.4em;font-weight:900}
+        .dice-panel{padding:12px;background:var(--card);border-radius:12px;margin-bottom:8px;border:1px solid rgba(255,107,0,.3)}
+        .dice-panel h3{font-size:.8em;color:var(--orange);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+        .dice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px}
+        .dice-col{text-align:center;padding:10px 5px;background:rgba(0,0,0,.35);border-radius:10px}
+        .dice-col .pos{font-size:.58em;color:#888}.dice-col .val{font-size:1.8em;font-weight:900;margin:3px 0}
         .dice-col .val.h{color:var(--tai)}.dice-col .val.l{color:var(--xiu)}
-        .dice-col .stats{font-size:.52em;color:#aaa;margin-top:2px;line-height:1.3}
-        .dice-out{text-align:center;padding:8px;font-size:.78em;color:var(--gold);background:rgba(255,215,0,.05);border-radius:6px;margin-top:5px;font-weight:bold}
+        .dice-col .inf{font-size:.55em;color:#aaa;line-height:1.4}
+        .dice-col .inf span{color:#fff;font-weight:bold}
+        .dice-summary{text-align:center;padding:10px;background:rgba(255,215,0,.06);border-radius:8px;font-size:.85em;color:var(--gold);font-weight:bold}
+        .dice-summary b{font-size:1.2em}
         
-        .acc-box{padding:10px;background:var(--card);border-radius:10px;text-align:center;margin-bottom:6px}
+        .acc-box{padding:10px;background:var(--card);border-radius:10px;text-align:center;margin-bottom:8px}
         .acc-box .big{font-size:1.5em;font-weight:900;color:var(--gold)}
-        .acc-box .det{font-size:.65em;color:#aaa;margin-top:2px}
+        .acc-box .det{font-size:.62em;color:#888;margin-top:2px}
         .bar{width:100%;height:4px;background:#333;border-radius:2px;margin-top:4px;overflow:hidden}
         .bar .f{height:100%;background:var(--gold);border-radius:2px;transition:width .5s}
         
-        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}
+        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px}
         @media(max-width:360px){.stats{grid-template-columns:repeat(2,1fr)}}
-        .stat{padding:8px 4px;background:var(--card);border-radius:8px;text-align:center}
-        .stat .n{font-size:1em;font-weight:900;color:var(--gold)}.stat .n.r{color:var(--tai)}.stat .n.g{color:var(--xiu)}
+        .stat{padding:10px 5px;background:var(--card);border-radius:10px;text-align:center}
+        .stat .n{font-size:1.1em;font-weight:900;color:var(--gold)}.stat .n.r{color:var(--tai)}.stat .n.g{color:var(--xiu)}
         .stat .l{font-size:.55em;color:#888}
         
-        .sect{font-size:.68em;color:#888;margin:6px 0 3px}
-        
-        .eng-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:3px;margin-bottom:6px}
-        @media(max-width:360px){.eng-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
-        .eng{padding:5px 7px;background:var(--card);border-radius:6px;font-size:.62em;border:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
-        .eng.v{border-color:var(--orange);background:rgba(255,107,0,.1)}
-        .eng .en{font-weight:bold;color:var(--gold)}.eng .ep{font-weight:900;font-size:.95em}
-        .eng .ep.T{color:var(--tai)}.eng .ep.X{color:var(--xiu)}.eng .ew{color:#888;font-size:.75em}
+        .sect{font-size:.7em;color:#888;margin:8px 0 4px}
         
         .l15{display:flex;gap:3px;flex-wrap:wrap;margin:4px 0;justify-content:center}
-        .l15i{width:23px;height:23px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.6em}
+        .l15i{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.62em}
         .l15i.T{background:var(--tai)}.l15i.X{background:var(--xiu)}
         
-        .tbl-wrap{max-height:150px;overflow-y:auto;border-radius:8px}
-        table{width:100%;font-size:.6em;border-collapse:collapse}th{background:rgba(255,255,255,.05);padding:3px;color:#888;position:sticky;top:0}
+        .tbl-wrap{max-height:140px;overflow-y:auto;border-radius:8px}
+        table{width:100%;font-size:.58em;border-collapse:collapse}th{background:rgba(255,255,255,.05);padding:3px;color:#888;position:sticky;top:0}
         td{padding:2px;text-align:center;border-bottom:1px solid rgba(255,255,255,.03)}
         .ok{color:var(--xiu);font-weight:bold}.no{color:var(--tai);font-weight:bold}
         
-        .hist{padding:5px;background:rgba(0,0,0,.5);border-radius:6px;font-family:monospace;font-size:.62em;letter-spacing:5px;word-break:break-all;line-height:2.2;max-height:100px;overflow-y:auto}
+        .hist{padding:5px;background:rgba(0,0,0,.5);border-radius:6px;font-family:monospace;font-size:.6em;letter-spacing:5px;word-break:break-all;line-height:2.2;max-height:90px;overflow-y:auto}
         .hist .T{color:var(--tai);font-weight:bold}.hist .X{color:var(--xiu);font-weight:bold}
         
         .inst{display:none;padding:8px 12px;background:var(--orange);color:#000;text-align:center;border-radius:8px;margin-bottom:6px;font-weight:bold;font-size:.8em;cursor:pointer}
         .inst.on{display:block}
-        .ft{text-align:center;padding:6px;color:#444;font-size:.55em;padding-bottom:calc(6px+var(--safe))}
+        .ft{text-align:center;padding:6px;color:#444;font-size:.52em;padding-bottom:calc(6px+var(--safe))}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:5px}
     </style>
 </head>
@@ -88,24 +85,24 @@
 
 <div class="inst" id="inst" onclick="this.style.display='none'">📲 Thêm vào Màn hình chính để dùng như App!</div>
 
-<div class="header"><h1>👑 PHUC SIX V10.1</h1><p class="live"><span class="d">●</span> Live | <span id="ut">--:--:--</span> | Reload <span id="cd">5</span>s | 15 Phiên + 9 AI</p></div>
+<div class="header">
+    <h1>👑 PHUC SIX V11</h1>
+    <p class="live"><span class="dot">●</span> Live | <span id="ut">--:--:--</span> | Reload <span id="cd">5</span>s | Xí Ngầu 15 + 9 AI</p>
+</div>
 
 <div class="check-banner cho" id="checkBanner">⏳ Đang chờ phiên mới để kiểm tra...</div>
 
-<div class="last" id="lastBox"><div class="ph">Đang tải...</div></div>
+<div class="last-box" id="lastBox"><div class="ph">Đang tải dữ liệu...</div></div>
 
-<div class="pred-box" id="predBox" style="background:#333"><h2>⏳</h2><div class="sub">Đang kết nối API...</div></div>
+<div class="pred-main" id="predMain" style="background:#333"><h2>⏳</h2><div class="conf">Đang phân tích...</div></div>
 
-<div class="dice-box">
-    <h3>🎲 PHÂN TÍCH XÍ NGẦU 15 PHIÊN <span style="font-size:.7em;color:#888" id="diceCount">0 phiên</span></h3>
+<div class="dice-panel">
+    <h3>🎲 PHÂN TÍCH XÍ NGẦU 15 PHIÊN (CHÍNH) <span style="font-size:.7em;color:#888" id="diceCount">0 phiên</span></h3>
     <div class="dice-grid" id="diceGrid"></div>
-    <div class="dice-out" id="diceOut">🎯 Dự đoán: <b>--</b></div>
+    <div class="dice-summary" id="diceSummary">🎯 Đang phân tích...</div>
 </div>
 
-<div class="acc-box"><div style="font-size:.6em;color:#888">🎯 ĐỘ CHÍNH XÁC</div><div class="big" id="acc">--%</div><div class="det">✅ <b id="ok" style="color:var(--xiu)">0</b> | ❌ <b id="no" style="color:var(--tai)">0</b> | 📊 <b id="tot">0</b></div><div class="bar"><div class="f" id="barF" style="width:0%"></div></div></div>
-
-<div class="sect">🧠 9 ENGINE AI</div>
-<div class="eng-grid" id="engGrid"></div>
+<div class="acc-box"><div style="font-size:.6em;color:#888">🎯 ĐỘ CHÍNH XÁC DỰ ĐOÁN</div><div class="big" id="acc">--%</div><div class="det">✅ <b id="ok" style="color:var(--xiu)">0</b> | ❌ <b id="no" style="color:var(--tai)">0</b> | 📊 <b id="tot">0</b></div><div class="bar"><div class="f" id="barF" style="width:0%"></div></div></div>
 
 <div class="stats">
     <div class="stat"><div class="n" id="sTo">0</div><div class="l">TỔNG PHIÊN</div></div>
@@ -123,16 +120,16 @@
 <div class="sect">📜 TOÀN BỘ LỊCH SỬ</div>
 <div class="hist" id="histBox"></div>
 
-<div class="ft">👑 PHUC SIX V10.1 • 15 Phiên Xí Ngầu + 9 AI • PC/Android/iOS</div>
+<div class="ft">👑 PHUC SIX V11 • Xí Ngầu 15 Phiên + 9 AI • Phân tích kỹ • PC/Android/iOS</div>
 
 <script>
 const APIS=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 
 let DB={sessions:[],tai:0,xiu:0,sum:0,seen:new Set(),preds:[],lastP:'',lastV:'',w:{mk:1,fr:1,cy:1,tr:1,fi:1,dc:1,st:1,ba:1},ep:{mk:{c:0,t:0},fr:{c:0,t:0},cy:{c:0,t:0},tr:{c:0,t:0},fi:{c:0,t:0},dc:{c:0,t:0},st:{c:0,t:0},ba:{c:0,t:0}}};
-try{const r=localStorage.getItem('psv10_1');if(r){const p=JSON.parse(r);DB.sessions=p.s||[];DB.tai=p.t||0;DB.xiu=p.x||0;DB.sum=p.su||0;DB.seen=new Set(p.se||[]);DB.preds=p.pr||[];DB.lastP=p.lp||'';DB.lastV=p.lv||'';if(p.w)Object.assign(DB.w,p.w);if(p.ep)Object.assign(DB.ep,p.ep);}}catch(e){}
-function save(){try{localStorage.setItem('psv10_1',JSON.stringify({s:DB.sessions.slice(-50000),t:DB.tai,x:DB.xiu,su:DB.sum,se:[...DB.seen].slice(-50000),pr:DB.preds.slice(-10000),lp:DB.lastP,lv:DB.lastV,w:DB.w,ep:DB.ep}));}catch(e){}}
+try{const r=localStorage.getItem('psv11');if(r){const p=JSON.parse(r);DB.sessions=p.s||[];DB.tai=p.t||0;DB.xiu=p.x||0;DB.sum=p.su||0;DB.seen=new Set(p.se||[]);DB.preds=p.pr||[];DB.lastP=p.lp||'';DB.lastV=p.lv||'';if(p.w)Object.assign(DB.w,p.w);if(p.ep)Object.assign(DB.ep,p.ep);}}catch(e){}
+function save(){try{localStorage.setItem('psv11',JSON.stringify({s:DB.sessions.slice(-50000),t:DB.tai,x:DB.xiu,su:DB.sum,se:[...DB.seen].slice(-50000),pr:DB.preds.slice(-10000),lp:DB.lastP,lv:DB.lastV,w:DB.w,ep:DB.ep}));}catch(e){}}
 
-let latest=null,pred=null,dice=null,cd=5;
+let latest=null,finalPred=null,dice=null,cd=5;
 
 async function fetchAll(){
     let res=[];
@@ -145,7 +142,7 @@ async function fetchAll(){
     DB.sessions.sort((a,b)=>parseInt(a.p)-parseInt(b.p));
     if(nw&&DB.lastP&&DB.lastV&&DB.sessions.length>=2){const np=DB.sessions.filter(s=>parseInt(s.p)>parseInt(DB.lastP));for(const ns of np){if(ns.r&&parseInt(ns.p)===parseInt(DB.lastP)+1){const isOk=DB.lastV===ns.r;DB.preds.push({p:ns.p,pr:DB.lastV,ac:ns.r,ok:isOk});updateW(ns.r);}}}
     save();
-    if(DB.sessions.length>0){latest=DB.sessions[DB.sessions.length-1];dice=analyze15(DB.sessions);pred=predictAll(DB.sessions);DB.lastP=latest.p;DB.lastV=pred.pred;save();}
+    if(DB.sessions.length>0){latest=DB.sessions[DB.sessions.length-1];dice=analyze15(DB.sessions);finalPred=predictFinal(DB.sessions);DB.lastP=latest.p;DB.lastV=finalPred.pred;save();}
     document.getElementById('ut').textContent=new Date().toLocaleTimeString('vi-VN');render();
 }
 
@@ -158,17 +155,17 @@ function analyze15(s){
         const big=v.filter(x=>x>=4).length,small=len-big;
         const last=v[len-1],prev=len>=2?v[len-2]:last,prev2=len>=3?v[len-3]:prev;
         let tr='ỔN ĐỊNH';
-        if(last>prev&&prev>prev2)tr='TĂNG';
-        else if(last<prev&&prev<prev2)tr='GIẢM';
+        if(last>prev&&prev>prev2)tr='📈 TĂNG';
+        else if(last<prev&&prev<prev2)tr='📉 GIẢM';
         let np='';
-        if(big>=10)np='CAO';
-        else if(small>=10)np='THẤP';
-        else if(tr==='TĂNG')np=last>=3?'CAO':'THẤP';
-        else if(tr==='GIẢM')np=last<=4?'THẤP':'CAO';
+        if(big>=10)np='CAO (≥4)';
+        else if(small>=10)np='THẤP (≤3)';
+        else if(tr.includes('TĂNG'))np=last>=3?'CAO':'THẤP';
+        else if(tr.includes('GIẢM'))np=last<=4?'THẤP':'CAO';
         else np=last>=4?'CAO':'THẤP';
         res.push({pos:i+1,lastVal:last,avg:avg.toFixed(1),big,small,trend:tr,nextPred:np});
     }
-    const pv=res.map(r=>r.nextPred==='CAO'?5:2),pt=pv.reduce((a,b)=>a+b,0),op=pt>=11?'TAI':'XIU';
+    const pv=res.map(r=>r.nextPred.includes('CAO')?5:2),pt=pv.reduce((a,b)=>a+b,0),op=pt>=11?'TAI':'XIU';
     return{positions:res,predTotal:pt,overallPred:op,total:last15.length};
 }
 
@@ -179,20 +176,33 @@ const ENG={
     tr(s){const t=s.map(x=>x.t);const n=t.length;if(n<5)return null;const a5=t.slice(-5).reduce((a,b)=>a+b,0)/5;if(a5>13)return{p:'XIU',c:68};if(a5<8)return{p:'TAI',c:68};return a5>10.5?{p:'TAI',c:54}:{p:'XIU',c:54};},
     fi(s){const r=s.map(x=>x.r);const n=r.length;const fib=[1,1,2,3,5,8,13,21];let sc={TAI:0,XIU:0};for(const f of fib){if(n>f){r[n-f]==='TAI'?sc.TAI++:sc.XIU++;}}if(sc.TAI+sc.XIU>3)return{p:sc.TAI>sc.XIU?'TAI':'XIU',c:Math.round(Math.abs(sc.TAI-sc.XIU)/(sc.TAI+sc.XIU)*18+60)};return null;},
     dc(s){const d=s.map(x=>x.dc).slice(-5).flat();if(d.length<10)return null;const big=d.filter(x=>x>=4).length;return big>=11?{p:'TAI',c:66}:big<=4?{p:'XIU',c:66}:big>d.length/2?{p:'TAI',c:55}:{p:'XIU',c:55};},
-    st(s){const r=s.map(x=>x.r);const n=r.length;const last=r[n-1];let st=1;for(let i=n-2;i>=0;i--){if(r[i]===last)st++;else break;}if(st>=5)return{p:last==='TAI'?'XIU':'TAI',c:70};if(st>=3)return{p:last,c:63};if(st>=2)return{p:last,c:56};return{p:last==='TAI'?'XIU':'TAI',c:54};},
+    st(s){const r=s.map(x=>x.r);const n=r.length;const last=r[n-1];let st=1;for(let i=n-2;i>=0;i--){if(r[i]===last)st++;else break;}if(st>=5)return{p:last==='TAI'?'XIU':'TAI',c:70};if(st>=3)return{p:last,c:63};return{p:last==='TAI'?'XIU':'TAI',c:55};},
     ba(s){if(DB.tai+DB.xiu<10)return null;const pTai=DB.tai/(DB.tai+DB.xiu);const r=s.map(x=>x.r);const l4=r.slice(-4);const t4=l4.filter(x=>x==='TAI').length;const scT=pTai*(t4/4+.05),scX=(1-pTai)*((4-t4)/4+.05);return{p:scT>scX?'TAI':'XIU',c:Math.round(Math.abs(scT-scX)/(scT+scX)*20+60)};}
 };
 
-function predictAll(s){
-    let v={TAI:0,XIU:0},er={};
-    for(const[nm,fn]of Object.entries(ENG)){const r=fn(s);if(r){const w=DB.w[nm]||1;v[r.p]+=w*(r.c/100);er[nm]={...r,w:w.toFixed(2),v:r.p};}else{er[nm]={p:'--',c:0,w:(DB.w[nm]||1).toFixed(2),v:null};}}
-    if(dice){const dw=DB.w.dc||1;v[dice.overallPred]+=dw*0.65;er['xingau']={p:dice.overallPred,c:Math.round(dice.predTotal>=11?62:58),w:dw.toFixed(2),v:dice.overallPred};}
-    const tv=v.TAI+v.XIU;if(tv===0)return{pred:'XIU',conf:50,eng:er};
-    const pr=v.TAI>v.XIU?'TAI':'XIU',cf=Math.min(96,Math.max(53,Math.round(Math.max(v.TAI,v.XIU)/tv*100)));
-    return{pred:pr,conf:cf,eng:er};
+function predictFinal(s){
+    // Xí ngầu (trọng số chính: 60%)
+    let v={TAI:0,XIU:0};
+    if(dice){
+        const diceWeight=1.5;
+        v[dice.overallPred]+=diceWeight*0.6;
+    }
+    // 9 AI (trọng số phụ: 40%)
+    for(const[nm,fn]of Object.entries(ENG)){
+        const r=fn(s);
+        if(r){
+            const w=DB.w[nm]||0.5;
+            v[r.p]+=w*(r.c/100)*0.4;
+        }
+    }
+    const tv=v.TAI+v.XIU;
+    if(tv===0)return{pred:'XIU',conf:50};
+    const pr=v.TAI>v.XIU?'TAI':'XIU';
+    const cf=Math.min(98,Math.max(53,Math.round(Math.max(v.TAI,v.XIU)/tv*100)));
+    return{pred:pr,conf:cf};
 }
 
-function updateW(act){const h=DB.sessions.slice(0,-1);for(const[nm,fn]of Object.entries(ENG)){const r=fn(h);if(r){DB.ep[nm].t++;if(r.p===act)DB.ep[nm].c++;}}let tw=0;for(const n of Object.keys(DB.w)){DB.w[n]=DB.ep[n].t>0?Math.max(0.2,DB.ep[n].c/DB.ep[n].t):0.5;tw+=DB.w[n];}for(const n of Object.keys(DB.w))DB.w[n]=Math.round(DB.w[n]/tw*9*100)/100;}
+function updateW(act){const h=DB.sessions.slice(0,-1);for(const[nm,fn]of Object.entries(ENG)){const r=fn(h);if(r){DB.ep[nm].t++;if(r.p===act)DB.ep[nm].c++;}}let tw=0;for(const n of Object.keys(DB.w)){DB.w[n]=DB.ep[n].t>0?Math.max(0.2,DB.ep[n].c/DB.ep[n].t):0.5;tw+=DB.w[n];}for(const n of Object.keys(DB.w))DB.w[n]=Math.round(DB.w[n]/tw*8*100)/100;}
 
 function render(){
     const s=DB.sessions,n=s.length;
@@ -200,27 +210,34 @@ function render(){
     const pr=DB.preds,tp=pr.length,cp=pr.filter(p=>p.ok).length,ac=tp>0?Math.round(cp/tp*100):0;
     document.getElementById('acc').textContent=ac+'%';document.getElementById('ok').textContent=cp;document.getElementById('no').textContent=tp-cp;document.getElementById('tot').textContent=tp;document.getElementById('barF').style.width=ac+'%';
     
-    // Check banner
     const banner=document.getElementById('checkBanner');
-    if(pr.length>0){const lastPr=pr[pr.length-1];banner.className='check-banner '+(lastPr.ok?'dung':'sai');banner.innerHTML=lastPr.ok?`✅ ĐÚNG! #${lastPr.p}: ${lastPr.pr} → ${lastPr.ac}`:`❌ SAI! #${lastPr.p}: ${lastPr.pr} → ${lastPr.ac}`;}
+    if(pr.length>0){const lp=pr[pr.length-1];banner.className='check-banner '+(lp.ok?'dung':'sai');banner.innerHTML=lp.ok?`✅ ĐÚNG! #${lp.p}: ${lp.pr} → ${lp.ac}`:`❌ SAI! #${lp.p}: ${lp.pr} → ${lp.ac}`;}
     
-    if(dice){document.getElementById('diceCount').textContent=dice.total+' phiên';document.getElementById('diceGrid').innerHTML=dice.positions.map(p=>{const cl=p.lastVal>=4?'h':'l';return`<div class="dice-col"><div class="pos">Xí ngầu ${p.pos}</div><div class="val ${cl}">${p.lastVal}</div><div class="stats">${p.trend} | TB:${p.avg}<br>${p.big}B/${p.small}S → ${p.nextPred}</div></div>`;}).join('');document.getElementById('diceOut').innerHTML=`🎯 Tổng: <b>${dice.predTotal}</b> → <b style="color:${dice.overallPred==='TAI'?'var(--tai)':'var(--xiu)'};font-size:1.2em;">${dice.overallPred}</b>`;}
-    
-    if(pred){document.getElementById('engGrid').innerHTML=Object.entries(pred.eng).map(([n,e])=>`<div class="eng ${e.v===pred.pred?'v':''}"><span class="en">${n.toUpperCase()}</span><span class="ep ${e.p==='TAI'?'T':'X'}">${e.p}</span><span class="ew">${e.c}% W:${e.w}</span></div>`).join('');}
+    if(dice){
+        document.getElementById('diceCount').textContent=dice.total+' phiên';
+        document.getElementById('diceGrid').innerHTML=dice.positions.map(p=>{
+            const cl=p.lastVal>=4?'h':'l';
+            return`<div class="dice-col"><div class="pos">Xí ngầu ${p.pos}</div><div class="val ${cl}">${p.lastVal}</div><div class="inf">${p.trend} | TB:${p.avg}<br><span>${p.big}B/${p.small}S</span> → ${p.nextPred}</div></div>`;
+        }).join('');
+        document.getElementById('diceSummary').innerHTML=`🎯 Xí ngầu dự đoán tổng: <b>${dice.predTotal}</b> → <b style="color:${dice.overallPred==='TAI'?'var(--tai)':'var(--xiu)'};font-size:1.2em;">${dice.overallPred}</b> (Trọng số chính 60%)`;
+    }
     
     document.getElementById('l15').innerHTML=s.slice(-15).map(i=>`<div class="l15i ${i.r==='TAI'?'T':'X'}">${i.r==='TAI'?'T':'X'}</div>`).join('');
     let h='';for(const i of[...s].reverse().slice(0,500))h+=`<span class="${i.r==='TAI'?'T':'X'}">${i.r==='TAI'?'T':'X'}</span>`;document.getElementById('histBox').innerHTML=h||'--';
     
-    if(latest){document.getElementById('lastBox').innerHTML=`<div class="ph">#${latest.p}</div><div class="dices">🎲 ${latest.dc.join(' - ')}</div><div class="total">Tổng: ${latest.t}</div><div class="result ${latest.r}">${latest.r==='TAI'?'🔴 TÀI':'🟢 XỈU'}</div>`;}
+    if(latest){document.getElementById('lastBox').innerHTML=`<div class="ph">#${latest.p}</div><div class="dices">🎲 ${latest.dc.join(' - ')}</div><div class="total">Tổng: ${latest.t}</div><div class="kq ${latest.r}">${latest.r==='TAI'?'🔴 TÀI':'🟢 XỈU'}</div>`;}
     
-    if(pred&&latest){const box=document.getElementById('predBox');box.className='pred-box '+pred.pred;box.innerHTML=`<div style="font-size:.7em;opacity:.8">🔥 DỰ ĐOÁN #${parseInt(latest.p)+1}</div><h2>${pred.pred==='TAI'?'🔴 TÀI':'🟢 XỈU'}</h2>`;}
+    if(finalPred&&latest){
+        const box=document.getElementById('predMain');box.className='pred-main '+finalPred.pred;
+        box.innerHTML=`<div style="font-size:.7em;opacity:.8">🔥 DỰ ĐOÁN #${parseInt(latest.p)+1} (Xí Ngầu 60% + 9 AI 40%)</div><h2>${finalPred.pred==='TAI'?'🔴 TÀI':'🟢 XỈU'}</h2>`;
+    }
     
     const tb=document.getElementById('tb');if(pr.length===0)tb.innerHTML='<tr><td colspan="4" style="color:#888">Chưa có</td></tr>';else tb.innerHTML=[...pr].reverse().slice(0,30).map(p=>`<tr><td>#${p.p}</td><td style="color:${p.pr==='TAI'?'var(--tai)':'var(--xiu)'}">${p.pr}</td><td style="color:${p.ac==='TAI'?'var(--tai)':'var(--xiu)'}">${p.ac}</td><td class="${p.ok?'ok':'no'}">${p.ok?'✅':'❌'}</td></tr>`).join('');
 }
 
 setInterval(()=>{cd--;if(cd<=0)cd=5;document.getElementById('cd').textContent=cd;},1000);
 fetchAll();setInterval(fetchAll,5000);
-if(DB.sessions.length>0){latest=DB.sessions[DB.sessions.length-1];dice=analyze15(DB.sessions);pred=predictAll(DB.sessions);render();}
+if(DB.sessions.length>0){latest=DB.sessions[DB.sessions.length-1];dice=analyze15(DB.sessions);finalPred=predictFinal(DB.sessions);render();}
 if(/iPhone|iPad|iPod/.test(navigator.userAgent)&&!window.matchMedia('(display-mode:standalone)').matches&&!navigator.standalone)document.getElementById('inst').classList.add('on');
 </script>
 </body>
