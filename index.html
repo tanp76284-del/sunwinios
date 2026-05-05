@@ -15,831 +15,217 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="PHUC SIX">
     
-    <title>👑 PHUC SIX V7</title>
+    <title>👑 PHUC SIX V6.2</title>
     
     <style>
-        :root {
-            --bg: #0a0a0f; --card: #151520; --gold: #ffd700;
-            --tai: #e74c3c; --xiu: #2ecc71; --orange: #ff6b00;
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-        }
+        :root { --bg:#0a0a0f; --card:#151520; --gold:#ffd700; --tai:#e74c3c; --xiu:#2ecc71; --orange:#ff6b00; --safe-bottom:env(safe-area-inset-bottom,0px); }
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body {
-            background:var(--bg); color:#fff;
-            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
-            min-height:100vh; padding:6px;
-            padding-bottom:calc(6px + var(--safe-bottom));
-            max-width:750px; margin:0 auto;
-            user-select:none; -webkit-user-select:none;
-            -webkit-overflow-scrolling:touch;
-        }
+        body { background:var(--bg); color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial; min-height:100vh; padding:6px; padding-bottom:calc(6px + var(--safe-bottom)); max-width:750px; margin:0 auto; user-select:none; -webkit-user-select:none; }
         
-        /* HEADER */
-        .header {
-            text-align:center; padding:12px 15px;
-            background:var(--card); border-radius:12px;
-            border:2px solid var(--gold); margin-bottom:6px;
-            box-shadow:0 0 20px rgba(255,215,0,0.1);
-        }
-        .header h1 {
-            font-size:clamp(1.3em,4vw,1.5em);
-            background:linear-gradient(45deg,#ffd700,#ffaa00);
-            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-            font-weight:900;
-        }
-        .live {
-            font-size:0.65em; color:#aaa; margin-top:2px;
-        }
-        .live .dot { color:var(--xiu); animation:pulse 1.5s infinite; }
+        .header { text-align:center; padding:12px 15px; background:var(--card); border-radius:12px; border:2px solid var(--gold); margin-bottom:6px; }
+        .header h1 { font-size:clamp(1.3em,4vw,1.5em); background:linear-gradient(45deg,#ffd700,#ffaa00); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; }
+        .live { font-size:0.65em; color:#aaa; margin-top:2px; } .live .d { color:var(--xiu); animation:pulse 1.5s infinite; }
         @keyframes pulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
 
-        /* LAST RESULT */
-        .last {
-            padding:10px; background:var(--card);
-            border-radius:10px; text-align:center; margin-bottom:6px;
-            border:1px solid rgba(255,255,255,0.05);
-        }
-        .last .ph { font-size:0.6em; color:#888; }
-        .last .dices { font-size:clamp(1.5em,5vw,1.8em); letter-spacing:5px; margin:3px 0; }
-        .last .total { font-size:1.1em; font-weight:900; }
-        .last .result { font-size:1.3em; font-weight:900; margin-top:2px; }
+        .last { padding:10px; background:var(--card); border-radius:10px; text-align:center; margin-bottom:6px; }
+        .last .ph { font-size:0.6em; color:#888; } .last .dices { font-size:clamp(1.5em,5vw,1.8em); letter-spacing:5px; margin:3px 0; }
+        .last .total { font-size:1.1em; font-weight:900; } .last .result { font-size:1.3em; font-weight:900; margin-top:2px; }
         .result.TAI { color:var(--tai); } .result.XIU { color:var(--xiu); }
 
-        /* PREDICTION BOX */
-        .pred-box {
-            padding:16px; border-radius:12px; text-align:center;
-            margin-bottom:6px; transition:all 0.3s;
-        }
-        .pred-box.TAI {
-            background:linear-gradient(135deg,#c0392b,#e74c3c);
-            box-shadow:0 0 30px rgba(231,76,60,0.3);
-        }
-        .pred-box.XIU {
-            background:linear-gradient(135deg,#1e8449,#27ae60);
-            box-shadow:0 0 30px rgba(46,204,113,0.3);
-        }
+        .pred-box { padding:16px; border-radius:12px; text-align:center; margin-bottom:6px; }
+        .pred-box.TAI { background:linear-gradient(135deg,#c0392b,#e74c3c); box-shadow:0 0 30px rgba(231,76,60,0.3); }
+        .pred-box.XIU { background:linear-gradient(135deg,#1e8449,#27ae60); box-shadow:0 0 30px rgba(46,204,113,0.3); }
         .pred-box h2 { font-size:clamp(1.8em,6vw,2.2em); font-weight:900; letter-spacing:2px; }
         .pred-box .sub { font-size:0.7em; opacity:0.9; margin-top:3px; }
 
-        /* DICE ANALYSIS - TOÀN BỘ LỊCH SỬ */
-        .dice-panel {
-            padding:10px; background:var(--card);
-            border-radius:10px; margin-bottom:6px;
-            border:1px solid rgba(255,107,0,0.3);
-        }
-        .dice-panel h3 {
-            font-size:0.75em; color:var(--orange);
-            margin-bottom:6px; display:flex;
-            justify-content:space-between; align-items:center;
-        }
-        .dice-panel h3 .badge {
-            font-size:0.7em; background:var(--orange);
-            color:#000; padding:2px 8px; border-radius:10px;
-            font-weight:bold;
-        }
-        .dice-grid {
-            display:grid; grid-template-columns:repeat(3,1fr);
-            gap:5px; margin-bottom:6px;
-        }
-        .dice-col {
-            text-align:center; padding:8px 4px;
-            background:rgba(0,0,0,0.3); border-radius:8px;
-        }
-        .dice-col .pos { font-size:0.6em; color:#888; }
-        .dice-col .val { font-size:1.3em; font-weight:900; }
-        .dice-col .val.high { color:var(--tai); }
-        .dice-col .val.low { color:var(--xiu); }
-        .dice-col .stats {
-            font-size:0.52em; color:#aaa; margin-top:2px;
-            line-height:1.3;
-        }
-        .dice-total {
-            text-align:center; padding:6px;
-            font-size:0.75em; color:var(--gold);
-            background:rgba(255,215,0,0.05); border-radius:6px;
-        }
+        .dice-box { padding:10px; background:var(--card); border-radius:10px; margin-bottom:6px; border:1px solid rgba(255,107,0,0.3); }
+        .dice-box h3 { font-size:0.75em; color:var(--orange); margin-bottom:6px; }
+        .dice-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+        .dice-col { text-align:center; padding:8px 4px; background:rgba(0,0,0,0.3); border-radius:8px; }
+        .dice-col .pos { font-size:0.6em; color:#888; } .dice-col .val { font-size:1.3em; font-weight:900; }
+        .dice-col .val.h { color:var(--tai); } .dice-col .val.l { color:var(--xiu); }
+        .dice-col .stats { font-size:0.55em; color:#aaa; margin-top:2px; line-height:1.3; }
+        .dice-out { text-align:center; padding:6px; font-size:0.75em; color:var(--gold); background:rgba(255,215,0,0.05); border-radius:6px; margin-top:5px; }
 
-        /* ACCURACY */
-        .acc-box {
-            padding:10px; background:var(--card);
-            border-radius:10px; text-align:center; margin-bottom:6px;
-        }
+        .acc-box { padding:10px; background:var(--card); border-radius:10px; text-align:center; margin-bottom:6px; }
         .acc-box .big { font-size:1.6em; font-weight:900; color:var(--gold); }
-        .acc-box .detail { font-size:0.65em; color:#aaa; margin-top:2px; }
-        .progress-bar {
-            width:100%; height:4px; background:#333;
-            border-radius:2px; margin-top:4px; overflow:hidden;
-        }
-        .progress-fill {
-            height:100%; background:var(--gold);
-            border-radius:2px; transition:width 0.5s;
-        }
+        .acc-box .det { font-size:0.65em; color:#aaa; margin-top:2px; }
+        .bar { width:100%; height:4px; background:#333; border-radius:2px; margin-top:4px; overflow:hidden; }
+        .bar .f { height:100%; background:var(--gold); border-radius:2px; }
 
-        /* STATS */
-        .stats {
-            display:grid; grid-template-columns:repeat(4,1fr);
-            gap:4px; margin-bottom:6px;
-        }
+        .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-bottom:6px; }
         @media(max-width:360px){ .stats{grid-template-columns:repeat(2,1fr);} }
-        .stat {
-            padding:8px 4px; background:var(--card);
-            border-radius:8px; text-align:center;
-        }
-        .stat .n { font-size:1em; font-weight:900; color:var(--gold); }
-        .stat .n.tai { color:var(--tai); }
-        .stat .n.xiu { color:var(--xiu); }
+        .stat { padding:8px 4px; background:var(--card); border-radius:8px; text-align:center; }
+        .stat .n { font-size:1em; font-weight:900; color:var(--gold); } .stat .n.r { color:var(--tai); } .stat .n.g { color:var(--xiu); }
         .stat .l { font-size:0.55em; color:#888; }
 
-        /* SECTION */
-        .section-title {
-            font-size:0.68em; color:#888;
-            margin:6px 0 3px; display:flex;
-            justify-content:space-between; align-items:center;
-        }
-        .section-title .toggle {
-            color:var(--gold); cursor:pointer;
-            font-size:0.85em; padding:2px 8px;
-            background:rgba(255,215,0,0.1); border-radius:8px;
-        }
+        .sect { font-size:0.68em; color:#888; margin:6px 0 3px; }
 
-        /* ENGINES */
-        .eng-grid {
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-            gap:3px; margin-bottom:6px;
-        }
+        .eng-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); gap:3px; margin-bottom:6px; }
         @media(max-width:360px){ .eng-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));} }
-        .eng {
-            padding:6px; background:var(--card); border-radius:6px;
-            font-size:0.65em; border:1px solid rgba(255,255,255,0.06);
-            display:flex; justify-content:space-between; align-items:center;
-        }
-        .eng.voted {
-            border-color:var(--orange);
-            background:rgba(255,107,0,0.08);
-        }
-        .eng .name { font-weight:bold; color:var(--gold); }
-        .eng .pred { font-weight:900; font-size:1em; }
-        .eng .pred.T { color:var(--tai); }
-        .eng .pred.X { color:var(--xiu); }
-        .eng .weight { color:#888; font-size:0.75em; }
+        .eng { padding:6px; background:var(--card); border-radius:6px; font-size:0.65em; border:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; }
+        .eng.v { border-color:var(--orange); background:rgba(255,107,0,0.08); }
+        .eng .en { font-weight:bold; color:var(--gold); } .eng .ep { font-weight:900; font-size:1em; }
+        .eng .ep.T { color:var(--tai); } .eng .ep.X { color:var(--xiu); } .eng .ew { color:#888; font-size:0.8em; }
 
-        /* TABLE */
-        .table-wrap { max-height:200px; overflow-y:auto; border-radius:8px; }
-        table {
-            width:100%; font-size:0.6em; border-collapse:collapse;
-        }
-        th {
-            background:rgba(255,255,255,0.05); padding:4px 2px;
-            color:#888; position:sticky; top:0; z-index:1;
-        }
-        td {
-            padding:3px 2px; text-align:center;
-            border-bottom:1px solid rgba(255,255,255,0.03);
-        }
-        .correct { color:var(--xiu); font-weight:bold; }
-        .wrong { color:var(--tai); font-weight:bold; }
+        .l10 { display:flex; gap:3px; flex-wrap:wrap; margin:4px 0; justify-content:center; }
+        .l10i { width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.65em; }
+        .l10i.T { background:var(--tai); } .l10i.X { background:var(--xiu); }
 
-        /* HISTORY */
-        .history-full {
-            padding:6px; background:rgba(0,0,0,0.5);
-            border-radius:8px; font-family:'Courier New',monospace;
-            font-size:0.65em; letter-spacing:4px; word-break:break-all;
-            line-height:2.2; max-height:120px; overflow-y:auto;
-        }
-        .history-full .T { color:var(--tai); font-weight:bold; }
-        .history-full .X { color:var(--xiu); font-weight:bold; }
+        .tbl-wrap { max-height:180px; overflow-y:auto; border-radius:8px; }
+        table { width:100%;font-size:0.6em;border-collapse:collapse; } th { background:rgba(255,255,255,0.05);padding:3px;color:#888;position:sticky;top:0; }
+        td { padding:2px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.03); }
+        .ok { color:var(--xiu);font-weight:bold; } .no { color:var(--tai);font-weight:bold; }
 
-        /* INSTALL BANNER */
-        .install-banner {
-            display:none; padding:8px 12px;
-            background:var(--orange); color:#000;
-            text-align:center; border-radius:8px;
-            margin-bottom:6px; font-weight:bold;
-            font-size:0.8em; cursor:pointer;
-            animation:pulse2 2s infinite;
-        }
-        .install-banner.show { display:block; }
-        @keyframes pulse2 { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
+        .hist { padding:5px;background:rgba(0,0,0,0.5);border-radius:6px;font-family:monospace;font-size:0.65em;letter-spacing:5px;word-break:break-all;line-height:2.2;max-height:120px;overflow-y:auto; }
+        .hist .T { color:var(--tai);font-weight:bold; } .hist .X { color:var(--xiu);font-weight:bold; }
 
-        .footer {
-            text-align:center; padding:6px;
-            color:#444; font-size:0.55em;
-            padding-bottom:calc(6px + var(--safe-bottom));
-        }
+        .inst { display:none; padding:8px 12px; background:var(--orange); color:#000; text-align:center; border-radius:8px; margin-bottom:6px; font-weight:bold; font-size:0.8em; cursor:pointer; }
+        .inst.on { display:block; }
 
-        ::-webkit-scrollbar { width:3px; }
-        ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:5px; }
+        .ft { text-align:center;padding:6px;color:#444;font-size:0.55em;padding-bottom:calc(6px + var(--safe-bottom)); }
+        ::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-thumb { background:var(--gold);border-radius:5px; }
     </style>
 </head>
 <body>
 
-    <!-- INSTALL BANNER -->
-    <div class="install-banner" id="installBanner" onclick="this.style.display='none'">
-        📲 Chia sẻ → Thêm vào Màn hình chính để dùng như App!
-    </div>
+<div class="inst" id="inst" onclick="this.style.display='none'">📲 Chia sẻ → Thêm vào Màn hình chính để dùng như App!</div>
 
-    <!-- HEADER -->
-    <div class="header">
-        <h1>👑 PHUC SIX V7</h1>
-        <p class="live">
-            <span class="dot">●</span> Live | 
-            Cập nhật: <b id="updateTime">--:--:--</b> | 
-            Reload <b id="countdown">5</b>s |
-            <span style="color:#ffd700">FULL HISTORY</span>
-        </p>
-    </div>
+<div class="header">
+    <h1>👑 PHUC SIX V6.2</h1>
+    <p class="live"><span class="d">●</span> Live | <span id="ut">--:--:--</span> | Reload <span id="cd">5</span>s | 12 Phiên Xí Ngầu</p>
+</div>
 
-    <!-- LAST RESULT -->
-    <div class="last" id="lastBox">
-        <div class="ph">Đang tải dữ liệu...</div>
-    </div>
+<div class="last" id="lastBox"><div class="ph">Đang tải...</div></div>
+<div class="pred-box" id="predBox" style="background:#333"><h2>⏳</h2><div class="sub">Đang kết nối...</div></div>
 
-    <!-- PREDICTION -->
-    <div class="pred-box" id="predBox" style="background:#333;">
-        <h2>⏳</h2>
-        <div class="sub">Đang kết nối API...</div>
+<div class="dice-box">
+    <h3>🎲 PHÂN TÍCH XÍ NGẦU (12 phiên gần nhất)</h3>
+    <div class="dice-grid" id="diceGrid">
+        <div class="dice-col"><div class="pos">Xí ngầu 1</div><div class="val">--</div><div class="stats">---</div></div>
+        <div class="dice-col"><div class="pos">Xí ngầu 2</div><div class="val">--</div><div class="stats">---</div></div>
+        <div class="dice-col"><div class="pos">Xí ngầu 3</div><div class="val">--</div><div class="stats">---</div></div>
     </div>
+    <div class="dice-out" id="diceOut">🎯 Dự đoán: <b>--</b></div>
+</div>
 
-    <!-- DICE ANALYSIS - TOÀN BỘ LỊCH SỬ -->
-    <div class="dice-panel">
-        <h3>
-            🎲 PHÂN TÍCH XÍ NGẦU 
-            <span class="badge" id="diceTotal">0 phiên</span>
-        </h3>
-        <div class="dice-grid" id="diceGrid">
-            <div class="dice-col">
-                <div class="pos">Xí ngầu 1</div>
-                <div class="val">--</div>
-                <div class="stats">Đang tải...</div>
-            </div>
-            <div class="dice-col">
-                <div class="pos">Xí ngầu 2</div>
-                <div class="val">--</div>
-                <div class="stats">Đang tải...</div>
-            </div>
-            <div class="dice-col">
-                <div class="pos">Xí ngầu 3</div>
-                <div class="val">--</div>
-                <div class="stats">Đang tải...</div>
-            </div>
-        </div>
-        <div class="dice-total" id="dicePrediction">
-            🎯 Dự đoán từ xí ngầu: <b>--</b>
-        </div>
-    </div>
+<div class="acc-box">
+    <div style="font-size:0.6em;color:#888">🎯 ĐỘ CHÍNH XÁC</div>
+    <div class="big" id="acc">--%</div>
+    <div class="det">✅ <b id="ok" style="color:var(--xiu)">0</b> | ❌ <b id="no" style="color:var(--tai)">0</b> | 📊 <b id="tot">0</b></div>
+    <div class="bar"><div class="f" id="barF" style="width:0%"></div></div>
+</div>
 
-    <!-- ACCURACY -->
-    <div class="acc-box">
-        <div style="font-size:0.6em;color:#888;">🎯 ĐỘ CHÍNH XÁC DỰ ĐOÁN</div>
-        <div class="big" id="accuracyNum">--%</div>
-        <div class="detail">
-            ✅ Đúng: <b id="correctCount" style="color:var(--xiu)">0</b> | 
-            ❌ Sai: <b id="wrongCount" style="color:var(--tai)">0</b> | 
-            📊 Tổng: <b id="totalPreds">0</b>
-        </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width:0%"></div>
-        </div>
-    </div>
+<div class="sect">🧠 9 ENGINE AI</div>
+<div class="eng-grid" id="engGrid"></div>
 
-    <!-- STATS -->
-    <div class="stats">
-        <div class="stat">
-            <div class="n" id="statTotal">0</div>
-            <div class="l">TỔNG PHIÊN</div>
-        </div>
-        <div class="stat">
-            <div class="n tai" id="statTai">0</div>
-            <div class="l">🔴 TÀI</div>
-        </div>
-        <div class="stat">
-            <div class="n xiu" id="statXiu">0</div>
-            <div class="l">🟢 XỈU</div>
-        </div>
-        <div class="stat">
-            <div class="n" id="statAvg">--</div>
-            <div class="l">TB ĐIỂM</div>
-        </div>
-    </div>
+<div class="stats">
+    <div class="stat"><div class="n" id="sTo">0</div><div class="l">TỔNG PHIÊN</div></div>
+    <div class="stat"><div class="n r" id="sTa">0</div><div class="l">🔴 TÀI</div></div>
+    <div class="stat"><div class="n g" id="sXi">0</div><div class="l">🟢 XỈU</div></div>
+    <div class="stat"><div class="n" id="sAv">--</div><div class="l">TB ĐIỂM</div></div>
+</div>
 
-    <!-- 9 ENGINES -->
-    <div class="section-title">
-        🧠 9 ENGINE AI (TỰ HỌC)
-        <span style="color:#888;font-size:0.85em;">Trọng số thích ứng</span>
-    </div>
-    <div class="eng-grid" id="enginesGrid"></div>
+<div class="sect">📊 12 PHIÊN GẦN NHẤT</div>
+<div class="l10" id="l10"></div>
 
-    <!-- PREDICTION HISTORY -->
-    <div class="section-title">
-        📋 LỊCH SỬ DỰ ĐOÁN
-        <span class="toggle" onclick="toggleTable()">Thu gọn</span>
-    </div>
-    <div class="table-wrap" id="tableWrap">
-        <table>
-            <thead>
-                <tr><th>Phiên</th><th>Dự đoán</th><th>KQ</th><th>TT</th><th>Giờ</th></tr>
-            </thead>
-            <tbody id="tableBody">
-                <tr><td colspan="5" style="color:#888;">Chưa có dữ liệu</td></tr>
-            </tbody>
-        </table>
-    </div>
+<div class="sect">📋 LỊCH SỬ DỰ ĐOÁN</div>
+<div class="tbl-wrap"><table><thead><tr><th>Phiên</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead><tbody id="tb"></tbody></table></div>
 
-    <!-- FULL HISTORY -->
-    <div class="section-title">
-        📜 TOÀN BỘ LỊCH SỬ (<span id="historyCount">0</span> phiên)
-    </div>
-    <div class="history-full" id="historyBox">Đang tải...</div>
+<div class="sect">📜 TOÀN BỘ LỊCH SỬ</div>
+<div class="hist" id="histBox"></div>
 
-    <div class="footer">
-        👑 PHUC SIX V7 • Full History • 9 Engine AI • Android/iOS/PC • Made with 🔥
-    </div>
+<div class="ft">👑 PHUC SIX V6.2 • 12 Phiên Xí Ngầu • Android/iOS/PC</div>
 
 <script>
-// ==================== CONFIG ====================
-const APIS = [
-    'https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx',
-    'https://sun-ls.onrender.com/sunlon',
-    'https://toolsunwin-gq58.onrender.com/api/ditmemaysun'
-];
+const APIS=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 
-// ==================== DATABASE VÔ HẠN ====================
-let DB = {
-    sessions: [],
-    tai: 0, xiu: 0, sum: 0,
-    seen: new Set(),
-    predictions: [],
-    lastPredPhien: null,
-    lastPredValue: null,
-    // Trọng số 8 engine
-    weights: { mk:1, fr:1, cy:1, tr:1, fi:1, dc:1, st:1, ba:1 },
-    // Hiệu suất từng engine
-    perf: { mk:{c:0,t:0}, fr:{c:0,t:0}, cy:{c:0,t:0}, tr:{c:0,t:0}, fi:{c:0,t:0}, dc:{c:0,t:0}, st:{c:0,t:0}, ba:{c:0,t:0} }
+let DB={sessions:[],tai:0,xiu:0,sum:0,seen:new Set(),preds:[],lastP:'',lastV:'',w:{mk:1,fr:1,cy:1,tr:1,fi:1,dc:1,st:1,ba:1},ep:{mk:{c:0,t:0},fr:{c:0,t:0},cy:{c:0,t:0},tr:{c:0,t:0},fi:{c:0,t:0},dc:{c:0,t:0},st:{c:0,t:0},ba:{c:0,t:0}}};
+try{const r=localStorage.getItem('psv62');if(r){const p=JSON.parse(r);DB.sessions=p.s||[];DB.tai=p.t||0;DB.xiu=p.x||0;DB.sum=p.su||0;DB.seen=new Set(p.se||[]);DB.preds=p.pr||[];DB.lastP=p.lp||'';DB.lastV=p.lv||'';if(p.w)Object.assign(DB.w,p.w);if(p.ep)Object.assign(DB.ep,p.ep);}}catch(e){}
+
+function save(){try{localStorage.setItem('psv62',JSON.stringify({s:DB.sessions.slice(-50000),t:DB.tai,x:DB.xiu,su:DB.sum,se:[...DB.seen].slice(-50000),pr:DB.preds.slice(-10000),lp:DB.lastP,lv:DB.lastV,w:DB.w,ep:DB.ep}));}catch(e){}}
+
+let latest=null,pred=null,dice=null,cd=5;
+
+async function fetchAll(){
+    let res=[];
+    for(const a of APIS){try{const r=await fetch(a,{signal:AbortSignal.timeout(5000)});const d=await r.json();
+    if(d?.phien&&d.xuc_xac_1!==undefined)res.push({p:String(d.phien),dc:[d.xuc_xac_1,d.xuc_xac_2,d.xuc_xac_3],t:d.tong,r:(d.ket_qua==='Tài'||d.ket_qua==='TAI')?'TAI':'XIU'});
+    if(d?.phien_hien_tai&&d.xuc_xac_1!==undefined)res.push({p:String(d.phien_hien_tai),dc:[d.xuc_xac_1,d.xuc_xac_2,d.xuc_xac_3],t:d.tong,r:(d.ket_qua==='Tài'||d.ket_qua==='TAI')?'TAI':'XIU'});
+    if(d?.Phien)res.push({p:String(d.Phien),dc:[d.Xuc_xac_1,d.Xuc_xac_2,d.Xuc_xac_3],t:d.Tong,r:d.Ket_qua==='Tài'?'TAI':'XIU'});}catch(e){}}
+    let nw=false;
+    for(const i of res){if(!DB.seen.has(i.p)){DB.seen.add(i.p);DB.sessions.push(i);DB.sum+=i.t;i.r==='TAI'?DB.tai++:DB.xiu++;nw=true;}}
+    DB.sessions.sort((a,b)=>parseInt(a.p)-parseInt(b.p));
+    if(nw&&DB.lastP&&DB.lastV&&DB.sessions.length>=2){const np=DB.sessions.filter(s=>parseInt(s.p)>parseInt(DB.lastP));for(const ns of np){if(ns.r&&parseInt(ns.p)===parseInt(DB.lastP)+1){DB.preds.push({p:ns.p,pr:DB.lastV,ac:ns.r,ok:DB.lastV===ns.r,ti:new Date().toLocaleTimeString('vi-VN')});updateW(ns.r);}}}
+    save();
+    if(DB.sessions.length>0){latest=DB.sessions[DB.sessions.length-1];dice=analyzeDice(DB.sessions);pred=predict(DB.sessions);DB.lastP=latest.p;DB.lastV=pred.pred;save();}
+    document.getElementById('ut').textContent=new Date().toLocaleTimeString('vi-VN');render();
+}
+
+function analyzeDice(s){
+    const last12=s.slice(-12), pos=[[],[],[]];
+    for(const x of last12){for(let i=0;i<3;i++)pos[i].push(x.dc[i]);}
+    const res=[];
+    for(let i=0;i<3;i++){
+        const v=pos[i], len=v.length, sum=v.reduce((a,b)=>a+b,0), avg=sum/len;
+        const big=v.filter(x=>x>=4).length, small=len-big;
+        const last=v[len-1], prev=len>=2?v[len-2]:last;
+        let tr='↔ ỔN ĐỊNH'; if(last>prev+1)tr='📈 TĂNG'; else if(last<prev-1)tr='📉 GIẢM';
+        let np=''; if(big>=8)np='CAO'; else if(small>=8)np='THẤP'; else if(tr.includes('TĂNG'))np='CAO'; else if(tr.includes('GIẢM'))np='THẤP'; else np=last>=4?'CAO':'THẤP';
+        res.push({pos:i+1,lastVal:last,avg:avg.toFixed(1),big,small,trend:tr,nextPred:np,total:len});
+    }
+    const pv=res.map(r=>r.nextPred==='CAO'?5:2), pt=pv.reduce((a,b)=>a+b,0), op=pt>10?'TAI':'XIU';
+    return {positions:res,predTotal:pt,overallPred:op};
+}
+
+const ENG={
+    mk(s){const r=s.map(x=>x.r);const n=r.length;if(n<8)return null;const l3=r.slice(-3).join('');let mt=0,mx=0;for(let i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=3)return{p:mt>mx?'TAI':'XIU',c:Math.round(Math.abs(mt-mx)/(mt+mx)*30+55)};return null;},
+    fr(s){const r=s.map(x=>x.r);const n=r.length;if(n<10)return null;const l10=r.slice(-10);const t=l10.filter(x=>x==='TAI').length;if(t>=8)return{p:'XIU',c:70};if(t<=2)return{p:'TAI',c:70};if(t>=6)return{p:'TAI',c:55};if(t<=4)return{p:'XIU',c:55};return{p:r[n-1]==='TAI'?'XIU':'TAI',c:50};},
+    cy(s){const r=s.map(x=>x.r);const n=r.length;if(n<12)return null;const l4=r.slice(-4).join('');let mt=0,mx=0;for(let i=0;i<=n-5;i++){if(r.slice(i,i+4).join('')===l4){r[i+4]==='TAI'?mt++:mx++;}}if(mt+mx>=2)return{p:mt>mx?'TAI':'XIU',c:Math.round(Math.abs(mt-mx)/(mt+mx)*35+55)};return null;},
+    tr(s){const t=s.map(x=>x.t);const n=t.length;if(n<5)return null;const a5=t.slice(-5).reduce((a,b)=>a+b,0)/5;if(a5>13)return{p:'XIU',c:62};if(a5<8)return{p:'TAI',c:62};return a5>10.5?{p:'TAI',c:52}:{p:'XIU',c:52};},
+    fi(s){const r=s.map(x=>x.r);const n=r.length;const fib=[1,1,2,3,5,8,13,21,34];let sc={TAI:0,XIU:0};for(const f of fib){if(n>f){r[n-f]==='TAI'?sc.TAI++:sc.XIU++;}}if(sc.TAI+sc.XIU>2)return{p:sc.TAI>sc.XIU?'TAI':'XIU',c:Math.round(Math.abs(sc.TAI-sc.XIU)/(sc.TAI+sc.XIU)*20+55)};return null;},
+    dc(s){const d=s.map(x=>x.dc).slice(-5).flat();if(d.length<10)return null;const big=d.filter(x=>x>=4).length;return big>=10?{p:'TAI',c:65}:big<=5?{p:'XIU',c:65}:big>d.length/2?{p:'TAI',c:52}:{p:'XIU',c:52};},
+    st(s){const r=s.map(x=>x.r);const n=r.length;const last=r[n-1];let st=1;for(let i=n-2;i>=0;i--){if(r[i]===last)st++;else break;}if(st>=5)return{p:last==='TAI'?'XIU':'TAI',c:70};if(st>=3)return{p:last,c:60};return{p:last==='TAI'?'XIU':'TAI',c:55};},
+    ba(s){if(DB.tai+DB.xiu<10)return null;const pTai=DB.tai/(DB.tai+DB.xiu);const r=s.map(x=>x.r);const l3=r.slice(-3);const t3=l3.filter(x=>x==='TAI').length;const scT=pTai*(t3/3+.1),scX=(1-pTai)*((3-t3)/3+.1);return{p:scT>scX?'TAI':'XIU',c:Math.round(Math.abs(scT-scX)/(scT+scX)*25+55)};}
 };
 
-// Load từ localStorage
-try {
-    const saved = localStorage.getItem('phucsix_v7');
-    if (saved) {
-        const p = JSON.parse(saved);
-        DB.sessions = p.s || [];
-        DB.tai = p.t || 0; DB.xiu = p.x || 0; DB.sum = p.su || 0;
-        DB.seen = new Set(p.se || []);
-        DB.predictions = p.pr || [];
-        DB.lastPredPhien = p.lp || null;
-        DB.lastPredValue = p.lv || null;
-        if (p.w) Object.assign(DB.weights, p.w);
-        if (p.ep) Object.assign(DB.perf, p.ep);
-    }
-} catch(e) {}
-
-function saveDB() {
-    try {
-        localStorage.setItem('phucsix_v7', JSON.stringify({
-            s: DB.sessions.slice(-50000),
-            t: DB.tai, x: DB.xiu, su: DB.sum,
-            se: [...DB.seen].slice(-50000),
-            pr: DB.predictions.slice(-10000),
-            lp: DB.lastPredPhien, lv: DB.lastPredValue,
-            w: DB.weights, ep: DB.perf
-        }));
-    } catch(e) {
-        // Nếu localStorage đầy, cắt giảm
-        DB.sessions = DB.sessions.slice(-30000);
-        DB.predictions = DB.predictions.slice(-5000);
-        saveDB();
-    }
+function predict(s){
+    let v={TAI:0,XIU:0},er={};
+    for(const[nm,fn]of Object.entries(ENG)){const r=fn(s);if(r){const w=DB.w[nm]||1;v[r.p]+=w*(r.c/100);er[nm]={...r,w:w.toFixed(2),v:r.p};}else{er[nm]={p:'--',c:0,w:(DB.w[nm]||1).toFixed(2),v:null};}}
+    if(dice){const dw=DB.w.dc||1;v[dice.overallPred]+=dw*0.6;er['xingau']={p:dice.overallPred,c:60,w:dw.toFixed(2),v:dice.overallPred};}
+    const tv=v.TAI+v.XIU;if(tv===0)return{pred:'XIU',conf:50,eng:er};
+    const pr=v.TAI>v.XIU?'TAI':'XIU',cf=Math.min(95,Math.max(51,Math.round(Math.max(v.TAI,v.XIU)/tv*100)));
+    return{pred:pr,conf:cf,eng:er};
 }
 
-let latest = null, prediction = null, diceAnalysis = null, countdown = 5;
+function updateW(act){const h=DB.sessions.slice(0,-1);for(const[nm,fn]of Object.entries(ENG)){const r=fn(h);if(r){DB.ep[nm].t++;if(r.p===act)DB.ep[nm].c++;}}let tw=0;for(const n of Object.keys(DB.w)){DB.w[n]=DB.ep[n].t>0?Math.max(0.2,DB.ep[n].c/DB.ep[n].t):0.5;tw+=DB.w[n];}for(const n of Object.keys(DB.w))DB.w[n]=Math.round(DB.w[n]/tw*9*100)/100;}
 
-// ==================== FETCH API ====================
-async function fetchData() {
-    let results = [];
+function render(){
+    const s=DB.sessions,n=s.length;
+    document.getElementById('sTo').textContent=n;document.getElementById('sTa').textContent=DB.tai;document.getElementById('sXi').textContent=DB.xiu;document.getElementById('sAv').textContent=n>0?(DB.sum/n).toFixed(1):'--';
+    const pr=DB.preds,tp=pr.length,cp=pr.filter(p=>p.ok).length,ac=tp>0?Math.round(cp/tp*100):0;
+    document.getElementById('acc').textContent=ac+'%';document.getElementById('ok').textContent=cp;document.getElementById('no').textContent=tp-cp;document.getElementById('tot').textContent=tp;document.getElementById('barF').style.width=ac+'%';
     
-    for (const api of APIS) {
-        try {
-            const resp = await fetch(api, { signal: AbortSignal.timeout(5000) });
-            const data = await resp.json();
-            
-            // Định dạng 1
-            if (data?.phien && data.xuc_xac_1 !== undefined) {
-                results.push({
-                    p: String(data.phien),
-                    dc: [data.xuc_xac_1, data.xuc_xac_2, data.xuc_xac_3],
-                    t: data.tong,
-                    r: (data.ket_qua === 'Tài' || data.ket_qua === 'TAI') ? 'TAI' : 'XIU'
-                });
-            }
-            // Định dạng 2
-            if (data?.phien_hien_tai && data.xuc_xac_1 !== undefined) {
-                results.push({
-                    p: String(data.phien_hien_tai),
-                    dc: [data.xuc_xac_1, data.xuc_xac_2, data.xuc_xac_3],
-                    t: data.tong,
-                    r: (data.ket_qua === 'Tài' || data.ket_qua === 'TAI') ? 'TAI' : 'XIU'
-                });
-            }
-            // Định dạng 3
-            if (data?.Phien) {
-                results.push({
-                    p: String(data.Phien),
-                    dc: [data.Xuc_xac_1, data.Xuc_xac_2, data.Xuc_xac_3],
-                    t: data.Tong,
-                    r: data.Ket_qua === 'Tài' ? 'TAI' : 'XIU'
-                });
-            }
-        } catch(e) {}
-    }
+    if(dice){document.getElementById('diceGrid').innerHTML=dice.positions.map(p=>{const cl=p.lastVal>=4?'h':'l';return`<div class="dice-col"><div class="pos">Xí ngầu ${p.pos}</div><div class="val ${cl}">${p.lastVal}</div><div class="stats">${p.trend} | TB:${p.avg} | ${p.big}B/${p.small}S<br>→ ${p.nextPred} (${p.total} phiên)</div></div>`;}).join('');document.getElementById('diceOut').innerHTML=`🎯 Dự đoán tổng: <b>${dice.predTotal}</b> → <b style="color:${dice.overallPred==='TAI'?'var(--tai)':'var(--xiu)'};font-size:1.1em;">${dice.overallPred}</b>`;}
     
-    let hasNew = false;
-    for (const item of results) {
-        if (!DB.seen.has(item.p)) {
-            DB.seen.add(item.p);
-            DB.sessions.push(item);
-            DB.sum += item.t;
-            item.r === 'TAI' ? DB.tai++ : DB.xiu++;
-            hasNew = true;
-        }
-    }
+    if(pred){document.getElementById('engGrid').innerHTML=Object.entries(pred.eng).map(([n,e])=>`<div class="eng ${e.v===pred.pred?'v':''}"><span class="en">${n.toUpperCase()}</span><span class="ep ${e.p==='TAI'?'T':'X'}">${e.p}</span><span class="ew">${e.c}% W:${e.w}</span></div>`).join('');}
     
-    DB.sessions.sort((a, b) => parseInt(a.p) - parseInt(b.p));
+    document.getElementById('l10').innerHTML=s.slice(-12).map(i=>`<div class="l10i ${i.r==='TAI'?'T':'X'}">${i.r==='TAI'?'T':'X'}</div>`).join('');
+    let h='';for(const i of[...s].reverse().slice(0,500))h+=`<span class="${i.r==='TAI'?'T':'X'}">${i.r==='TAI'?'T':'X'}</span>`;document.getElementById('histBox').innerHTML=h||'--';
     
-    // Kiểm tra dự đoán cũ
-    if (hasNew && DB.lastPredPhien && DB.lastPredValue && DB.sessions.length >= 2) {
-        const newPh = DB.sessions.filter(s => parseInt(s.p) > parseInt(DB.lastPredPhien));
-        for (const ns of newPh) {
-            if (ns.r && parseInt(ns.p) === parseInt(DB.lastPredPhien) + 1) {
-                const isCorrect = DB.lastPredValue === ns.r;
-                DB.predictions.push({
-                    p: ns.p,
-                    pr: DB.lastPredValue,
-                    ac: ns.r,
-                    ok: isCorrect,
-                    ti: new Date().toLocaleTimeString('vi-VN')
-                });
-                updateWeights(ns.r);
-            }
-        }
-    }
+    if(latest){document.getElementById('lastBox').innerHTML=`<div class="ph">#${latest.p}</div><div class="dices">🎲 ${latest.dc.join(' - ')}</div><div class="total">Tổng: ${latest.t}</div><div class="result ${latest.r}">${latest.r==='TAI'?'🔴 TÀI':'🟢 XỈU'}</div>`;}
     
-    saveDB();
+    if(pred){const box=document.getElementById('predBox');box.className='pred-box '+pred.pred;const ag=Object.values(pred.eng).filter(e=>e.v===pred.pred).length;box.innerHTML=`<div style="font-size:0.7em;opacity:0.8">DỰ ĐOÁN #${latest?parseInt(latest.p)+1:'?'}</div><h2>${pred.pred==='TAI'?'🔴 TÀI':'🟢 XỈU'}</h2><div class="sub">${pred.conf}% • ${ag}/9 engine đồng thuận</div>`;}
     
-    if (DB.sessions.length > 0) {
-        latest = DB.sessions[DB.sessions.length - 1];
-        diceAnalysis = analyzeAllDice(DB.sessions);
-        prediction = predictFinal(DB.sessions);
-        DB.lastPredPhien = latest.p;
-        DB.lastPredValue = prediction.pred;
-        saveDB();
-    }
-    
-    document.getElementById('updateTime').textContent = new Date().toLocaleTimeString('vi-VN');
-    render();
+    const tb=document.getElementById('tb');if(pr.length===0)tb.innerHTML='<tr><td colspan="4" style="color:#888">Chưa có</td></tr>';else tb.innerHTML=[...pr].reverse().slice(0,30).map(p=>`<tr><td>#${p.p}</td><td style="color:${p.pr==='TAI'?'var(--tai)':'var(--xiu)'}">${p.pr}</td><td style="color:${p.ac==='TAI'?'var(--tai)':'var(--xiu)'}">${p.ac}</td><td class="${p.ok?'ok':'no'}">${p.ok?'✅':'❌'}</td></tr>`).join('');
 }
 
-// ==================== PHÂN TÍCH XÍ NGẦU TOÀN BỘ LỊCH SỬ ====================
-function analyzeAllDice(sessions) {
-    if (sessions.length === 0) return null;
-    
-    const total = sessions.length;
-    const positions = [[], [], []];
-    
-    for (const s of sessions) {
-        for (let i = 0; i < 3; i++) {
-            positions[i].push(s.dc[i]);
-        }
-    }
-    
-    const result = [];
-    for (let i = 0; i < 3; i++) {
-        const vals = positions[i];
-        const len = vals.length;
-        const sum = vals.reduce((a, b) => a + b, 0);
-        const avg = sum / len;
-        const big = vals.filter(v => v >= 4).length;
-        const small = len - big;
-        const last = vals[len - 1];
-        
-        // Xu hướng 10 phiên gần nhất
-        const recent10 = vals.slice(-10);
-        const recentAvg = recent10.reduce((a,b) => a+b, 0) / recent10.length;
-        let trend = '↔ ỔN ĐỊNH';
-        if (recentAvg > avg + 0.5) trend = '📈 TĂNG';
-        else if (recentAvg < avg - 0.5) trend = '📉 GIẢM';
-        
-        // Dự đoán vị tiếp theo
-        let nextPred = '';
-        if (big > small * 1.2) nextPred = 'CAO (≥4)';
-        else if (small > big * 1.2) nextPred = 'THẤP (≤3)';
-        else if (last >= 4) nextPred = 'CAO (≥4)';
-        else nextPred = 'THẤP (≤3)';
-        
-        result.push({
-            pos: i + 1,
-            lastVal: last,
-            avg: avg.toFixed(1),
-            totalBig: big,
-            totalSmall: small,
-            trend: trend,
-            nextPred: nextPred,
-            total: len
-        });
-    }
-    
-    // Dự đoán tổng
-    const predVals = result.map(r => r.nextPred.includes('CAO') ? 5 : 2);
-    const predTotal = predVals.reduce((a, b) => a + b, 0);
-    const overallPred = predTotal > 10 ? 'TAI' : 'XIU';
-    
-    return {
-        positions: result,
-        predTotal: predTotal,
-        overallPred: overallPred,
-        totalSessions: total
-    };
-}
+setInterval(()=>{cd--;if(cd<=0)cd=5;document.getElementById('cd').textContent=cd;},1000);
+fetchAll();setInterval(fetchAll,5000);
+if(DB.sessions.length>0){latest=DB.sessions[DB.sessions.length-1];dice=analyzeDice(DB.sessions);pred=predict(DB.sessions);render();}
 
-// ==================== 8 ENGINE AI ====================
-const ENGINES = {
-    mk(s) {
-        const r = s.map(x => x.r); const n = r.length;
-        if (n < 8) return null;
-        const last3 = r.slice(-3).join('');
-        let mt = 0, mx = 0;
-        for (let i = 0; i <= n - 4; i++) {
-            if (r.slice(i, i + 3).join('') === last3) {
-                r[i + 3] === 'TAI' ? mt++ : mx++;
-            }
-        }
-        if (mt + mx >= 3) return { p: mt > mx ? 'TAI' : 'XIU', c: Math.round(Math.abs(mt - mx) / (mt + mx) * 30 + 55) };
-        return null;
-    },
-    fr(s) {
-        const r = s.map(x => x.r); const n = r.length;
-        if (n < 10) return null;
-        const l10 = r.slice(-10); const t = l10.filter(x => x === 'TAI').length;
-        if (t >= 8) return { p: 'XIU', c: 70 };
-        if (t <= 2) return { p: 'TAI', c: 70 };
-        if (t >= 6) return { p: 'TAI', c: 55 };
-        if (t <= 4) return { p: 'XIU', c: 55 };
-        return { p: r[n - 1] === 'TAI' ? 'XIU' : 'TAI', c: 50 };
-    },
-    cy(s) {
-        const r = s.map(x => x.r); const n = r.length;
-        if (n < 12) return null;
-        const l4 = r.slice(-4).join('');
-        let mt = 0, mx = 0;
-        for (let i = 0; i <= n - 5; i++) {
-            if (r.slice(i, i + 4).join('') === l4) {
-                r[i + 4] === 'TAI' ? mt++ : mx++;
-            }
-        }
-        if (mt + mx >= 2) return { p: mt > mx ? 'TAI' : 'XIU', c: Math.round(Math.abs(mt - mx) / (mt + mx) * 35 + 55) };
-        return null;
-    },
-    tr(s) {
-        const t = s.map(x => x.t); const n = t.length;
-        if (n < 5) return null;
-        const a5 = t.slice(-5).reduce((a, b) => a + b, 0) / 5;
-        if (a5 > 13) return { p: 'XIU', c: 62 };
-        if (a5 < 8) return { p: 'TAI', c: 62 };
-        return a5 > 10.5 ? { p: 'TAI', c: 52 } : { p: 'XIU', c: 52 };
-    },
-    fi(s) {
-        const r = s.map(x => x.r); const n = r.length;
-        const fib = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
-        let sc = { TAI: 0, XIU: 0 };
-        for (const f of fib) {
-            if (n > f) { r[n - f] === 'TAI' ? sc.TAI++ : sc.XIU++; }
-        }
-        if (sc.TAI + sc.XIU > 3) return { p: sc.TAI > sc.XIU ? 'TAI' : 'XIU', c: Math.round(Math.abs(sc.TAI - sc.XIU) / (sc.TAI + sc.XIU) * 20 + 55) };
-        return null;
-    },
-    dc(s) {
-        const d = s.map(x => x.dc).slice(-5).flat();
-        if (d.length < 10) return null;
-        const big = d.filter(x => x >= 4).length;
-        return big >= 10 ? { p: 'TAI', c: 65 } : big <= 5 ? { p: 'XIU', c: 65 } : big > d.length / 2 ? { p: 'TAI', c: 52 } : { p: 'XIU', c: 52 };
-    },
-    st(s) {
-        const r = s.map(x => x.r); const n = r.length;
-        const last = r[n - 1];
-        let st = 1;
-        for (let i = n - 2; i >= 0; i--) { if (r[i] === last) st++; else break; }
-        if (st >= 5) return { p: last === 'TAI' ? 'XIU' : 'TAI', c: 70 };
-        if (st >= 3) return { p: last, c: 60 };
-        return { p: last === 'TAI' ? 'XIU' : 'TAI', c: 55 };
-    },
-    ba(s) {
-        if (DB.tai + DB.xiu < 10) return null;
-        const pTai = DB.tai / (DB.tai + DB.xiu);
-        const r = s.map(x => x.r);
-        const l3 = r.slice(-3);
-        const t3 = l3.filter(x => x === 'TAI').length;
-        const scT = pTai * (t3 / 3 + 0.1);
-        const scX = (1 - pTai) * ((3 - t3) / 3 + 0.1);
-        return { p: scT > scX ? 'TAI' : 'XIU', c: Math.round(Math.abs(scT - scX) / (scT + scX) * 25 + 55) };
-    }
-};
-
-function predictFinal(sessions) {
-    let votes = { TAI: 0, XIU: 0 };
-    let engResults = {};
-    
-    // 8 Engine
-    for (const [name, fn] of Object.entries(ENGINES)) {
-        const result = fn(sessions);
-        if (result) {
-            const w = DB.weights[name] || 1;
-            votes[result.p] += w * (result.c / 100);
-            engResults[name] = { ...result, w: w.toFixed(2), v: result.p };
-        } else {
-            engResults[name] = { p: '--', c: 0, w: (DB.weights[name] || 1).toFixed(2), v: null };
-        }
-    }
-    
-    // Engine thứ 9: AI Xí Ngầu
-    if (diceAnalysis) {
-        const dw = DB.weights.dc || 1;
-        votes[diceAnalysis.overallPred] += dw * 0.6;
-        engResults['xingau'] = { p: diceAnalysis.overallPred, c: 60, w: dw.toFixed(2), v: diceAnalysis.overallPred };
-    }
-    
-    const totalVotes = votes.TAI + votes.XIU;
-    if (totalVotes === 0) return { pred: 'XIU', conf: 50, eng: engResults };
-    
-    const pred = votes.TAI > votes.XIU ? 'TAI' : 'XIU';
-    const conf = Math.min(95, Math.max(51, Math.round(Math.max(votes.TAI, votes.XIU) / totalVotes * 100)));
-    
-    return { pred, conf, eng: engResults };
-}
-
-function updateWeights(actual) {
-    const hist = DB.sessions.slice(0, -1);
-    for (const [name, fn] of Object.entries(ENGINES)) {
-        const result = fn(hist);
-        if (result) {
-            DB.perf[name].t++;
-            if (result.p === actual) DB.perf[name].c++;
-        }
-    }
-    
-    let totalW = 0;
-    for (const name of Object.keys(DB.weights)) {
-        const p = DB.perf[name];
-        DB.weights[name] = p.t > 0 ? Math.max(0.2, p.c / p.t) : 0.5;
-        totalW += DB.weights[name];
-    }
-    for (const name of Object.keys(DB.weights)) {
-        DB.weights[name] = Math.round(DB.weights[name] / totalW * 9 * 100) / 100;
-    }
-}
-
-// ==================== RENDER ====================
-function render() {
-    const s = DB.sessions, n = s.length;
-    
-    // Stats
-    document.getElementById('statTotal').textContent = n;
-    document.getElementById('statTai').textContent = DB.tai;
-    document.getElementById('statXiu').textContent = DB.xiu;
-    document.getElementById('statAvg').textContent = n > 0 ? (DB.sum / n).toFixed(1) : '--';
-    
-    // Accuracy
-    const pr = DB.predictions, tp = pr.length;
-    const cp = pr.filter(p => p.ok).length;
-    const acc = tp > 0 ? Math.round(cp / tp * 100) : 0;
-    document.getElementById('accuracyNum').textContent = acc + '%';
-    document.getElementById('correctCount').textContent = cp;
-    document.getElementById('wrongCount').textContent = tp - cp;
-    document.getElementById('totalPreds').textContent = tp;
-    document.getElementById('progressFill').style.width = acc + '%';
-    
-    // Dice Analysis - TOÀN BỘ LỊCH SỬ
-    if (diceAnalysis) {
-        document.getElementById('diceTotal').textContent = diceAnalysis.totalSessions + ' phiên';
-        document.getElementById('diceGrid').innerHTML = diceAnalysis.positions.map(p => {
-            const cls = p.lastVal >= 4 ? 'high' : 'low';
-            return `
-            <div class="dice-col">
-                <div class="pos">Xí ngầu ${p.pos}</div>
-                <div class="val ${cls}">${p.lastVal}</div>
-                <div class="stats">
-                    ${p.trend} | TB:${p.avg} | ${p.totalBig}B/${p.totalSmall}S<br>
-                    → ${p.nextPred} (${p.total} phiên)
-                </div>
-            </div>`;
-        }).join('');
-        
-        document.getElementById('dicePrediction').innerHTML = `
-            🎯 Dự đoán tổng từ xí ngầu: <b>${diceAnalysis.predTotal}</b> → 
-            <b style="color:${diceAnalysis.overallPred === 'TAI' ? 'var(--tai)' : 'var(--xiu)'};font-size:1.1em;">
-                ${diceAnalysis.overallPred}
-            </b>
-        `;
-    }
-    
-    // Engines
-    if (prediction) {
-        document.getElementById('enginesGrid').innerHTML = Object.entries(prediction.eng).map(([name, e]) => `
-            <div class="eng ${e.v === prediction.pred ? 'voted' : ''}">
-                <span class="name">${name.toUpperCase()}</span>
-                <span class="pred ${e.p === 'TAI' ? 'T' : e.p === 'XIU' ? 'X' : ''}">${e.p}</span>
-                <span class="weight">${e.c}% W:${e.w}</span>
-            </div>
-        `).join('');
-    }
-    
-    // History count
-    document.getElementById('historyCount').textContent = n;
-    
-    // Full history
-    let histHTML = '';
-    for (const item of [...s].reverse().slice(0, 500)) {
-        histHTML += `<span class="${item.r === 'TAI' ? 'T' : 'X'}">${item.r === 'TAI' ? 'T' : 'X'}</span>`;
-    }
-    document.getElementById('historyBox').innerHTML = histHTML || 'Chưa có dữ liệu';
-    
-    // Latest
-    if (latest) {
-        document.getElementById('lastBox').innerHTML = `
-            <div class="ph">PHIÊN #${latest.p}</div>
-            <div class="dices">🎲 ${latest.dc.join(' - ')}</div>
-            <div class="total">Tổng: ${latest.t}</div>
-            <div class="result ${latest.r}">${latest.r === 'TAI' ? '🔴 TÀI' : '🟢 XỈU'}</div>
-        `;
-    }
-    
-    // Prediction box
-    if (prediction) {
-        const box = document.getElementById('predBox');
-        box.className = 'pred-box ' + prediction.pred;
-        const agree = Object.values(prediction.eng).filter(e => e.v === prediction.pred).length;
-        const nextPhien = latest ? parseInt(latest.p) + 1 : '?';
-        box.innerHTML = `
-            <div style="font-size:0.7em;opacity:0.8;">🔥 DỰ ĐOÁN PHIÊN #${nextPhien}</div>
-            <h2>${prediction.pred === 'TAI' ? '🔴 TÀI' : '🟢 XỈU'}</h2>
-            <div class="sub">Độ tin cậy: ${prediction.conf}% • ${agree}/9 engine đồng thuận</div>
-        `;
-    }
-    
-    // Prediction table
-    const tbody = document.getElementById('tableBody');
-    if (pr.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">Chưa có dữ liệu</td></tr>';
-    } else {
-        tbody.innerHTML = [...pr].reverse().slice(0, 50).map(p => `
-            <tr>
-                <td>#${p.p}</td>
-                <td style="color:${p.pr === 'TAI' ? 'var(--tai)' : 'var(--xiu)'}">${p.pr}</td>
-                <td style="color:${p.ac === 'TAI' ? 'var(--tai)' : 'var(--xiu)'}">${p.ac}</td>
-                <td class="${p.ok ? 'correct' : 'wrong'}">${p.ok ? '✅' : '❌'}</td>
-                <td style="color:#888;">${p.ti || ''}</td>
-            </tr>
-        `).join('');
-    }
-}
-
-// ==================== TOGGLE TABLE ====================
-function toggleTable() {
-    const wrap = document.getElementById('tableWrap');
-    const btn = document.querySelector('.toggle');
-    if (wrap.style.display === 'none') {
-        wrap.style.display = 'block';
-        btn.textContent = 'Thu gọn';
-    } else {
-        wrap.style.display = 'none';
-        btn.textContent = 'Mở rộng';
-    }
-}
-
-// ==================== iOS INSTALL BANNER ====================
-const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-if (isIOSSafari && !isStandalone) {
-    document.getElementById('installBanner').classList.add('show');
-}
-
-// ==================== COUNTDOWN ====================
-setInterval(() => {
-    countdown--;
-    if (countdown <= 0) countdown = 5;
-    document.getElementById('countdown').textContent = countdown;
-}, 1000);
-
-// ==================== START ====================
-fetchData();
-setInterval(fetchData, 5000);
-
-// Render ngay nếu có dữ liệu cache
-if (DB.sessions.length > 0) {
-    latest = DB.sessions[DB.sessions.length - 1];
-    diceAnalysis = analyzeAllDice(DB.sessions);
-    prediction = predictFinal(DB.sessions);
-    render();
-}
+// iOS install
+if(/iPhone|iPad|iPod/.test(navigator.userAgent)&&!window.matchMedia('(display-mode:standalone)').matches&&!navigator.standalone)document.getElementById('inst').classList.add('on');
 </script>
 </body>
 </html>
