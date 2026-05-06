@@ -14,14 +14,13 @@
         body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
         #gf{width:100%;height:100%;border:none;position:fixed;top:0;left:0;z-index:1}
         
-        .bw{position:fixed;z-index:9999;right:8px;top:60px;display:flex;flex-direction:column;align-items:center;gap:0;will-change:transform;transition:none}
+        .bw{position:fixed;z-index:9999;right:8px;top:60px;display:flex;flex-direction:column;align-items:center;gap:0}
         .bb{width:50px;height:50px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4em;box-shadow:0 3px 15px rgba(255,255,255,.3);cursor:pointer}
-        .bb:active{transform:scale(1.05)}
         .bp{background:#1a1a2e;border:1px solid #ffd700;border-radius:10px;padding:5px 12px;text-align:center;margin-bottom:3px;font-size:.65em;color:#fff;white-space:nowrap}
         .bp .pp{font-size:1.2em;font-weight:900}.pp.TAI{color:#e74c3c}.pp.XIU{color:#2ecc71}
         .bp .bi{color:#aaa;font-size:.78em;margin-top:1px}
         
-        .bm{background:#151520;border:2px solid #ffd700;border-radius:12px;padding:10px;width:300px;display:none;text-align:center;font-size:.65em;box-shadow:0 0 30px rgba(255,215,0,.25);z-index:1}
+        .bm{background:#151520;border:2px solid #ffd700;border-radius:12px;padding:10px;width:300px;display:none;text-align:center;font-size:.65em;box-shadow:0 0 30px rgba(255,215,0,.25)}
         .bm.show{display:block}
         .bm h3{color:#ffd700;font-size:.85em;margin-bottom:6px;position:sticky;top:0;background:#151520;padding:5px 0}
         .bm .st{display:flex;justify-content:space-around;margin-bottom:6px;color:#888;font-size:.7em;position:sticky;top:30px;background:#151520;padding:3px 0}
@@ -33,7 +32,7 @@
         .T{color:#e74c3c;font-weight:bold}.X{color:#2ecc71;font-weight:bold}
         .ok{color:#2ecc71;font-weight:bold}.no{color:#e74c3c;font-weight:bold}
         
-        .key-box{display:none;text-align:center;padding:10px}
+        .key-box{text-align:center;padding:10px}
         .key-box input{width:100%;padding:10px;border:2px solid rgba(255,215,0,.3);background:#0a0a0f;color:#fff;border-radius:8px;font-size:.9em;text-align:center;letter-spacing:2px;margin-bottom:8px}
         .key-box button{width:100%;padding:10px;background:#ffd700;color:#000;border:none;border-radius:8px;font-weight:900;cursor:pointer;font-size:.9em}
         .key-box .msg{font-size:.75em;margin-top:6px}.msg.e{color:#e74c3c}.msg.s{color:#2ecc71}
@@ -48,7 +47,7 @@
         <div class="pp" id="pp">--</div>
         <div class="bi" id="bi">Đang tải...</div>
     </div>
-    <div class="bb" onclick="toggleMenu()">🤖</div>
+    <div class="bb" onclick="bm.classList.toggle('show');if(bm.classList.contains('show')){if(mainMenu.style.display!=='none')rm();}">🤖</div>
     <div class="bm" id="bm">
         <h3>👑 PHUC SIX</h3>
         <div class="key-box" id="keyBox">
@@ -77,23 +76,22 @@ const KS='https://safely-christmas-das-classes.trycloudflare.com',AK='phuctoolne
 let did=localStorage.getItem('pd')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('pd',did);}
 
 // DRAG
-const bw=document.getElementById('bw');let dg=!1,sx,sy,sl,st;
+let dg=!1,sx,sy,sl,st;
 bw.addEventListener('pointerdown',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop;bw.setPointerCapture(e.pointerId)});
 document.addEventListener('pointermove',e=>{if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px'});
 document.addEventListener('pointerup',()=>dg=!1);
 
 // KEY
-function toggleMenu(){const bm=document.getElementById('bm');bm.classList.toggle('show');if(bm.classList.contains('show')){checkKey();if(document.getElementById('mainMenu').style.display!=='none')rm();}}
 async function checkKey(){const sk=localStorage.getItem('pk');if(sk===AK){showMain();return;}if(sk){try{const r=await fetch(`${KS}/api/check?key=${encodeURIComponent(sk)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){showMain();return;}}catch(e){}}showKeyInput();}
-function showKeyInput(){document.getElementById('keyBox').style.display='block';document.getElementById('mainMenu').style.display='none';document.getElementById('bpDiv').style.display='none';}
-function showMain(){document.getElementById('keyBox').style.display='none';document.getElementById('mainMenu').style.display='block';document.getElementById('bpDiv').style.display='block';}
-async function verifyKey(){const k=document.getElementById('keyInput').value.trim(),m=document.getElementById('keyMsg');m.className='msg';m.textContent='';if(!k||k.length<7){m.className='msg e';m.textContent='❌ Key phải đủ 7 ký tự!';return;}if(k===AK){localStorage.setItem('pk',k);showMain();return;}try{const r=await fetch(`${KS}/api/check?key=${encodeURIComponent(k)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){localStorage.setItem('pk',k);showMain();}else{m.className='msg e';m.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){m.className='msg e';m.textContent='❌ Không kết nối server!';}}
+function showKeyInput(){keyBox.style.display='block';mainMenu.style.display='none';bpDiv.style.display='none';}
+function showMain(){keyBox.style.display='none';mainMenu.style.display='block';bpDiv.style.display='block';}
+async function verifyKey(){const k=keyInput.value.trim(),m=document.getElementById('keyMsg');m.className='msg';m.textContent='';if(!k||k.length<7){m.className='msg e';m.textContent='❌ Key phải đủ 7 ký tự!';return;}if(k===AK){localStorage.setItem('pk',k);showMain();return;}try{const r=await fetch(`${KS}/api/check?key=${encodeURIComponent(k)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){localStorage.setItem('pk',k);showMain();}else{m.className='msg e';m.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){m.className='msg e';m.textContent='❌ Không kết nối server!';}}
 
 // MAIN
 const A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 let D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
-try{let r=localStorage.getItem('psv22');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psv22',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+try{let r=localStorage.getItem('psv23');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psv23',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
 
 function pd(s){
     let n=s.length;if(n<3)return{pr:null,cf:0,rs:'Cần '+(3-n)+' phiên'};
@@ -123,14 +121,13 @@ async function up(){
     if(d?.Phien&&d.Xuc_xac_1!==undefined)res.push({p:String(d.Phien),dc:[d.Xuc_xac_1,d.Xuc_xac_2,d.Xuc_xac_3],t:d.Tong,r:d.Ket_qua==='Tài'?'TAI':'XIU'});}catch(e){}}
     for(let i of res){if(!D.se.has(i.p)){D.se.add(i.p);if(D.lp&&D.s.length>0){let l=D.s[D.s.length-1];if(parseInt(i.p)===parseInt(l.p)+1){D.pr.push({p:i.p,pr:D.lp,ac:i.r,ok:D.lp===i.r});}}D.s.push(i);D.su+=i.t;i.r==='TAI'?D.t++:D.x++;}}
     D.s.sort((a,b)=>parseInt(a.p)-parseInt(b.p));
-    if(D.s.length>=3){let p=pd(D.s);if(p.pr){D.lp=p.pr;document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';document.getElementById('pp').className='pp '+p.pr;document.getElementById('bi').textContent='#'+(parseInt(D.s[D.s.length-1].p)+1)+' | '+p.cf+'%';}}
-    sv();if(document.getElementById('bm').classList.contains('show')&&document.getElementById('mainMenu').style.display!=='none')rm();
+    if(D.s.length>=3){let p=pd(D.s);if(p.pr){D.lp=p.pr;pp.textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';pp.className='pp '+p.pr;bi.textContent='#'+(parseInt(D.s[D.s.length-1].p)+1)+' | '+p.cf+'%';}}
+    sv();if(bm.classList.contains('show')&&mainMenu.style.display!=='none')rm();
 }
 
 function rm(){
     let pr=D.pr,tp=pr.length,cp=pr.filter(p=>p.ok).length;
-    document.getElementById('mt').textContent=tp;document.getElementById('md').textContent=cp;
-    document.getElementById('ms').textContent=tp-cp;document.getElementById('ma').textContent=tp>0?Math.round(cp/tp*100)+'%':'--%';
+    mt.textContent=tp;md.textContent=cp;ms.textContent=tp-cp;ma.textContent=tp>0?Math.round(cp/tp*100)+'%':'--%';
     let tb=document.getElementById('mtb');
     if(pr.length===0)tb.innerHTML='<tr><td colspan="4">Chưa có</td></tr>';
     else tb.innerHTML=[...pr].reverse().slice(0,100).map(p=>`<tr><td>#${p.p}</td><td class="${p.pr==='TAI'?'T':'X'}">${p.pr}</td><td class="${p.ac==='TAI'?'T':'X'}">${p.ac}</td><td class="${p.ok?'ok':'no'}">${p.ok?'✅':'❌'}</td></tr>`).join('');
