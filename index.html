@@ -21,16 +21,24 @@
         .bp .pp{font-size:1.3em;font-weight:900}.pp.TAI{color:#e74c3c}.pp.XIU{color:#2ecc71}
         .bp .bi{color:#aaa;font-size:.8em;margin-top:1px}
         
-        .bm{background:#151520;border:2px solid #ffd700;border-radius:12px;padding:12px;width:300px;max-height:380px;overflow-y:auto;display:none;text-align:center;font-size:.65em;box-shadow:0 0 30px rgba(255,215,0,.25);z-index:1}
+        /* MENU CỐ ĐỊNH CHIỀU CAO + THANH CUỘN */
+        .bm{background:#151520;border:2px solid #ffd700;border-radius:12px;padding:10px;width:300px;display:none;text-align:center;font-size:.65em;box-shadow:0 0 30px rgba(255,215,0,.25);z-index:1}
         .bm.show{display:block}
-        .bm h3{color:#ffd700;font-size:.9em;margin-bottom:8px}
-        .bm .st{display:flex;justify-content:space-around;margin-bottom:8px;color:#888;font-size:.75em}
+        .bm h3{color:#ffd700;font-size:.85em;margin-bottom:6px;position:sticky;top:0;background:#151520;padding:5px 0;z-index:1}
+        .bm .st{display:flex;justify-content:space-around;margin-bottom:6px;color:#888;font-size:.7em;position:sticky;top:30px;background:#151520;padding:3px 0}
         .bm .st b{color:#ffd700}
-        table{width:100%;border-collapse:collapse;font-size:.9em}
-        th{background:rgba(255,255,255,.05);padding:5px 3px;color:#888}
-        td{padding:5px 3px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
+        /* KHUNG CUỘN */
+        .scroll-box{max-height:250px;overflow-y:auto;-webkit-overflow-scrolling:touch;border-top:1px solid rgba(255,255,255,.05)}
+        table{width:100%;border-collapse:collapse;font-size:.85em}
+        th{background:rgba(255,255,255,.05);padding:4px 2px;color:#888;position:sticky;top:0}
+        td{padding:4px 2px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
         .T{color:#e74c3c;font-weight:bold}.X{color:#2ecc71;font-weight:bold}
         .ok{color:#2ecc71;font-weight:bold}.no{color:#e74c3c;font-weight:bold}
+        
+        .key-box{display:none;text-align:center;padding:10px}
+        .key-box input{width:100%;padding:10px;border:2px solid rgba(255,215,0,.3);background:#0a0a0f;color:#fff;border-radius:8px;font-size:.9em;text-align:center;letter-spacing:2px;margin-bottom:8px}
+        .key-box button{width:100%;padding:10px;background:#ffd700;color:#000;border:none;border-radius:8px;font-weight:900;cursor:pointer;font-size:.9em}
+        .key-box .msg{font-size:.75em;margin-top:6px}.msg.e{color:#e74c3c}.msg.s{color:#2ecc71}
     </style>
 </head>
 <body>
@@ -38,34 +46,53 @@
 <iframe id="gf" src="https://web.sunwin.mw"></iframe>
 
 <div class="bw" id="bw">
-    <div class="bp">
+    <div class="bp" id="bpDiv">
         <div class="pp" id="pp">--</div>
         <div class="bi" id="bi">Đang tải...</div>
     </div>
-    <div class="bb" onclick="document.getElementById('bm').classList.toggle('show');if(document.getElementById('bm').classList.contains('show'))rm()">🤖</div>
+    <div class="bb" onclick="toggleMenu()">🤖</div>
     <div class="bm" id="bm">
-        <h3>📋 LỊCH SỬ DỰ ĐOÁN PHUC SIX</h3>
-        <div class="st">
-            <span>Tổng: <b id="mt">0</b></span>
-            <span>✅ Đúng: <b id="md" style="color:#2ecc71">0</b></span>
-            <span>❌ Sai: <b id="ms" style="color:#e74c3c">0</b></span>
-            <span>🎯 CX: <b id="ma">--%</b></span>
+        <h3>👑 PHUC SIX</h3>
+        <div class="key-box" id="keyBox">
+            <p style="color:#888;font-size:.8em;margin-bottom:6px">Nhập key để mở khóa</p>
+            <input type="text" id="keyInput" placeholder="Nhập key..." maxlength="20">
+            <button onclick="verifyKey()">🔓 MỞ KHÓA</button>
+            <p class="msg" id="keyMsg"></p>
         </div>
-        <table>
-            <thead><tr><th>Phiên</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead>
-            <tbody id="mtb"><tr><td colspan="4" style="color:#888">Chưa có dữ liệu</td></tr></tbody>
-        </table>
+        <div id="mainMenu" style="display:none">
+            <div class="st">
+                <span>Tổng: <b id="mt">0</b></span>
+                <span>✅: <b id="md" style="color:#2ecc71">0</b></span>
+                <span>❌: <b id="ms" style="color:#e74c3c">0</b></span>
+                <span>🎯: <b id="ma">--%</b></span>
+            </div>
+            <div class="scroll-box">
+                <table>
+                    <thead><tr><th>Phiên</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead>
+                    <tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+const KEY_SERVER='https://safely-christmas-das-classes.trycloudflare.com',ADMIN_KEY='phuctoolnetad';
+let did=localStorage.getItem('ps_did')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('ps_did',did);}
+
+function toggleMenu(){const bm=document.getElementById('bm');bm.classList.toggle('show');if(bm.classList.contains('show')){checkKeyStatus();if(document.getElementById('mainMenu').style.display!=='none')rm();}}
+
+async function checkKeyStatus(){const sk=localStorage.getItem('ps_key');if(sk===ADMIN_KEY){showMain();return;}if(sk){try{const r=await fetch(`${KEY_SERVER}/api/check?key=${encodeURIComponent(sk)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){showMain();return;}}catch(e){}}showKeyInput();}
+function showKeyInput(){document.getElementById('keyBox').style.display='block';document.getElementById('mainMenu').style.display='none';document.getElementById('bpDiv').style.display='none';}
+function showMain(){document.getElementById('keyBox').style.display='none';document.getElementById('mainMenu').style.display='block';document.getElementById('bpDiv').style.display='block';}
+
+async function verifyKey(){const key=document.getElementById('keyInput').value.trim();const msg=document.getElementById('keyMsg');msg.className='msg';msg.textContent='';if(!key||key.length<7){msg.className='msg e';msg.textContent='❌ Key phải đủ 7 ký tự!';return;}if(key===ADMIN_KEY){localStorage.setItem('ps_key',key);showMain();return;}try{const r=await fetch(`${KEY_SERVER}/api/check?key=${encodeURIComponent(key)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){localStorage.setItem('ps_key',key);showMain();}else{msg.className='msg e';msg.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){msg.className='msg e';msg.textContent='❌ Không kết nối server!';}}
+
 const A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 let D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
-try{let r=localStorage.getItem('psx');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psx',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
-let cd=4;
+try{let r=localStorage.getItem('psk2');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psk2',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
 
-// DRAG
 const bw=document.getElementById('bw');let dg=!1,sx,sy,sl,st;
 bw.addEventListener('mousedown',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop});
 bw.addEventListener('touchstart',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.touches[0].clientX;sy=e.touches[0].clientY;sl=bw.offsetLeft;st=bw.offsetTop});
@@ -75,56 +102,22 @@ document.addEventListener('mouseup',()=>dg=!1);document.addEventListener('touche
 
 function pd(s){
     let n=s.length;if(n<3)return{pr:null,cf:0,rs:'Cần '+(3-n)+' phiên'};
-    let r=s.map(x=>x.r),t=s.map(x=>x.t),d=s.map(x=>x.dc);
-    let lr=r[n-1],lt=t[n-1],ld=d[n-1];
+    let r=s.map(x=>x.r),t=s.map(x=>x.t);
+    let lr=r[n-1],lt=t[n-1];
     let sc={TAI:0,XIU:0},rs=[];
-    
-    // Cực trị
-    if(lt>=17){sc.TAI+=99;rs.push('Tổng≥17');}
-    if(lt<=4){sc.XIU+=98;rs.push('Tổng≤4');}
-    
-    // Bệt linh hoạt
-    let st=1;for(let i=n-2;i>=0;i--){if(r[i]===lr)st++;else break;}
-    if(st>=7){sc[lr==='TAI'?'XIU':'TAI']+=35;rs.push('Bệt'+st+'→ĐẢO');}
-    else if(st>=5){sc[lr]+=25;rs.push('Bệt'+st+'→THEO');}
-    else if(st>=3){sc[lr]+=15;rs.push('Bệt'+st);}
-    else{sc[lr==='TAI'?'XIU':'TAI']+=10;rs.push('Xen kẽ');}
-    
-    // Cầu
-    if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2]){sc[r[n-2]]+=25;rs.push('1-1');}
-    if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-5]&&r[n-1]!==r[n-3]){sc[r[n-3]]+=20;rs.push('2-1');}
-    if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-4]&&r[n-1]!==r[n-3]){sc[r[n-3]]+=20;rs.push('2-2');}
-    
-    // Xí ngầu độc lập
-    for(let i=0;i<3;i++){
-        let v=s.map(x=>x.dc[i]),vl=v.length,lv=v[vl-1],pv=v[vl-2]||lv,pv2=v[vl-3]||pv;
-        let vs=1;for(let j=vl-2;j>=0;j--){if(v[j]===lv)vs++;else break;}
-        let bg=v.filter(x=>x>=4).length,sm=vl-bg;
-        let l3=v.slice(-3).join(','),fd=[];
-        for(let j=0;j<vl-3;j++){if(v.slice(j,j+3).join(',')===l3&&j+3<vl)fd.push(v[j+3]);}
-        let nv=lv;
-        if(vs>=5)nv=lv===6?5:lv+1;
-        else if(vs>=3)nv=lv;
-        else if(fd.length>=2)nv=Math.round(fd.reduce((a,b)=>a+b,0)/fd.length);
-        else nv=bg>sm?Math.round(4+Math.random()):Math.round(2+Math.random());
-        nv=Math.max(1,Math.min(6,nv));
-        if(nv>=4)sc.TAI+=5;else sc.XIU+=5;
+    if(lt>=17){sc.TAI+=99;rs.push('Tổng≥17');}else if(lt<=4){sc.XIU+=98;rs.push('Tổng≤4');}else{
+        let st=1;for(let i=n-2;i>=0;i--){if(r[i]===lr)st++;else break;}
+        if(st>=7){sc[lr==='TAI'?'XIU':'TAI']+=35;rs.push('Bệt'+st+'→ĐẢO');}else if(st>=5){sc[lr]+=25;rs.push('Bệt'+st+'→THEO');}else if(st>=3){sc[lr]+=15;rs.push('Bệt'+st);}else{sc[lr==='TAI'?'XIU':'TAI']+=10;rs.push('Xen kẽ');}
+        if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2]){sc[r[n-2]]+=25;rs.push('1-1');}
+        if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-5]&&r[n-1]!==r[n-3]){sc[r[n-3]]+=20;rs.push('2-1');}
+        if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-4]&&r[n-1]!==r[n-3]){sc[r[n-3]]+=20;rs.push('2-2');}
+        for(let i=0;i<3;i++){let v=s.map(x=>x.dc[i]),vl=v.length,lv=v[vl-1];let vs=1;for(let j=vl-2;j>=0;j--){if(v[j]===lv)vs++;else break;}let bg=v.filter(x=>x>=4).length;let nv=lv;if(vs>=5)nv=lv===6?5:lv+1;else if(vs>=3)nv=lv;else nv=bg>vl/2?Math.round(4+Math.random()):Math.round(2+Math.random());nv=Math.max(1,Math.min(6,nv));if(nv>=4)sc.TAI+=5;else sc.XIU+=5;}
+        if(lt>=14&&lt<=16){sc.TAI+=18;rs.push('Cao→TÀI');}else if(lt>=5&&lt<=7){sc.XIU+=18;rs.push('Thấp→XỈU');}
+        let l6=r.slice(-6),t6=l6.filter(x=>x==='TAI').length;if(t6>=5){sc.XIU+=12;rs.push(t6+'/6T');}else if(t6<=1){sc.TAI+=12;rs.push((6-t6)+'/6X');}
+        if(n>=8){let l3=r.slice(-3).join(''),mt=0,mx=0;for(let i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=4){if(mt>mx){sc.TAI+=14;rs.push('Pattern→TÀI');}else{sc.XIU+=14;rs.push('Pattern→XỈU');}}}
     }
-    
-    // Điểm
-    if(lt>=14&&lt<=16){sc.TAI+=18;rs.push('Cao→TÀI');}
-    else if(lt>=5&&lt<=7){sc.XIU+=18;rs.push('Thấp→XỈU');}
-    
-    // Xu hướng
-    let l6=r.slice(-6),t6=l6.filter(x=>x==='TAI').length;
-    if(t6>=5){sc.XIU+=12;rs.push(t6+'/6T');}
-    else if(t6<=1){sc.TAI+=12;rs.push((6-t6)+'/6X');}
-    
-    // Pattern
-    if(n>=8){let l3=r.slice(-3).join(''),mt=0,mx=0;for(let i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=4){if(mt>mx){sc.TAI+=14;rs.push('Pattern→TÀI');}else{sc.XIU+=14;rs.push('Pattern→XỈU');}}}
-    
     let pr=sc.TAI>sc.XIU?'TAI':'XIU',tot=sc.TAI+sc.XIU;
-    return{pr,cf:tot>0?Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/tot*100))):50,rs:rs.slice(0,3).join(' | ')};
+    return{pr,cf:tot>0?Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/tot*100))):50,rs:rs.slice(0,3).join('|')};
 }
 
 async function up(){
@@ -135,8 +128,8 @@ async function up(){
     if(d?.Phien&&d.Xuc_xac_1!==undefined)res.push({p:String(d.Phien),dc:[d.Xuc_xac_1,d.Xuc_xac_2,d.Xuc_xac_3],t:d.Tong,r:d.Ket_qua==='Tài'?'TAI':'XIU'});}catch(e){}}
     for(let i of res){if(!D.se.has(i.p)){D.se.add(i.p);if(D.lp&&D.s.length>0){let l=D.s[D.s.length-1];if(parseInt(i.p)===parseInt(l.p)+1){D.pr.push({p:i.p,pr:D.lp,ac:i.r,ok:D.lp===i.r});}}D.s.push(i);D.su+=i.t;i.r==='TAI'?D.t++:D.x++;}}
     D.s.sort((a,b)=>parseInt(a.p)-parseInt(b.p));
-    if(D.s.length>=3){let p=pd(D.s);if(p.pr){D.lp=p.pr;document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';document.getElementById('pp').className='pp '+p.pr;document.getElementById('bi').textContent='#'+(parseInt(D.s[D.s.length-1].p)+1)+' | '+p.cf+'% | '+p.rs;}}
-    sv();if(document.getElementById('bm').classList.contains('show'))rm();
+    if(D.s.length>=3){let p=pd(D.s);if(p.pr){D.lp=p.pr;document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';document.getElementById('pp').className='pp '+p.pr;document.getElementById('bi').textContent='#'+(parseInt(D.s[D.s.length-1].p)+1)+' | '+p.cf+'%';}}
+    sv();if(document.getElementById('bm').classList.contains('show')&&document.getElementById('mainMenu').style.display!=='none')rm();
 }
 
 function rm(){
@@ -145,10 +138,10 @@ function rm(){
     document.getElementById('ms').textContent=tp-cp;document.getElementById('ma').textContent=tp>0?Math.round(cp/tp*100)+'%':'--%';
     let tb=document.getElementById('mtb');
     if(pr.length===0)tb.innerHTML='<tr><td colspan="4">Chưa có</td></tr>';
-    else tb.innerHTML=[...pr].reverse().slice(0,50).map(p=>`<tr><td>#${p.p}</td><td class="${p.pr==='TAI'?'T':'X'}">${p.pr}</td><td class="${p.ac==='TAI'?'T':'X'}">${p.ac}</td><td class="${p.ok?'ok':'no'}">${p.ok?'✅':'❌'}</td></tr>`).join('');
+    else tb.innerHTML=[...pr].reverse().slice(0,100).map(p=>`<tr><td>#${p.p}</td><td class="${p.pr==='TAI'?'T':'X'}">${p.pr}</td><td class="${p.ac==='TAI'?'T':'X'}">${p.ac}</td><td class="${p.ok?'ok':'no'}">${p.ok?'✅':'❌'}</td></tr>`).join('');
 }
 
-up();setInterval(up,4000);
+checkKeyStatus();up();setInterval(up,4000);
 </script>
 </body>
 </html>
