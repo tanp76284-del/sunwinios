@@ -6,179 +6,149 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PHUC SIX">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect width='180' height='180' rx='40' fill='%230a0a0f'/><text x='90' y='115' text-anchor='middle' font-size='90' font-weight='bold' fill='%23ffd700'>👑</text></svg>">
     <meta name="theme-color" content="#0a0a0f">
-    <title>👑 PHUC SIX BOT</title>
+    <title>👑 PHUC SIX</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0d0d1a;color:#fff;font-family:'Segoe UI',Arial;height:100vh;overflow:hidden}
-        #gameFrame{width:100%;height:100%;border:none;position:fixed;top:0;left:0;z-index:1}
+        body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
+        #gf{width:100%;height:100%;border:none;position:fixed;top:0;left:0;z-index:1}
         
-        /* BOT + MENU DÍNH LIỀN */
-        .bot-wrapper{position:fixed;z-index:9999;cursor:grab;right:10px;top:100px;display:flex;flex-direction:column;align-items:center;gap:0}
-        .bot-wrapper:active{cursor:grabbing}
-        .bot-body{width:55px;height:55px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6em;box-shadow:0 4px 18px rgba(255,255,255,.3),0 0 30px rgba(255,215,0,.2);animation:float 3s ease-in-out infinite;z-index:2;position:relative}
-        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        .bw{position:fixed;z-index:9999;right:8px;top:80px;display:flex;flex-direction:column;align-items:center;gap:0}
+        .bb{width:55px;height:55px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6em;box-shadow:0 0 25px rgba(255,215,0,.35);animation:fl 3s infinite;cursor:pointer;z-index:2}
+        @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+        .bp{background:#1a1a2e;border:1px solid #ffd700;border-radius:10px;padding:6px 14px;text-align:center;margin-bottom:4px;font-size:.7em;color:#fff}
+        .bp .pp{font-size:1.3em;font-weight:900}.pp.TAI{color:#e74c3c}.pp.XIU{color:#2ecc71}
+        .bp .bi{color:#aaa;font-size:.8em;margin-top:1px}
         
-        /* TOOLTIP */
-        .bot-tooltip{background:#1a1a2e;border:1px solid #ffd700;border-radius:10px;padding:6px 12px;font-size:.65em;white-space:nowrap;text-align:center;box-shadow:0 0 20px rgba(255,215,0,.2);margin-bottom:4px}
-        .bot-tooltip .pred{font-size:1.2em;font-weight:900}.pred.TAI{color:#e74c3c}.pred.XIU{color:#2ecc71}
-        .bot-tooltip .info{color:#aaa;font-size:.85em;margin-top:1px}
-        
-        /* MENU DÍNH LIỀN */
-        .bot-menu{background:#151520;border:1px solid #ffd700;border-radius:12px;padding:10px;width:260px;max-height:300px;overflow-y:auto;display:none;box-shadow:0 0 25px rgba(255,215,0,.2);z-index:1}
-        .bot-menu.show{display:block}
-        .bot-menu h3{text-align:center;color:#ffd700;font-size:.78em;margin-bottom:6px}
-        .menu-stats{display:flex;justify-content:space-around;font-size:.62em;color:#888;margin-bottom:6px}
-        .menu-stats b{color:#ffd700}
-        table{width:100%;font-size:.58em;border-collapse:collapse}
-        th{background:rgba(255,255,255,.05);padding:4px 2px;color:#888;font-weight:normal}
-        td{padding:4px 2px;text-align:center;border-bottom:1px solid rgba(255,255,255,.03)}
-        .tx-row.TAI{color:#e74c3c;font-weight:bold}.tx-row.XIU{color:#2ecc71;font-weight:bold}
-        .correct{color:#2ecc71;font-weight:bold}.wrong{color:#e74c3c;font-weight:bold}
+        .bm{background:#151520;border:2px solid #ffd700;border-radius:12px;padding:12px;width:300px;max-height:380px;overflow-y:auto;display:none;text-align:center;font-size:.65em;box-shadow:0 0 30px rgba(255,215,0,.25);z-index:1}
+        .bm.show{display:block}
+        .bm h3{color:#ffd700;font-size:.9em;margin-bottom:8px}
+        .bm .st{display:flex;justify-content:space-around;margin-bottom:8px;color:#888;font-size:.75em}
+        .bm .st b{color:#ffd700}
+        table{width:100%;border-collapse:collapse;font-size:.9em}
+        th{background:rgba(255,255,255,.05);padding:5px 3px;color:#888}
+        td{padding:5px 3px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
+        .T{color:#e74c3c;font-weight:bold}.X{color:#2ecc71;font-weight:bold}
+        .ok{color:#2ecc71;font-weight:bold}.no{color:#e74c3c;font-weight:bold}
     </style>
 </head>
 <body>
 
-<iframe id="gameFrame" src="https://web.sunwin.mw"></iframe>
+<iframe id="gf" src="https://web.sunwin.mw"></iframe>
 
-<!-- BOT + MENU DÍNH LIỀN -->
-<div class="bot-wrapper" id="botWrapper">
-    <div class="bot-tooltip">
-        <div class="pred" id="botPred">--</div>
-        <div class="info" id="botInfo">Đang tải...</div>
+<div class="bw" id="bw">
+    <div class="bp">
+        <div class="pp" id="pp">--</div>
+        <div class="bi" id="bi">Đang tải...</div>
     </div>
-    <div class="bot-body" onclick="toggleMenu()">🤖</div>
-    <div class="bot-menu" id="botMenu">
-        <h3>📋 LỊCH SỬ DỰ ĐOÁN</h3>
-        <div class="menu-stats">
-            <span>Tổng: <b id="mTotal">0</b></span>
-            <span>Đúng: <b id="mDung" style="color:#2ecc71">0</b></span>
-            <span>Sai: <b id="mSai" style="color:#e74c3c">0</b></span>
-            <span>CX: <b id="mAcc">--%</b></span>
+    <div class="bb" onclick="document.getElementById('bm').classList.toggle('show');if(document.getElementById('bm').classList.contains('show'))rm()">🤖</div>
+    <div class="bm" id="bm">
+        <h3>📋 LỊCH SỬ DỰ ĐOÁN PHUC SIX</h3>
+        <div class="st">
+            <span>Tổng: <b id="mt">0</b></span>
+            <span>✅ Đúng: <b id="md" style="color:#2ecc71">0</b></span>
+            <span>❌ Sai: <b id="ms" style="color:#e74c3c">0</b></span>
+            <span>🎯 CX: <b id="ma">--%</b></span>
         </div>
         <table>
-            <thead><tr><th>#</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead>
-            <tbody id="mBody"><tr><td colspan="4">Chưa có</td></tr></tbody>
+            <thead><tr><th>Phiên</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead>
+            <tbody id="mtb"><tr><td colspan="4" style="color:#888">Chưa có dữ liệu</td></tr></tbody>
         </table>
     </div>
 </div>
 
 <script>
-const APIS=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
-let DB={sessions:[],tai:0,xiu:0,sum:0,seen:new Set(),preds:[],lastPred:''};
-try{const r=localStorage.getItem('psbot2');if(r){const p=JSON.parse(r);DB.sessions=p.s||[];DB.tai=p.t||0;DB.xiu=p.x||0;DB.sum=p.su||0;DB.seen=new Set(p.se||[]);DB.preds=p.pr||[];DB.lastPred=p.lp||'';}}catch(e){}
-function save(){try{localStorage.setItem('psbot2',JSON.stringify({s:DB.sessions.slice(-50000),t:DB.tai,x:DB.xiu,su:DB.sum,se:[...DB.seen].slice(-50000),pr:DB.preds.slice(-5000),lp:DB.lastPred}));}catch(e){}}
+const A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
+let D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
+try{let r=localStorage.getItem('psx');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psx',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+let cd=4;
 
-// DRAG BOT WRAPPER
-const wrap=document.getElementById('botWrapper');let dg=false,sx,sy,sl,st;
-wrap.addEventListener('mousedown',e=>{if(e.target.closest('.bot-menu'))return;dg=true;sx=e.clientX;sy=e.clientY;sl=wrap.offsetLeft;st=wrap.offsetTop});
-wrap.addEventListener('touchstart',e=>{if(e.target.closest('.bot-menu'))return;dg=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;sl=wrap.offsetLeft;st=wrap.offsetTop});
-document.addEventListener('mousemove',e=>{if(!dg)return;wrap.style.left=(sl+e.clientX-sx)+'px';wrap.style.top=(st+e.clientY-sy)+'px'});
-document.addEventListener('touchmove',e=>{if(!dg)return;wrap.style.left=(sl+e.touches[0].clientX-sx)+'px';wrap.style.top=(st+e.touches[0].clientY-sy)+'px'});
-document.addEventListener('mouseup',()=>dg=false);document.addEventListener('touchend',()=>dg=false);
+// DRAG
+const bw=document.getElementById('bw');let dg=!1,sx,sy,sl,st;
+bw.addEventListener('mousedown',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop});
+bw.addEventListener('touchstart',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.touches[0].clientX;sy=e.touches[0].clientY;sl=bw.offsetLeft;st=bw.offsetTop});
+document.addEventListener('mousemove',e=>{if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px'});
+document.addEventListener('touchmove',e=>{if(!dg)return;bw.style.left=(sl+e.touches[0].clientX-sx)+'px';bw.style.top=(st+e.touches[0].clientY-sy)+'px'});
+document.addEventListener('mouseup',()=>dg=!1);document.addEventListener('touchend',()=>dg=!1);
 
-function toggleMenu(){const m=document.getElementById('botMenu');m.classList.toggle('show');if(m.classList.contains('show'))renderMenu();}
-
-// ============ PHÂN TÍCH XÍ NGẦU ĐỘC LẬP + CẦU LINH HOẠT ============
-function smartPredict(s){
-    const n=s.length;if(n<3)return{pred:null,conf:0,reason:`Cần ${3-n} phiên`};
-    const r=s.map(x=>x.r),t=s.map(x=>x.t),d=s.map(x=>x.dc);
-    const lr=r[n-1],lt=t[n-1],ld=d[n-1],lp=[s[n-2]?.dc||[0,0,0],s[n-3]?.dc||[0,0,0]];
+function pd(s){
+    let n=s.length;if(n<3)return{pr:null,cf:0,rs:'Cần '+(3-n)+' phiên'};
+    let r=s.map(x=>x.r),t=s.map(x=>x.t),d=s.map(x=>x.dc);
+    let lr=r[n-1],lt=t[n-1],ld=d[n-1];
     let sc={TAI:0,XIU:0},rs=[];
     
-    // 1. Cực trị
-    if(lt>=17){sc.TAI+=99;rs.push('🔥Tổng≥17');}
-    if(lt<=4){sc.XIU+=98;rs.push('🔥Tổng≤4');}
+    // Cực trị
+    if(lt>=17){sc.TAI+=99;rs.push('Tổng≥17');}
+    if(lt<=4){sc.XIU+=98;rs.push('Tổng≤4');}
     
-    // 2. Bệt T/X linh hoạt
-    let streak=1;for(let i=n-2;i>=0;i--){if(r[i]===lr)streak++;else break;}
-    if(streak>=7){sc[lr==='TAI'?'XIU':'TAI']+=35;rs.push(`🔄Bệt${streak}→ĐẢO`);}
-    else if(streak>=5){sc[lr]+=25;rs.push(`📈Bệt${streak}→THEO`);}
-    else if(streak>=3){sc[lr]+=15;rs.push(`Bệt${streak}`);}
-    else{sc[lr==='TAI'?'XIU':'TAI']+=8;rs.push('Xen kẽ');}
+    // Bệt linh hoạt
+    let st=1;for(let i=n-2;i>=0;i--){if(r[i]===lr)st++;else break;}
+    if(st>=7){sc[lr==='TAI'?'XIU':'TAI']+=35;rs.push('Bệt'+st+'→ĐẢO');}
+    else if(st>=5){sc[lr]+=25;rs.push('Bệt'+st+'→THEO');}
+    else if(st>=3){sc[lr]+=15;rs.push('Bệt'+st);}
+    else{sc[lr==='TAI'?'XIU':'TAI']+=10;rs.push('Xen kẽ');}
     
-    // 3. Cầu 1-1, 2-1, 2-2
+    // Cầu
     if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2]){sc[r[n-2]]+=25;rs.push('1-1');}
     if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-5]&&r[n-1]!==r[n-3]){sc[r[n-3]]+=20;rs.push('2-1');}
     if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-4]&&r[n-1]!==r[n-3]){sc[r[n-3]]+=20;rs.push('2-2');}
     
-    // 4. Phân tích xí ngầu độc lập từng viên (full lịch sử)
-    for(let vi=0;vi<3;vi++){
-        const vals=s.map(x=>x.dc[vi]);const vlen=vals.length;
-        const vlast=vals[vlen-1],vprev=vals[vlen-2]||vlast,vprev2=vals[vlen-3]||vprev;
-        let vstreak=1;for(let j=vlen-2;j>=0;j--){if(vals[j]===vlast)vstreak++;else break;}
-        const big=vals.filter(x=>x>=4).length,small=vlen-big;
-        // Pattern từng viên
-        const l3=vals.slice(-3).join(',');let found=[];
-        for(let j=0;j<vlen-3;j++){if(vals.slice(j,j+3).join(',')===l3&&j+3<vlen)found.push(vals[j+3]);}
-        let nv=vlast;
-        if(vstreak>=5)nv=vlast===6?5:vlast+1;
-        else if(vstreak>=3)nv=vlast;
-        else if(found.length>=2)nv=Math.round(found.reduce((a,b)=>a+b,0)/found.length);
-        else if(vlast>vprev&&vprev>vprev2)nv=Math.min(6,vlast+1);
-        else if(vlast<vprev&&vprev<vprev2)nv=Math.max(1,vlast-1);
-        else nv=big>small?Math.round(4+Math.random()):Math.round(2+Math.random());
+    // Xí ngầu độc lập
+    for(let i=0;i<3;i++){
+        let v=s.map(x=>x.dc[i]),vl=v.length,lv=v[vl-1],pv=v[vl-2]||lv,pv2=v[vl-3]||pv;
+        let vs=1;for(let j=vl-2;j>=0;j--){if(v[j]===lv)vs++;else break;}
+        let bg=v.filter(x=>x>=4).length,sm=vl-bg;
+        let l3=v.slice(-3).join(','),fd=[];
+        for(let j=0;j<vl-3;j++){if(v.slice(j,j+3).join(',')===l3&&j+3<vl)fd.push(v[j+3]);}
+        let nv=lv;
+        if(vs>=5)nv=lv===6?5:lv+1;
+        else if(vs>=3)nv=lv;
+        else if(fd.length>=2)nv=Math.round(fd.reduce((a,b)=>a+b,0)/fd.length);
+        else nv=bg>sm?Math.round(4+Math.random()):Math.round(2+Math.random());
         nv=Math.max(1,Math.min(6,nv));
-        if(nv>=4)sc.TAI+=4;else sc.XIU+=4;
+        if(nv>=4)sc.TAI+=5;else sc.XIU+=5;
     }
-    rs.push('🎲XN');
     
-    // 5. Điểm cao/thấp
+    // Điểm
     if(lt>=14&&lt<=16){sc.TAI+=18;rs.push('Cao→TÀI');}
     else if(lt>=5&&lt<=7){sc.XIU+=18;rs.push('Thấp→XỈU');}
-    else if(lt>=11&&lt<=13){sc.TAI+=8;rs.push('ĐiểmTÀI');}
-    else if(lt>=8&&lt<=10){sc.XIU+=8;rs.push('ĐiểmXỈU');}
     
-    // 6. Xu hướng 8 phiên
-    const l8=r.slice(-8),t8=l8.filter(x=>x==='TAI').length;
-    if(t8>=6){sc.XIU+=12;rs.push(`${t8}/8T`);}
-    else if(t8<=2){sc.TAI+=12;rs.push(`${8-t8}/8X`);}
+    // Xu hướng
+    let l6=r.slice(-6),t6=l6.filter(x=>x==='TAI').length;
+    if(t6>=5){sc.XIU+=12;rs.push(t6+'/6T');}
+    else if(t6<=1){sc.TAI+=12;rs.push((6-t6)+'/6X');}
     
-    // 7. Pattern T/X 3 phiên
-    if(n>=8){const l3=r.slice(-3).join('');let mt=0,mx=0;for(let i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=4){if(mt>mx){sc.TAI+=14;rs.push(`🔍PT→TÀI`);}else{sc.XIU+=14;rs.push(`🔍PT→XỈU`);}}}
+    // Pattern
+    if(n>=8){let l3=r.slice(-3).join(''),mt=0,mx=0;for(let i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=4){if(mt>mx){sc.TAI+=14;rs.push('Pattern→TÀI');}else{sc.XIU+=14;rs.push('Pattern→XỈU');}}}
     
-    const pr=sc.TAI>sc.XIU?'TAI':'XIU',tot=sc.TAI+sc.XIU;
-    return{pred:pr,conf:tot>0?Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/tot*100))):50,reason:rs.slice(0,3).join('|')};
+    let pr=sc.TAI>sc.XIU?'TAI':'XIU',tot=sc.TAI+sc.XIU;
+    return{pr,cf:tot>0?Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/tot*100))):50,rs:rs.slice(0,3).join(' | ')};
 }
 
-async function update(){
+async function up(){
     let res=[];
-    for(const a of APIS){try{const r=await fetch(a,{signal:AbortSignal.timeout(5000)});const d=await r.json();
+    for(let a of A){try{let r=await fetch(a,{signal:AbortSignal.timeout(5000)});let d=await r.json();
     if(d?.phien&&d.xuc_xac_1!==undefined)res.push({p:String(d.phien),dc:[d.xuc_xac_1,d.xuc_xac_2,d.xuc_xac_3],t:d.tong,r:(d.ket_qua==='Tài'||d.ket_qua==='TAI')?'TAI':'XIU'});
     if(d?.phien_hien_tai&&d.xuc_xac_1!==undefined)res.push({p:String(d.phien_hien_tai),dc:[d.xuc_xac_1,d.xuc_xac_2,d.xuc_xac_3],t:d.tong,r:(d.ket_qua==='Tài'||d.ket_qua==='TAI')?'TAI':'XIU'});
     if(d?.Phien&&d.Xuc_xac_1!==undefined)res.push({p:String(d.Phien),dc:[d.Xuc_xac_1,d.Xuc_xac_2,d.Xuc_xac_3],t:d.Tong,r:d.Ket_qua==='Tài'?'TAI':'XIU'});}catch(e){}}
-    for(const i of res){
-        if(!DB.seen.has(i.p)){
-            DB.seen.add(i.p);
-            if(DB.lastPred&&DB.sessions.length>0){const last=DB.sessions[DB.sessions.length-1];if(parseInt(i.p)===parseInt(last.p)+1){DB.preds.push({p:i.p,pr:DB.lastPred,ac:i.r,ok:DB.lastPred===i.r});}}
-            DB.sessions.push(i);DB.sum+=i.t;i.r==='TAI'?DB.tai++:DB.xiu++;
-        }
-    }
-    DB.sessions.sort((a,b)=>parseInt(a.p)-parseInt(b.p));
-    if(DB.sessions.length>=3){
-        const pred=smartPredict(DB.sessions);
-        if(pred.pred){
-            DB.lastPred=pred.pred;
-            document.getElementById('botPred').textContent=pred.pred==='TAI'?'🔴 TÀI':'🟢 XỈU';
-            document.getElementById('botPred').className='pred '+pred.pred;
-            document.getElementById('botInfo').textContent=`#${parseInt(DB.sessions[DB.sessions.length-1].p)+1} | ${pred.conf}% | ${pred.reason}`;
-        }
-    }
-    save();if(document.getElementById('botMenu').classList.contains('show'))renderMenu();
+    for(let i of res){if(!D.se.has(i.p)){D.se.add(i.p);if(D.lp&&D.s.length>0){let l=D.s[D.s.length-1];if(parseInt(i.p)===parseInt(l.p)+1){D.pr.push({p:i.p,pr:D.lp,ac:i.r,ok:D.lp===i.r});}}D.s.push(i);D.su+=i.t;i.r==='TAI'?D.t++:D.x++;}}
+    D.s.sort((a,b)=>parseInt(a.p)-parseInt(b.p));
+    if(D.s.length>=3){let p=pd(D.s);if(p.pr){D.lp=p.pr;document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';document.getElementById('pp').className='pp '+p.pr;document.getElementById('bi').textContent='#'+(parseInt(D.s[D.s.length-1].p)+1)+' | '+p.cf+'% | '+p.rs;}}
+    sv();if(document.getElementById('bm').classList.contains('show'))rm();
 }
 
-function renderMenu(){
-    const pr=DB.preds,tp=pr.length,cp=pr.filter(p=>p.ok).length;
-    document.getElementById('mTotal').textContent=tp;document.getElementById('mDung').textContent=cp;
-    document.getElementById('mSai').textContent=tp-cp;document.getElementById('mAcc').textContent=tp>0?Math.round(cp/tp*100)+'%':'--%';
-    const tb=document.getElementById('mBody');
+function rm(){
+    let pr=D.pr,tp=pr.length,cp=pr.filter(p=>p.ok).length;
+    document.getElementById('mt').textContent=tp;document.getElementById('md').textContent=cp;
+    document.getElementById('ms').textContent=tp-cp;document.getElementById('ma').textContent=tp>0?Math.round(cp/tp*100)+'%':'--%';
+    let tb=document.getElementById('mtb');
     if(pr.length===0)tb.innerHTML='<tr><td colspan="4">Chưa có</td></tr>';
-    else tb.innerHTML=[...pr].reverse().slice(0,40).map(p=>`<tr><td>#${p.p}</td><td class="tx-row ${p.pr}">${p.pr}</td><td class="tx-row ${p.ac}">${p.ac}</td><td class="${p.ok?'correct':'wrong'}">${p.ok?'✅':'❌'}</td></tr>`).join('');
+    else tb.innerHTML=[...pr].reverse().slice(0,50).map(p=>`<tr><td>#${p.p}</td><td class="${p.pr==='TAI'?'T':'X'}">${p.pr}</td><td class="${p.ac==='TAI'?'T':'X'}">${p.ac}</td><td class="${p.ok?'ok':'no'}">${p.ok?'✅':'❌'}</td></tr>`).join('');
 }
 
-update();setInterval(update,4000);
+up();setInterval(up,4000);
 </script>
 </body>
 </html>
