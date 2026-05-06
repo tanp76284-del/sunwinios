@@ -16,8 +16,7 @@
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
         body{background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial;min-height:100vh}
         
-        /* ========== KEY SCREEN ========== */
-        #keyScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+        #keyScreen{display:none;align-items:center;justify-content:center;min-height:100vh;padding:20px}
         .key-box{text-align:center;padding:30px 20px;max-width:400px;width:100%;background:var(--card);border-radius:16px;border:2px solid var(--gold);box-shadow:0 0 40px rgba(255,215,0,.15)}
         .key-box .logo{font-size:4em;margin-bottom:8px}
         .key-box h1{font-size:1.8em;background:linear-gradient(45deg,#ffd700,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
@@ -29,7 +28,6 @@
         .key-box .msg.e{color:var(--tai)}.key-box .msg.s{color:var(--xiu)}
         .key-box .hint{font-size:.65em;color:#555;margin-top:15px}
 
-        /* ========== MAIN APP ========== */
         #mainApp{display:none;padding:6px;padding-bottom:calc(6px+var(--safe));max-width:750px;margin:0 auto;user-select:none;-webkit-user-select:none}
         .header{text-align:center;padding:12px 15px;background:var(--card);border-radius:12px;border:2px solid var(--gold);margin-bottom:6px}
         .header h1{font-size:clamp(1.3em,4vw,1.5em);background:linear-gradient(45deg,#ffd700,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
@@ -81,7 +79,7 @@
 </head>
 <body>
 
-<!-- ==================== KEY SCREEN ==================== -->
+<!-- KEY SCREEN -->
 <div id="keyScreen">
     <div class="key-box">
         <div class="logo">👑</div>
@@ -94,7 +92,7 @@
     </div>
 </div>
 
-<!-- ==================== MAIN APP ==================== -->
+<!-- MAIN APP -->
 <div id="mainApp">
     <div class="header"><h1>👑 PHUC SIX V12</h1><p class="live"><span class="dot">●</span> Live | <span id="ut">--:--:--</span> | Reload <span id="cd">5</span>s | 15 Phiên + 9 AI</p></div>
     <div class="check-banner cho" id="checkBanner">⏳ Đang chờ kiểm tra...</div>
@@ -118,61 +116,104 @@
     <div class="tbl-wrap"><table><thead><tr><th>Phiên</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead><tbody id="tb"></tbody></table></div>
     <div class="sect">📜 TOÀN BỘ LỊCH SỬ</div>
     <div class="hist" id="histBox"></div>
-    <div class="ft">👑 PHUC SIX V12 • Key Bảo Vệ • PC/Android/iOS</div>
+    <div class="ft">👑 PHUC SIX V12 • Key Bảo Vệ • 1 Key = 1 Thiết Bị</div>
 </div>
 
 <script>
-// ==================== KEY MANAGEMENT ====================
+// ==================== KEY CONFIG ====================
 const KEY_SERVER = 'http://localhost:8888';
-let currentDevice = localStorage.getItem('phucsix_did') || '';
-if (!currentDevice) {
-    currentDevice = 'd' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-    localStorage.setItem('phucsix_did', currentDevice);
+const ADMIN_KEY = 'phuctoolnetad';
+
+// ==================== DEVICE ID ====================
+let deviceId = localStorage.getItem('phucsix_did');
+if (!deviceId) {
+    deviceId = 'd' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+    localStorage.setItem('phucsix_did', deviceId);
 }
 
+// ==================== VERIFY KEY ====================
 async function verifyKey() {
     const key = document.getElementById('keyInput').value.trim();
     const msg = document.getElementById('keyMsg');
     msg.className = 'msg';
     msg.textContent = '';
-    if (!key || key.length < 7) { msg.className = 'msg e'; msg.textContent = '❌ Key phải đủ 7 ký tự!'; return; }
+    
+    if (!key || key.length < 7) {
+        msg.className = 'msg e';
+        msg.textContent = '❌ Key phải đủ 7 ký tự!';
+        return;
+    }
+    
+    // Kiểm tra Admin key offline
+    if (key === ADMIN_KEY) {
+        localStorage.setItem('phucsix_key', key);
+        localStorage.setItem('phucsix_expiry', '0');
+        showMainApp();
+        return;
+    }
+    
+    // Kiểm tra key qua server
     try {
-        const r = await fetch(`${KEY_SERVER}/api/check?key=${encodeURIComponent(key)}&device=${encodeURIComponent(currentDevice)}`);
-        const d = await r.json();
-        if (d.valid) {
+        const resp = await fetch(`${KEY_SERVER}/api/check?key=${encodeURIComponent(key)}&device=${encodeURIComponent(deviceId)}`);
+        const data = await resp.json();
+        if (data.valid) {
             localStorage.setItem('phucsix_key', key);
-            document.getElementById('keyScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            initApp();
+            localStorage.setItem('phucsix_expiry', data.remaining || 'Vĩnh viễn');
+            showMainApp();
         } else {
             msg.className = 'msg e';
-            msg.textContent = '❌ ' + (d.msg || 'Key không hợp lệ!');
+            msg.textContent = '❌ ' + (data.msg || 'Key không hợp lệ!');
         }
     } catch(e) {
         msg.className = 'msg e';
-        msg.textContent = '❌ Không kết nối được server!';
+        msg.textContent = '❌ Không thể kết nối server!';
     }
 }
 
+// ==================== HIỂN THỊ MENU CHÍNH ====================
+function showMainApp() {
+    document.getElementById('keyScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    initApp();
+}
+
+// ==================== TỰ ĐỘNG KIỂM TRA KEY ĐÃ LƯU ====================
 async function autoVerify() {
     const savedKey = localStorage.getItem('phucsix_key');
-    if (savedKey) {
-        try {
-            const r = await fetch(`${KEY_SERVER}/api/check?key=${encodeURIComponent(savedKey)}&device=${encodeURIComponent(currentDevice)}`);
-            const d = await r.json();
-            if (d.valid) {
-                document.getElementById('keyScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                initApp();
-                return;
-            }
-        } catch(e) {}
+    
+    if (!savedKey) {
+        // Chưa có key → hiện màn hình nhập
+        document.getElementById('keyScreen').style.display = 'flex';
+        document.getElementById('mainApp').style.display = 'none';
+        return;
     }
-    document.getElementById('keyScreen').style.display = 'flex';
-    document.getElementById('mainApp').style.display = 'none';
+    
+    // Admin key → vào luôn
+    if (savedKey === ADMIN_KEY) {
+        showMainApp();
+        return;
+    }
+    
+    // Kiểm tra key thường còn hạn không
+    try {
+        const resp = await fetch(`${KEY_SERVER}/api/check?key=${encodeURIComponent(savedKey)}&device=${encodeURIComponent(deviceId)}`);
+        const data = await resp.json();
+        if (data.valid) {
+            showMainApp();
+        } else {
+            // Key hết hạn → xóa key cũ, hiện màn hình nhập
+            localStorage.removeItem('phucsix_key');
+            localStorage.removeItem('phucsix_expiry');
+            document.getElementById('keyScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+    } catch(e) {
+        // Không kết nối được server → vẫn cho vào nếu có key (offline mode)
+        showMainApp();
+    }
 }
 
-// ==================== MAIN APP ====================
+// ==================== MAIN APP (GIỮ NGUYÊN) ====================
 const APIS=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 let DB={sessions:[],tai:0,xiu:0,sum:0,seen:new Set(),preds:[],lastP:'',lastV:'',w:{mk:1,fr:1,cy:1,tr:1,fi:1,dc:1,st:1,ba:1},ep:{mk:{c:0,t:0},fr:{c:0,t:0},cy:{c:0,t:0},tr:{c:0,t:0},fi:{c:0,t:0},dc:{c:0,t:0},st:{c:0,t:0},ba:{c:0,t:0}}};
 try{const r=localStorage.getItem('psv12');if(r){const p=JSON.parse(r);DB.sessions=p.s||[];DB.tai=p.t||0;DB.xiu=p.x||0;DB.sum=p.su||0;DB.seen=new Set(p.se||[]);DB.preds=p.pr||[];DB.lastP=p.lp||'';DB.lastV=p.lv||'';if(p.w)Object.assign(DB.w,p.w);if(p.ep)Object.assign(DB.ep,p.ep);}}catch(e){}
@@ -252,6 +293,7 @@ function initApp(){
     if(DB.sessions.length>0){latest=DB.sessions[DB.sessions.length-1];dice=analyze15(DB.sessions);finalPred=predictFinal(DB.sessions);render();}
 }
 
+// ==================== START ====================
 autoVerify();
 </script>
 </body>
