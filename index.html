@@ -14,21 +14,19 @@
         body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
         #gf{width:100%;height:100%;border:none;position:fixed;top:0;left:0;z-index:1}
         
-        .bw{position:fixed;z-index:9999;right:8px;top:80px;display:flex;flex-direction:column;align-items:center;gap:0}
-        .bb{width:55px;height:55px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6em;box-shadow:0 0 25px rgba(255,215,0,.35);animation:fl 3s infinite;cursor:pointer;z-index:2}
-        @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-        .bp{background:#1a1a2e;border:1px solid #ffd700;border-radius:10px;padding:6px 14px;text-align:center;margin-bottom:4px;font-size:.7em;color:#fff}
-        .bp .pp{font-size:1.3em;font-weight:900}.pp.TAI{color:#e74c3c}.pp.XIU{color:#2ecc71}
-        .bp .bi{color:#aaa;font-size:.8em;margin-top:1px}
+        .bw{position:fixed;z-index:9999;right:8px;top:60px;display:flex;flex-direction:column;align-items:center;gap:0;will-change:transform;transition:none}
+        .bb{width:50px;height:50px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4em;box-shadow:0 3px 15px rgba(255,255,255,.3);cursor:pointer}
+        .bb:active{transform:scale(1.05)}
+        .bp{background:#1a1a2e;border:1px solid #ffd700;border-radius:10px;padding:5px 12px;text-align:center;margin-bottom:3px;font-size:.65em;color:#fff;white-space:nowrap}
+        .bp .pp{font-size:1.2em;font-weight:900}.pp.TAI{color:#e74c3c}.pp.XIU{color:#2ecc71}
+        .bp .bi{color:#aaa;font-size:.78em;margin-top:1px}
         
-        /* MENU CỐ ĐỊNH CHIỀU CAO + THANH CUỘN */
         .bm{background:#151520;border:2px solid #ffd700;border-radius:12px;padding:10px;width:300px;display:none;text-align:center;font-size:.65em;box-shadow:0 0 30px rgba(255,215,0,.25);z-index:1}
         .bm.show{display:block}
-        .bm h3{color:#ffd700;font-size:.85em;margin-bottom:6px;position:sticky;top:0;background:#151520;padding:5px 0;z-index:1}
+        .bm h3{color:#ffd700;font-size:.85em;margin-bottom:6px;position:sticky;top:0;background:#151520;padding:5px 0}
         .bm .st{display:flex;justify-content:space-around;margin-bottom:6px;color:#888;font-size:.7em;position:sticky;top:30px;background:#151520;padding:3px 0}
         .bm .st b{color:#ffd700}
-        /* KHUNG CUỘN */
-        .scroll-box{max-height:250px;overflow-y:auto;-webkit-overflow-scrolling:touch;border-top:1px solid rgba(255,255,255,.05)}
+        .scroll-box{max-height:250px;overflow-y:auto;-webkit-overflow-scrolling:touch}
         table{width:100%;border-collapse:collapse;font-size:.85em}
         th{background:rgba(255,255,255,.05);padding:4px 2px;color:#888;position:sticky;top:0}
         td{padding:4px 2px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
@@ -54,7 +52,7 @@
     <div class="bm" id="bm">
         <h3>👑 PHUC SIX</h3>
         <div class="key-box" id="keyBox">
-            <p style="color:#888;font-size:.8em;margin-bottom:6px">Nhập key để mở khóa</p>
+            <p style="color:#888;font-size:.8em">Nhập key để mở khóa</p>
             <input type="text" id="keyInput" placeholder="Nhập key..." maxlength="20">
             <button onclick="verifyKey()">🔓 MỞ KHÓA</button>
             <p class="msg" id="keyMsg"></p>
@@ -67,38 +65,36 @@
                 <span>🎯: <b id="ma">--%</b></span>
             </div>
             <div class="scroll-box">
-                <table>
-                    <thead><tr><th>Phiên</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead>
-                    <tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody>
-                </table>
+                <table><thead><tr><th>Phiên</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead>
+                <tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody></table>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-const KEY_SERVER='https://safely-christmas-das-classes.trycloudflare.com',ADMIN_KEY='phuctoolnetad';
-let did=localStorage.getItem('ps_did')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('ps_did',did);}
+const KS='https://safely-christmas-das-classes.trycloudflare.com',AK='phuctoolnetad';
+let did=localStorage.getItem('pd')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('pd',did);}
 
-function toggleMenu(){const bm=document.getElementById('bm');bm.classList.toggle('show');if(bm.classList.contains('show')){checkKeyStatus();if(document.getElementById('mainMenu').style.display!=='none')rm();}}
+// ==================== DRAG MƯỢT MÀ ====================
+const bw=document.getElementById('bw');
+let dg=!1,sx,sy,sl,st;
+bw.addEventListener('pointerdown',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop;bw.setPointerCapture(e.pointerId)});
+document.addEventListener('pointermove',e=>{if(!dg)return;let x=sl+e.clientX-sx,y=st+e.clientY-sy;bw.style.left=x+'px';bw.style.top=y+'px'});
+document.addEventListener('pointerup',()=>dg=!1);
 
-async function checkKeyStatus(){const sk=localStorage.getItem('ps_key');if(sk===ADMIN_KEY){showMain();return;}if(sk){try{const r=await fetch(`${KEY_SERVER}/api/check?key=${encodeURIComponent(sk)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){showMain();return;}}catch(e){}}showKeyInput();}
+// ==================== KEY ====================
+function toggleMenu(){const bm=document.getElementById('bm');bm.classList.toggle('show');if(bm.classList.contains('show')){checkKey();if(document.getElementById('mainMenu').style.display!=='none')rm();}}
+async function checkKey(){const sk=localStorage.getItem('pk');if(sk===AK){showMain();return;}if(sk){try{const r=await fetch(`${KS}/api/check?key=${encodeURIComponent(sk)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){showMain();return;}}catch(e){}}showKeyInput();}
 function showKeyInput(){document.getElementById('keyBox').style.display='block';document.getElementById('mainMenu').style.display='none';document.getElementById('bpDiv').style.display='none';}
 function showMain(){document.getElementById('keyBox').style.display='none';document.getElementById('mainMenu').style.display='block';document.getElementById('bpDiv').style.display='block';}
+async function verifyKey(){const k=document.getElementById('keyInput').value.trim(),m=document.getElementById('keyMsg');m.className='msg';m.textContent='';if(!k||k.length<7){m.className='msg e';m.textContent='❌ Key phải đủ 7 ký tự!';return;}if(k===AK){localStorage.setItem('pk',k);showMain();return;}try{const r=await fetch(`${KS}/api/check?key=${encodeURIComponent(k)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){localStorage.setItem('pk',k);showMain();}else{m.className='msg e';m.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){m.className='msg e';m.textContent='❌ Không kết nối server!';}}
 
-async function verifyKey(){const key=document.getElementById('keyInput').value.trim();const msg=document.getElementById('keyMsg');msg.className='msg';msg.textContent='';if(!key||key.length<7){msg.className='msg e';msg.textContent='❌ Key phải đủ 7 ký tự!';return;}if(key===ADMIN_KEY){localStorage.setItem('ps_key',key);showMain();return;}try{const r=await fetch(`${KEY_SERVER}/api/check?key=${encodeURIComponent(key)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){localStorage.setItem('ps_key',key);showMain();}else{msg.className='msg e';msg.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){msg.className='msg e';msg.textContent='❌ Không kết nối server!';}}
-
+// ==================== MAIN APP ====================
 const A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 let D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
-try{let r=localStorage.getItem('psk2');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psk2',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
-
-const bw=document.getElementById('bw');let dg=!1,sx,sy,sl,st;
-bw.addEventListener('mousedown',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop});
-bw.addEventListener('touchstart',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.touches[0].clientX;sy=e.touches[0].clientY;sl=bw.offsetLeft;st=bw.offsetTop});
-document.addEventListener('mousemove',e=>{if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px'});
-document.addEventListener('touchmove',e=>{if(!dg)return;bw.style.left=(sl+e.touches[0].clientX-sx)+'px';bw.style.top=(st+e.touches[0].clientY-sy)+'px'});
-document.addEventListener('mouseup',()=>dg=!1);document.addEventListener('touchend',()=>dg=!1);
+try{let r=localStorage.getItem('psv21');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psv21',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
 
 function pd(s){
     let n=s.length;if(n<3)return{pr:null,cf:0,rs:'Cần '+(3-n)+' phiên'};
@@ -141,7 +137,7 @@ function rm(){
     else tb.innerHTML=[...pr].reverse().slice(0,100).map(p=>`<tr><td>#${p.p}</td><td class="${p.pr==='TAI'?'T':'X'}">${p.pr}</td><td class="${p.ac==='TAI'?'T':'X'}">${p.ac}</td><td class="${p.ok?'ok':'no'}">${p.ok?'✅':'❌'}</td></tr>`).join('');
 }
 
-checkKeyStatus();up();setInterval(up,4000);
+checkKey();up();setInterval(up,4000);
 </script>
 </body>
 </html>
