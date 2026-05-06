@@ -11,17 +11,15 @@
     <title>👑 PHUC SIX</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
+        body{background:#000;height:100vh;overflow:hidden;font-family:Arial}
         #gf{width:100%;height:100%;border:none;position:fixed;top:0;left:0;z-index:1}
-        
         .bw{position:fixed;z-index:9999;right:5px;top:50px;display:flex;flex-direction:column;align-items:center;gap:0}
-        .bb{width:45px;height:45px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3em;box-shadow:0 2px 12px rgba(255,255,255,.3);cursor:pointer;border:none;outline:none}
+        .bb{width:45px;height:45px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3em;box-shadow:0 2px 12px rgba(255,255,255,.3);cursor:pointer;border:none;outline:none;z-index:10000}
         .bp{background:#1a1a2e;border:1px solid #ffd700;border-radius:8px;padding:4px 10px;text-align:center;margin-bottom:2px;font-size:.6em;color:#fff;white-space:nowrap}
         .bp .pp{font-size:1.1em;font-weight:900}.pp.TAI{color:#e74c3c}.pp.XIU{color:#2ecc71}
         .bp .bi{color:#aaa;font-size:.75em}
-        
-        .bm{background:#151520;border:2px solid #ffd700;border-radius:10px;padding:8px;width:280px;display:none;text-align:center;font-size:.6em;box-shadow:0 0 25px rgba(255,215,0,.2)}
-        .bm.show{display:block}
+        .bm{background:#151520;border:2px solid #ffd700;border-radius:10px;padding:8px;width:280px;display:none;text-align:center;font-size:.6em;box-shadow:0 0 25px rgba(255,215,0,.2);z-index:10001}
+        .bm.show{display:block!important}
         .bm h3{color:#ffd700;font-size:.8em;margin-bottom:4px}
         .bm .st{display:flex;justify-content:space-around;margin-bottom:4px;color:#888;font-size:.75em}
         .bm .st b{color:#ffd700}
@@ -31,7 +29,6 @@
         td{padding:3px 1px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
         .T{color:#e74c3c;font-weight:bold}.X{color:#2ecc71;font-weight:bold}
         .ok{color:#2ecc71}.no{color:#e74c3c}
-        
         .key-box{text-align:center;padding:8px}
         .key-box input{width:100%;padding:8px;border:1px solid rgba(255,215,0,.3);background:#0a0a0f;color:#fff;border-radius:6px;font-size:.85em;text-align:center;letter-spacing:2px;margin-bottom:6px}
         .key-box button{width:100%;padding:8px;background:#ffd700;color:#000;border:none;border-radius:6px;font-weight:900;cursor:pointer;font-size:.85em}
@@ -47,13 +44,13 @@
         <div class="pp" id="pp">--</div>
         <div class="bi" id="bi">Đang tải...</div>
     </div>
-    <button class="bb" id="bbBtn">🤖</button>
+    <button class="bb" id="bbBtn" onclick="document.getElementById('bm').classList.toggle('show');if(document.getElementById('bm').classList.contains('show')){checkKey();if(document.getElementById('mainMenu').style.display!=='none')rm();}">🤖</button>
     <div class="bm" id="bm">
         <h3>👑 PHUC SIX</h3>
         <div class="key-box" id="keyBox">
-            <p style="color:#888;font-size:.75em">Nhập key để mở khóa</p>
+            <p style="color:#888;font-size:.75em">Nhập key</p>
             <input type="text" id="keyInput" placeholder="Nhập key..." maxlength="20">
-            <button id="keyBtn">🔓 MỞ KHÓA</button>
+            <button onclick="verifyKey()">🔓 MỞ KHÓA</button>
             <p class="msg" id="keyMsg"></p>
         </div>
         <div id="mainMenu" style="display:none">
@@ -72,22 +69,6 @@
 </div>
 
 <script>
-// ==================== BOT CLICK ====================
-document.getElementById('bbBtn').addEventListener('click', function(e){
-    e.stopPropagation();
-    var bm = document.getElementById('bm');
-    bm.classList.toggle('show');
-    if(bm.classList.contains('show')){
-        checkKey();
-        if(document.getElementById('mainMenu').style.display !== 'none') rm();
-    }
-});
-document.getElementById('keyBtn').addEventListener('click', function(e){
-    e.stopPropagation();
-    verifyKey();
-});
-
-// ==================== CONFIG ====================
 const KS='https://safely-christmas-das-classes.trycloudflare.com',AK='phuctoolnetad';
 let did=localStorage.getItem('pd')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('pd',did);}
 
@@ -97,17 +78,15 @@ bw.addEventListener('pointerdown',function(e){if(e.target.closest('.bm'))return;
 document.addEventListener('pointermove',function(e){if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px'});
 document.addEventListener('pointerup',function(){dg=!1});
 
-// KEY
 async function checkKey(){var sk=localStorage.getItem('pk');if(sk===AK){showMain();return;}if(sk){try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(sk)+'&device='+encodeURIComponent(did));var d=await r.json();if(d.valid){showMain();return;}}catch(e){}}showKeyInput();}
 function showKeyInput(){document.getElementById('keyBox').style.display='block';document.getElementById('mainMenu').style.display='none';document.getElementById('bpDiv').style.display='none';}
 function showMain(){document.getElementById('keyBox').style.display='none';document.getElementById('mainMenu').style.display='block';document.getElementById('bpDiv').style.display='block';}
 async function verifyKey(){var k=document.getElementById('keyInput').value.trim();var m=document.getElementById('keyMsg');m.className='msg';m.textContent='';if(!k||k.length<7){m.className='msg e';m.textContent='❌ Key phải đủ 7 ký tự!';return;}if(k===AK){localStorage.setItem('pk',k);showMain();return;}try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(k)+'&device='+encodeURIComponent(did));var d=await r.json();if(d.valid){localStorage.setItem('pk',k);showMain();}else{m.className='msg e';m.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){m.className='msg e';m.textContent='❌ Không kết nối server!';}}
 
-// MAIN
 const A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 let D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
-try{let r=localStorage.getItem('psv25');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psv25',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+try{let r=localStorage.getItem('psv26');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psv26',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
 
 function pd(s){
     let n=s.length;if(n<3)return{pr:null,cf:0};
