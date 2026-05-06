@@ -76,25 +76,24 @@
 const KS='https://safely-christmas-das-classes.trycloudflare.com',AK='phuctoolnetad';
 let did=localStorage.getItem('pd')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('pd',did);}
 
-// ==================== DRAG MƯỢT MÀ ====================
-const bw=document.getElementById('bw');
-let dg=!1,sx,sy,sl,st;
+// DRAG
+const bw=document.getElementById('bw');let dg=!1,sx,sy,sl,st;
 bw.addEventListener('pointerdown',e=>{if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop;bw.setPointerCapture(e.pointerId)});
-document.addEventListener('pointermove',e=>{if(!dg)return;let x=sl+e.clientX-sx,y=st+e.clientY-sy;bw.style.left=x+'px';bw.style.top=y+'px'});
+document.addEventListener('pointermove',e=>{if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px'});
 document.addEventListener('pointerup',()=>dg=!1);
 
-// ==================== KEY ====================
+// KEY
 function toggleMenu(){const bm=document.getElementById('bm');bm.classList.toggle('show');if(bm.classList.contains('show')){checkKey();if(document.getElementById('mainMenu').style.display!=='none')rm();}}
 async function checkKey(){const sk=localStorage.getItem('pk');if(sk===AK){showMain();return;}if(sk){try{const r=await fetch(`${KS}/api/check?key=${encodeURIComponent(sk)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){showMain();return;}}catch(e){}}showKeyInput();}
 function showKeyInput(){document.getElementById('keyBox').style.display='block';document.getElementById('mainMenu').style.display='none';document.getElementById('bpDiv').style.display='none';}
 function showMain(){document.getElementById('keyBox').style.display='none';document.getElementById('mainMenu').style.display='block';document.getElementById('bpDiv').style.display='block';}
 async function verifyKey(){const k=document.getElementById('keyInput').value.trim(),m=document.getElementById('keyMsg');m.className='msg';m.textContent='';if(!k||k.length<7){m.className='msg e';m.textContent='❌ Key phải đủ 7 ký tự!';return;}if(k===AK){localStorage.setItem('pk',k);showMain();return;}try{const r=await fetch(`${KS}/api/check?key=${encodeURIComponent(k)}&device=${encodeURIComponent(did)}`);const d=await r.json();if(d.valid){localStorage.setItem('pk',k);showMain();}else{m.className='msg e';m.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){m.className='msg e';m.textContent='❌ Không kết nối server!';}}
 
-// ==================== MAIN APP ====================
+// MAIN
 const A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 let D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
-try{let r=localStorage.getItem('psv21');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psv21',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+try{let r=localStorage.getItem('psv22');if(r){let p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psv22',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
 
 function pd(s){
     let n=s.length;if(n<3)return{pr:null,cf:0,rs:'Cần '+(3-n)+' phiên'};
