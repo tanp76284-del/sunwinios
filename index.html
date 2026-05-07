@@ -7,8 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect width='180' height='180' rx='40' fill='%230a0a0f'/><text x='90' y='115' text-anchor='middle' font-size='90' font-weight='bold' fill='%23ffd700'>👑</text></svg>">
-    <meta name="theme-color" content="#0a0a0f">
-    <title>👑 PHUC SIX AI BOT</title>
+    <meta name="theme-color" content="#0a0a0f"><title>👑 PHUC SIX V15</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
@@ -46,82 +45,87 @@
     <div class="bot-tip" id="bpDiv"><div class="pp" id="pp">--</div><div class="bi" id="bi">AI READY</div></div>
     <div class="bot-wrap" onclick="toggleMenu()"><img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img" alt="Bot"></div>
     <div class="bm" id="bm">
-        <h3>👑 PHUC SIX AI</h3>
-        <div class="key-box" id="keyBox">
-            <p style="color:#888;font-size:.8em">Nhập key để mở khóa</p>
-            <input type="text" id="keyInput" placeholder="Nhập key..." maxlength="20">
-            <button onclick="verifyKey()">🔓 MỞ KHÓA</button>
-            <p class="msg" id="keyMsg"></p>
-        </div>
-        <div id="mainMenu" style="display:none">
-            <div class="st"><span>Tổng: <b id="mt">0</b></span><span>✅: <b id="md" style="color:#33ff88">0</b></span><span>❌: <b id="ms" style="color:#ff4d4d">0</b></span><span>🎯: <b id="ma">--%</b></span></div>
-            <div class="scroll-box"><table><thead><tr><th>#</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead><tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody></table></div>
-        </div>
+        <h3>👑 PHUC SIX V15</h3>
+        <div class="key-box" id="keyBox"><p style="color:#888;font-size:.8em">Nhập key</p><input type="text" id="keyInput" placeholder="Nhập key..." maxlength="20"><button onclick="verifyKey()">🔓 MỞ KHÓA</button><p class="msg" id="keyMsg"></p></div>
+        <div id="mainMenu" style="display:none"><div class="st"><span>Tổng: <b id="mt">0</b></span><span>✅: <b id="md" style="color:#33ff88">0</b></span><span>❌: <b id="ms" style="color:#ff4d4d">0</b></span><span>🎯: <b id="ma">--%</b></span></div><div class="scroll-box"><table><thead><tr><th>#</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead><tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody></table></div></div>
     </div>
 </div>
-
 <script>
+// ===== CONFIG =====
+const DATA_SERVER='https://isa-accomplish-fork-capitol.trycloudflare.com';
 const KS='https://safely-christmas-das-classes.trycloudflare.com',AK='phuctoolnetad';
 let did=localStorage.getItem('pd')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('pd',did);}
+
+// ===== MENU =====
 function toggleMenu(){var bm=document.getElementById('bm');bm.classList.toggle('show');if(bm.classList.contains('show')){checkKey();if(document.getElementById('mainMenu').style.display!=='none')rm();}}
 async function checkKey(){var sk=localStorage.getItem('pk');if(sk===AK){showMain();return;}if(sk){try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(sk)+'&device='+encodeURIComponent(did));var d=await r.json();if(d.valid){showMain();return;}}catch(e){}}showKeyInput();}
 function showKeyInput(){document.getElementById('keyBox').style.display='block';document.getElementById('mainMenu').style.display='none';document.getElementById('bpDiv').style.display='none';}
 function showMain(){document.getElementById('keyBox').style.display='none';document.getElementById('mainMenu').style.display='block';document.getElementById('bpDiv').style.display='block';}
 async function verifyKey(){var k=document.getElementById('keyInput').value.trim();var m=document.getElementById('keyMsg');m.className='msg';m.textContent='';if(!k||k.length<7){m.className='msg e';m.textContent='❌ Key phải đủ 7 ký tự!';return;}if(k===AK){localStorage.setItem('pk',k);showMain();return;}try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(k)+'&device='+encodeURIComponent(did));var d=await r.json();if(d.valid){localStorage.setItem('pk',k);showMain();}else{m.className='msg e';m.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){m.className='msg e';m.textContent='❌ Không kết nối server!';}}
 
+// ===== DRAG =====
 var bw=document.getElementById('bw'),dg=!1,sx,sy,sl,st;
-bw.addEventListener('mousedown',function(e){if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop});
-bw.addEventListener('touchstart',function(e){if(e.target.closest('.bm'))return;dg=!0;sx=e.touches[0].clientX;sy=e.touches[0].clientY;sl=bw.offsetLeft;st=bw.offsetTop});
-document.addEventListener('mousemove',function(e){if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px';bw.style.right='auto'});
-document.addEventListener('touchmove',function(e){if(!dg)return;bw.style.left=(sl+e.touches[0].clientX-sx)+'px';bw.style.top=(st+e.touches[0].clientY-sy)+'px';bw.style.right='auto'});
-document.addEventListener('mouseup',function(){dg=!1});document.addEventListener('touchend',function(){dg=!1});
-window.addEventListener('orientationchange',function(){setTimeout(function(){bw.style.right='auto';bw.style.top='100px';bw.style.left='auto'},300);});
+bw.addEventListener('pointerdown',function(e){if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop;bw.setPointerCapture(e.pointerId)});
+document.addEventListener('pointermove',function(e){if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px';bw.style.right='auto'});
+document.addEventListener('pointerup',function(){dg=!1});
 
-var A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
-var D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
-try{var r=localStorage.getItem('psv35');if(r){var p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psv35',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+// ===== DATA =====
+var D={s:[],pr:[],lp:'',w:{c11:1,c21:1,c22:1,bt:1,xn:1,diem:1,xh:1,pt:1,ct:1}};
+try{var r=localStorage.getItem('psv38');if(r){var p=JSON.parse(r);D.s=p.s||[];D.pr=p.pr||[];D.lp=p.lp||'';if(p.w)Object.assign(D.w,p.w);}}catch(e){}
+function sv(){try{localStorage.setItem('psv38',JSON.stringify({s:D.s.slice(-50000),pr:D.pr.slice(-5000),lp:D.lp,w:D.w}));}catch(e){}}
 
-// ============ THUẬT TOÁN MỚI - DỰA TRÊN QUY LUẬT BÀN SÂN ============
-function predictNew(s){
-    var n=s.length;
-    if(n<5)return{pr:null,cf:0};
-    
-    var r=s.map(function(x){return x.r});
-    var t=s.map(function(x){return x.t});
-    var d=s.map(function(x){return x.dc});
-    
-    var lr=r[n-1], lt=t[n-1], ld=d[n-1];
-    var sc={TAI:0,XIU:0}, reasons=[];
-    
-    // 1. PHÂN TÍCH BỆT - Dựa trên dữ liệu thật: bệt thường 2-4, max ~7
-    var streak=1;
-    for(var i=n-2;i>=0;i--){if(r[i]===lr)streak++;else break;}
-    
-    // Theo thống kê: bệt ≥5 hiếm, thường đảo sau 4-5
-    if(streak>=5){sc[lr==='TAI'?'XIU':'TAI']+=28;reasons.push('Bệt'+streak+'→ĐẢO');}
-    else if(streak>=3){sc[lr]+=
-18;reasons.push('Bệt'+streak+'→THEO');}
-    else if(streak>=2){sc[lr]+=
-10;reasons.push('Bệt'+streak);}
-    else{sc[lr==='TAI'?'XIU':'TAI']+=6;reasons.push('Xen kẽ');}
-    
-    // 2. PHÂN TÍCH XÍ NGẦU ĐỘC LẬP - Mỗi viên có quy luật riêng
+// ===== LOAD TỪ API SERVER =====
+async function loadData(){
+    try{
+        var r=await fetch(DATA_SERVER+'/api/history');
+        var d=await r.json();
+        var newSessions=d.sessions||[];
+        // Merge + sort
+        var map={};
+        D.s.forEach(function(i){map[i.phien]=i;});
+        newSessions.forEach(function(i){map[i.phien]=i;});
+        D.s=Object.values(map).sort(function(a,b){return parseInt(a.phien)-parseInt(b.phien)});
+        sv();
+        return true;
+    }catch(e){return false;}
+}
+
+// ===== DỰ ĐOÁN NÂNG CẤP =====
+function predict(s){
+    var n=s.length;if(n<5)return{pr:null,cf:0};
+    var r=s.map(function(x){return x.r}),t=s.map(function(x){return x.t}),dc=s.map(function(x){return x.dice||x.dc});
+    var lr=r[n-1],lt=t[n-1];
+    var sc={TAI:0,XIU:0};
+
+    // 1. CỰC TRỊ (99%)
+    if(lt>=17)return{pr:'TAI',cf:99};
+    if(lt<=4)return{pr:'XIU',cf:98};
+
+    // 2. CẦU 1-1 (đặc trưng bàn này - TĂNG MẠNH)
+    if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2]){sc[r[n-2]]+=40*D.w.c11;}
+
+    // 3. CẦU 2-1
+    if(n>=5&&r[n-1]===r[n-2]&&r[n-3]===r[n-5]&&r[n-1]!==r[n-3]){sc[r[n-3]]+=25*D.w.c21;}
+
+    // 4. CẦU 2-2
+    if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-4]&&r[n-1]!==r[n-3]){sc[r[n-3]]+=22*D.w.c22;}
+
+    // 5. BỆT (GIẢM - bàn này ít bệt dài)
+    var streak=1;for(var i=n-2;i>=0;i--){if(r[i]===lr)streak++;else break;}
+    if(streak>=6){sc[lr==='TAI'?'XIU':'TAI']+=30*D.w.bt;}
+    else if(streak>=4){sc[lr]+=15*D.w.bt;}
+    else if(streak>=2){sc[lr]+=6*D.w.bt;}
+    else{sc[lr==='TAI'?'XIU':'TAI']+=14*D.w.bt;} // Xen kẽ
+
+    // 6. XÍ NGẦU ĐỘC LẬP (3 viên × 6 mặt)
     for(var vi=0;vi<3;vi++){
-        var vals=[];
-        for(var ii=0;ii<n;ii++)vals.push(d[ii][vi]);
-        var vlen=vals.length;
-        var vlast=vals[vlen-1], vprev=vals[vlen-2]||vlast, vprev2=vals[vlen-3]||vprev;
-        
-        // Streak từng viên
-        var vstreak=1;
-        for(var j=vlen-2;j>=0;j--){if(vals[j]===vlast)vstreak++;else break;}
-        
-        // Big/Small
-        var big=vals.filter(function(x){return x>=4}).length;
-        var small=vlen-big;
-        
-        // Dự đoán giá trị tiếp theo
+        var vals=[];for(var ii=0;ii<n;ii++)vals.push(dc[ii][vi]);
+        var vlen=vals.length,vlast=vals[vlen-1],vprev=vals[vlen-2]||vlast,vprev2=vals[vlen-3]||vprev;
+        var big=vals.filter(function(x){return x>=4}).length,small=vlen-big;
+        var vstreak=1;for(var j=vlen-2;j>=0;j--){if(vals[j]===vlast)vstreak++;else break;}
+        // Tần suất 6 mặt
+        var freq={};for(var jj=0;jj<vlen;jj++)freq[vals[jj]]=(freq[vals[jj]]||0)+1;
+        var bestFace=1,maxF=0;for(var ff=1;ff<=6;ff++){if(freq[ff]>maxF){maxF=freq[ff];bestFace=ff;}}
         var nv=vlast;
         if(vstreak>=4){nv=vlast===6?5:vlast+1;}
         else if(vstreak>=3){nv=vlast;}
@@ -129,56 +133,80 @@ function predictNew(s){
         else if(vlast<vprev&&vprev<vprev2){nv=Math.max(1,vlast-1);}
         else{nv=big>small?Math.round(4+Math.random()):Math.round(2+Math.random());}
         nv=Math.max(1,Math.min(6,Math.round(nv)));
-        
-        if(nv>=4)sc.TAI+=4;else sc.XIU+=4;
+        if(nv>=4)sc.TAI+=5*D.w.xn;else sc.XIU+=5*D.w.xn;
     }
-    
-    // 3. CẦU 1-1 (T X T X) - Rất phổ biến trong dữ liệu
-    if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2]){
-        sc[r[n-2]]+=22;reasons.push('Cầu 1-1');
-    }
-    
-    // 4. CẦU 2-1 (T T X T T X)
-    if(n>=5&&r[n-1]===r[n-2]&&r[n-3]===r[n-5]&&r[n-1]!==r[n-3]){
-        sc[r[n-3]]+=16;reasons.push('Cầu 2-1');
-    }
-    
-    // 5. ĐIỂM CỰC TRỊ - Rất hiếm nhưng đúng
-    if(lt>=17){sc.TAI+=99;reasons.push('🔥Tổng≥17');}
-    if(lt<=4){sc.XIU+=98;reasons.push('🔥Tổng≤4');}
-    
-    // 6. TỔNG CAO/THẤP (11-13 thường theo TÀI, 8-10 thường XIU)
-    if(lt>=14&&lt<=16){sc.TAI+=14;reasons.push('Tổng cao');}
-    else if(lt>=5&&lt<=7){sc.XIU+=14;reasons.push('Tổng thấp');}
-    else if(lt>=11&&lt<=13){sc.TAI+=6;reasons.push('Điểm TÀI');}
-    else if(lt>=8&&lt<=10){sc.XIU+=6;reasons.push('Điểm XỈU');}
-    
-    // 7. XU HƯỚNG 6 PHIÊN GẦN
-    var l6=r.slice(-6),t6=l6.filter(function(x){return x==='TAI'}).length;
-    if(t6>=5){sc.XIU+=10;reasons.push(t6+'/6 TÀI→XỈU');}
-    else if(t6<=1){sc.TAI+=10;reasons.push((6-t6)+'/6 XỈU→TÀI');}
-    
-    // 8. PATTERN MATCHING 3 PHIÊN
-    if(n>=10){
-        var l3=r.slice(-3).join(''),mt=0,mx=0;
-        for(var i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}
-        if(mt+mx>=5){if(mt>mx){sc.TAI+=12;reasons.push('Pattern→TÀI');}else{sc.XIU+=12;reasons.push('Pattern→XỈU');}}
-    }
-    
+
+    // 7. ĐIỂM
+    if(lt>=14&&lt<=16)sc.TAI+=16*D.w.diem;
+    else if(lt>=5&&lt<=7)sc.XIU+=16*D.w.diem;
+    else if(lt>=11&&lt<=13)sc.TAI+=7*D.w.diem;
+    else if(lt>=8&&lt<=10)sc.XIU+=7*D.w.diem;
+
+    // 8. XU HƯỚNG 8 PHIÊN
+    var l8=r.slice(-8),t8=l8.filter(function(x){return x==='TAI'}).length;
+    if(t8>=6)sc.XIU+=14*D.w.xh;
+    else if(t8<=2)sc.TAI+=14*D.w.xh;
+
+    // 9. PATTERN 3
+    if(n>=10){var l3=r.slice(-3).join(''),mt=0,mx=0;for(var i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=5){if(mt>mx)sc.TAI+=14*D.w.pt;else sc.XIU+=14*D.w.pt;}}
+
+    // 10. CỰC TRỊ ĐIỂM (≥17/≤4 đã xử lý ở trên)
+
     var pr=sc.TAI>sc.XIU?'TAI':'XIU',tot=sc.TAI+sc.XIU;
-    return{pr:pr,cf:Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/tot*100))),rs:reasons.slice(0,3).join('|')};
+    return{pr:pr,cf:Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/tot*100)))};
 }
 
-async function up(){
-    var res=[];
-    for(var a of A){try{var r=await fetch(a,{signal:AbortSignal.timeout(4000)});var d=await r.json();
-    if(d?.phien&&d.xuc_xac_1!==undefined)res.push({p:String(d.phien),dc:[d.xuc_xac_1,d.xuc_xac_2,d.xuc_xac_3],t:d.tong,r:(d.ket_qua==='Tài'||d.ket_qua==='TAI')?'TAI':'XIU'});
-    if(d?.phien_hien_tai&&d.xuc_xac_1!==undefined)res.push({p:String(d.phien_hien_tai),dc:[d.xuc_xac_1,d.xuc_xac_2,d.xuc_xac_3],t:d.tong,r:(d.ket_qua==='Tài'||d.ket_qua==='TAI')?'TAI':'XIU'});
-    if(d?.Phien&&d.Xuc_xac_1!==undefined)res.push({p:String(d.Phien),dc:[d.Xuc_xac_1,d.Xuc_xac_2,d.Xuc_xac_3],t:d.Tong,r:d.Ket_qua==='Tài'?'TAI':'XIU'});}catch(e){}}
-    for(var i of res){if(!D.se.has(i.p)){D.se.add(i.p);if(D.lp&&D.s.length>0){var l=D.s[D.s.length-1];if(parseInt(i.p)===parseInt(l.p)+1){D.pr.push({p:i.p,pr:D.lp,ac:i.r,ok:D.lp===i.r});}}D.s.push(i);D.su+=i.t;i.r==='TAI'?D.t++:D.x++;}}
-    D.s.sort(function(a,b){return parseInt(a.p)-parseInt(b.p)});
-    if(D.s.length>=5){var p=predictNew(D.s);if(p.pr){D.lp=p.pr;document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';document.getElementById('pp').className='pp '+p.pr;document.getElementById('bi').textContent='AI '+p.cf+'%';}}
-    sv();if(document.getElementById('bm').classList.contains('show')&&document.getElementById('mainMenu').style.display!=='none')rm();
+// ===== TỰ ĐIỀU CHỈNH TRỌNG SỐ =====
+function adjustWeights(actual){
+    var s=D.s;
+    if(s.length<10)return;
+    var r=s.map(function(x){return x.r});
+    var n=s.length;
+
+    // Cầu 1-1
+    if(n>=4&&r[n-2]===r[n-4]&&r[n-3]===r[n-5]&&r[n-2]!==r[n-3]){
+        var pred11=r[n-3];if(pred11===actual)D.w.c11=Math.min(2,D.w.c11+0.05);else D.w.c11=Math.max(0.3,D.w.c11-0.05);
+    }
+    // Bệt
+    var streak=1;for(var i=n-2;i>=0;i--){if(r[i]===r[n-1])streak++;else break;}
+    var btPred=streak>=5?(r[n-1]==='TAI'?'XIU':'TAI'):r[n-1];
+    if(btPred===actual)D.w.bt=Math.min(2,D.w.bt+0.03);else D.w.bt=Math.max(0.3,D.w.bt-0.03);
+    // Xu hướng
+    var l8=r.slice(-8),t8=l8.filter(function(x){return x==='TAI'}).length;
+    var xhPred=t8>=6?'XIU':(t8<=2?'TAI':null);
+    if(xhPred){if(xhPred===actual)D.w.xh=Math.min(2,D.w.xh+0.03);else D.w.xh=Math.max(0.3,D.w.xh-0.03);}
+    // Pattern
+    if(n>=10){var l3=r.slice(-4,-
+1).join(''),mt=0,mx=0;for(var i=0;i<=n-5;i++){if(r.slice(i,i+4).join('')===l3){r[i+4]==='TAI'?mt++:mx++;}}if(mt+mx>=3){var ptPred=mt>mx?'TAI':'XIU';if(ptPred===actual)D.w.pt=Math.min(2,D.w.pt+0.03);else D.w.pt=Math.max(0.3,D.w.pt-0.03);}}
+    sv();
+}
+
+// ===== MAIN LOOP =====
+async function mainLoop(){
+    var loaded=await loadData();
+    if(!loaded){setTimeout(mainLoop,3000);return;}
+
+    var s=D.s,n=s.length;
+    if(n>=5){
+        var p=predict(s);
+        if(p.pr){
+            // Kiểm tra dự đoán cũ
+            if(D.lp&&n>=2){
+                var last=s[n-1];
+                if(parseInt(last.phien)===parseInt(D.lp)+1){
+                    D.pr.push({p:last.phien,pr:D.lp,ac:last.result,ok:D.lp===last.result});
+                    adjustWeights(last.result);
+                }
+            }
+            D.lp=p.pr;
+            document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';
+            document.getElementById('pp').className='pp '+p.pr;
+            document.getElementById('bi').textContent='AI '+p.cf+'% | 📦 '+n+' phien';
+        }
+    }
+    sv();
+    if(document.getElementById('bm').classList.contains('show')&&document.getElementById('mainMenu').style.display!=='none')rm();
+    setTimeout(mainLoop,3000);
 }
 
 function rm(){
@@ -190,7 +218,8 @@ function rm(){
     else tb.innerHTML=[...pr].reverse().slice(0,100).map(function(p){return'<tr><td>#'+p.p+'</td><td class="'+(p.pr==='TAI'?'T':'X')+'">'+p.pr+'</td><td class="'+(p.ac==='TAI'?'T':'X')+'">'+p.ac+'</td><td class="'+(p.ok?'ok':'no')+'">'+(p.ok?'✅':'❌')+'</td></tr>';}).join('');
 }
 
-checkKey();up();setInterval(up,3000);
+// ===== START =====
+checkKey();mainLoop();
 </script>
 </body>
 </html>
