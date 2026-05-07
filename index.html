@@ -13,7 +13,18 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
 #gf{position:fixed;inset:0;width:100%;height:100%;border:none;z-index:1}
-.bw{position:fixed;right:8px;top:100px;z-index:999999;display:flex;flex-direction:column;align-items:center;cursor:grab}
+
+.bw{
+position:fixed;
+right:8px;
+top:100px;
+z-index:999999;
+display:flex;
+flex-direction:column;
+align-items:center;
+cursor:grab
+}
+
 .bw:active{cursor:grabbing}
 
 .bot-tip{
@@ -26,11 +37,18 @@ text-align:center;
 backdrop-filter:blur(8px)
 }
 
-.pp{font-size:1.2em;font-weight:900}
+.pp{
+font-size:1.2em;
+font-weight:900
+}
+
 .pp.TAI{color:#ff4d4d}
 .pp.XIU{color:#33ff88}
 
-.bi{font-size:.72em;color:#bbb}
+.bi{
+font-size:.72em;
+color:#bbb
+}
 
 .bot-wrap{
 position:relative;
@@ -80,7 +98,9 @@ text-align:center;
 font-size:.65em
 }
 
-.bm.show{display:block!important}
+.bm.show{
+display:block!important
+}
 
 .bm h3{
 color:#ffd700;
@@ -96,10 +116,12 @@ color:#888;
 font-size:.75em
 }
 
-.st b{color:#ffd700}
+.st b{
+color:#ffd700
+}
 
 .scroll-box{
-max-height:200px;
+max-height:220px;
 overflow-y:auto
 }
 
@@ -122,10 +144,23 @@ border-bottom:1px solid rgba(255,255,255,.04);
 text-align:center
 }
 
-.T{color:#ff4d4d;font-weight:bold}
-.X{color:#33ff88;font-weight:bold}
-.ok{color:#33ff88}
-.no{color:#ff4d4d}
+.T{
+color:#ff4d4d;
+font-weight:bold
+}
+
+.X{
+color:#33ff88;
+font-weight:bold
+}
+
+.ok{
+color:#33ff88
+}
+
+.no{
+color:#ff4d4d
+}
 </style>
 </head>
 
@@ -166,8 +201,13 @@ var bm=document.getElementById('bm');
 bm.classList.toggle('show');
 
 if(bm.classList.contains('show')){
+
 renderMenu();
+
+setTimeout(function(){
 rm();
+},100);
+
 }
 
 });
@@ -178,11 +218,12 @@ const DATA_SERVER='https://isa-accomplish-fork-capitol.trycloudflare.com';
 let did=localStorage.getItem('pd')||'';
 
 if(!did){
-did='d'+Math.random().toString(36).substr(2,9);
-localStorage.setItem('pd',did);
-}
 
-let authState='main';
+did='d'+Math.random().toString(36).substr(2,9);
+
+localStorage.setItem('pd',did);
+
+}
 
 // MENU
 function renderMenu(){
@@ -195,11 +236,11 @@ mc.innerHTML=
 '<span>Tổng: <b id="mt">0</b></span>'+
 '<span>✅: <b id="md" style="color:#33ff88">0</b></span>'+
 '<span>❌: <b id="ms" style="color:#ff4d4d">0</b></span>'+
-'<span>🎯: <b id="ma">--%</b></span>'+
+'<span>🎯: <b id="ma">0%</b></span>'+
 '</div>'+
 
 '<div style="margin-bottom:6px;color:#ffd700;font-size:.75em">'+
-'📚 AI Học Cầu Theo Toàn Bộ Phiên'+
+'📚 AI Học Cầu Toàn Bộ Phiên'+
 '</div>'+
 
 '<div class="scroll-box">'+
@@ -207,7 +248,7 @@ mc.innerHTML=
 '<thead>'+
 '<tr>'+
 '<th>#</th>'+
-'<th>Dự đoán</th>'+
+'<th>Dự</th>'+
 '<th>KQ</th>'+
 '<th>TT</th>'+
 '</tr>'+
@@ -218,18 +259,6 @@ mc.innerHTML=
 '</table>'+
 '</div>';
 
-document.getElementById('bpDiv').style.display='block';
-
-}
-
-function checkKey(){}
-function showKeyInput(){}
-function showMain(){}
-async function verifyKey(){}
-async function autoLogin(){}
-
-function showMainMenu(){
-renderMenu();
 }
 
 // DRAG
@@ -263,7 +292,9 @@ bw.style.right='auto';
 });
 
 document.addEventListener('pointerup',function(){
+
 dg=!1;
+
 });
 
 // DATA
@@ -298,10 +329,12 @@ try{
 localStorage.setItem('psv44',
 
 JSON.stringify({
+
 s:D.s.slice(-50000),
 pr:D.pr.slice(-5000),
 lp:D.lp,
 lastPhien:D.lastPhien
+
 })
 
 );
@@ -323,15 +356,21 @@ var ns=d.sessions||[];
 var map={};
 
 D.s.forEach(function(i){
+
 map[i.phien]=i;
+
 });
 
 ns.forEach(function(i){
+
 map[i.phien]=i;
+
 });
 
 D.s=Object.values(map).sort(function(a,b){
+
 return parseInt(a.phien)-parseInt(b.phien);
+
 });
 
 sv();
@@ -351,17 +390,25 @@ function predict(s){
 
 var n=s.length;
 
-if(n<10)return{
+if(n<10){
+
+return{
 pr:null,
 cf:50
 };
 
+}
+
 var r=s.map(function(x){
-return x.r;
+
+return x.result||x.r;
+
 });
 
 var dc=s.map(function(x){
+
 return x.dice||x.dc;
+
 });
 
 var score={
@@ -369,8 +416,8 @@ TAI:0,
 XIU:0
 };
 
-// HỌC TOÀN BỘ PHIÊN
-for(var size=3;size<=10;size++){
+// HỌC PATTERN TOÀN BỘ PHIÊN
+for(var size=3;size<=12;size++){
 
 if(n<=size)continue;
 
@@ -387,8 +434,11 @@ if(p===pattern){
 
 var next=r[i+size];
 
-if(next==='TAI')tai++;
-else xiu++;
+if(next==='TAI'){
+tai++;
+}else{
+xiu++;
+}
 
 }
 
@@ -396,51 +446,16 @@ else xiu++;
 
 if(tai+xiu>0){
 
+var total=tai+xiu;
+
 if(tai>xiu){
 
-score.TAI+=(tai/(tai+xiu))*size*4;
+score.TAI+=(tai/total)*size*5;
 
 }else{
 
-score.XIU+=(xiu/(tai+xiu))*size*4;
+score.XIU+=(xiu/total)*size*5;
 
-}
-
-}
-
-}
-
-// HỌC XÍ NGẦU
-for(var d=0;d<3;d++){
-
-var arr=[];
-
-for(var i=0;i<n;i++){
-arr.push(dc[i][d]);
-}
-
-var last=arr[arr.length-1];
-
-var high=arr.filter(function(v){
-return v>=4;
-}).length;
-
-var low=arr.length-high;
-
-if(high>low){
-
-if(last>=4){
-score.XIU+=8;
-}else{
-score.TAI+=8;
-}
-
-}else{
-
-if(last<=3){
-score.TAI+=8;
-}else{
-score.XIU+=8;
 }
 
 }
@@ -455,20 +470,24 @@ var streak=1;
 for(var i=n-2;i>=0;i--){
 
 if(r[i]===last){
+
 streak++;
+
 }else{
+
 break;
+
 }
 
 }
 
 if(streak>=4){
 
-score[last==='TAI'?'XIU':'TAI']+=18;
+score[last==='TAI'?'XIU':'TAI']+=25;
 
 }else if(streak===3){
 
-score[last==='TAI'?'XIU':'TAI']+=12;
+score[last==='TAI'?'XIU':'TAI']+=15;
 
 }else if(streak===2){
 
@@ -478,17 +497,70 @@ score[last]+=8;
 
 // HỌC CẦU 1-1
 if(
+
 r[n-1]===r[n-3] &&
 r[n-2]===r[n-4] &&
 r[n-1]!==r[n-2]
+
 ){
 
-score[r[n-2]]+=16;
+score[r[n-2]]+=20;
+
+}
+
+// HỌC XÍ NGẦU
+for(var d=0;d<3;d++){
+
+var arr=[];
+
+for(var i=0;i<n;i++){
+
+arr.push(dc[i][d]);
+
+}
+
+var high=arr.filter(function(v){
+
+return v>=4;
+
+}).length;
+
+var low=arr.length-high;
+
+var lastDice=arr[arr.length-1];
+
+if(high>low){
+
+if(lastDice>=4){
+
+score.XIU+=10;
+
+}else{
+
+score.TAI+=10;
+
+}
+
+}else{
+
+if(lastDice<=3){
+
+score.TAI+=10;
+
+}else{
+
+score.XIU+=10;
+
+}
+
+}
 
 }
 
 // KẾT QUẢ
-var pr=score.TAI>score.XIU?'TAI':'XIU';
+var pr=score.TAI>score.XIU
+?'TAI'
+:'XIU';
 
 var max=Math.max(score.TAI,score.XIU);
 
@@ -496,11 +568,14 @@ var total=score.TAI+score.XIU;
 
 var cf=Math.round((max/total)*100);
 
-cf=Math.max(52,Math.min(92,cf));
+// CHỐNG % ẢO
+cf=Math.max(52,Math.min(88,cf));
 
 return{
+
 pr:pr,
 cf:cf
+
 };
 
 }
@@ -516,32 +591,72 @@ var n=s.length;
 
 if(n>=10){
 
+var current=s[n-1];
+
+// CHẤM ĐÚNG SAI
+if(
+
+D.lp &&
+D.lastPhien &&
+current.phien!=D.lastPhien
+
+){
+
+var real=current.result||current.r;
+
+D.pr.push({
+
+p:current.phien,
+pr:D.lp,
+ac:real,
+ok:D.lp===real
+
+});
+
+if(D.pr.length>5000){
+
+D.pr=D.pr.slice(-5000);
+
+}
+
+}
+
+// AI HỌC TOÀN BỘ PHIÊN
 var p=predict(s);
 
 if(p.pr){
-
-var current=s[n-1];
-
-if(
-D.lp &&
-D.lastPhien &&
-current.phien!==D.lastPhien
-){
-
-D.pr.push({
-p:current.phien,
-pr:D.lp,
-ac:current.result,
-ok:D.lp===current.result
-});
-
-}
 
 D.lp=p.pr;
 
 D.lastPhien=current.phien;
 
+// WINRATE THẬT
+var total=D.pr.length;
+
+var win=D.pr.filter(function(i){
+
+return i.ok;
+
+}).length;
+
+var realRate=total>0
+?Math.round((win/total)*100)
+:50;
+
+// % THẬT
+var finalCf=Math.round(
+(p.cf*0.4)+(realRate*0.6)
+);
+
+// CHỐNG ẢO
+finalCf=Math.max(
+45,
+Math.min(88,finalCf)
+);
+
+// HIỂN THỊ
 document.getElementById('pp').textContent=
+
 p.pr==='TAI'
 ?'🔴 TÀI'
 :'🟢 XỈU';
@@ -549,9 +664,11 @@ p.pr==='TAI'
 document.getElementById('pp').className='pp '+p.pr;
 
 document.getElementById('bi').textContent=
-'AI '+p.cf+
-'% | 📚 Học '+n+
-' phiên';
+
+'🎯 '+finalCf+
+'% | ✅ '+win+
+'/'+total+
+' | 📚 '+n+' phiên';
 
 }
 
@@ -565,16 +682,24 @@ setTimeout(mainLoop,3000);
 
 }
 
-// RENDER MENU
+// MENU ĐÚNG SAI
 function rm(){
 
-var pr=D.pr;
+var pr=D.pr||[];
 
 var tp=pr.length;
 
 var cp=pr.filter(function(p){
+
 return p.ok;
+
 }).length;
+
+var xp=tp-cp;
+
+var rate=tp>0
+?Math.round((cp/tp)*100)
+:0;
 
 try{
 
@@ -582,12 +707,10 @@ document.getElementById('mt').textContent=tp;
 
 document.getElementById('md').textContent=cp;
 
-document.getElementById('ms').textContent=tp-cp;
+document.getElementById('ms').textContent=xp;
 
 document.getElementById('ma').textContent=
-tp>0
-?Math.round(cp/tp*100)+'%'
-:'--%';
+rate+'%';
 
 }catch(e){}
 
@@ -595,32 +718,48 @@ var tb=document.getElementById('mtb');
 
 if(!tb)return;
 
-if(pr.length===0){
+if(tp<=0){
 
-tb.innerHTML='<tr><td colspan="4">Chưa có</td></tr>';
+tb.innerHTML=
+'<tr><td colspan="4">Chưa có dữ liệu</td></tr>';
 
-}else{
+return;
 
-tb.innerHTML=[...pr]
+}
+
+tb.innerHTML=pr
+.slice()
 .reverse()
 .slice(0,100)
 .map(function(p){
 
-return '<tr>'+
-'<td>#'+p.p+'</td>'+
-'<td class="'+(p.pr==='TAI'?'T':'X')+'">'+p.pr+'</td>'+
-'<td class="'+(p.ac==='TAI'?'T':'X')+'">'+p.ac+'</td>'+
-'<td class="'+(p.ok?'ok':'no')+'">'+(p.ok?'✅':'❌')+'</td>'+
-'</tr>';
+return `
+<tr>
+
+<td>#${p.p}</td>
+
+<td class="${p.pr==='TAI'?'T':'X'}">
+${p.pr}
+</td>
+
+<td class="${p.ac==='TAI'?'T':'X'}">
+${p.ac}
+</td>
+
+<td class="${p.ok?'ok':'no'}">
+${p.ok?'✅':'❌'}
+</td>
+
+</tr>
+`;
 
 }).join('');
 
 }
 
-}
-
 // START
 renderMenu();
+
 mainLoop();
 
 </script>
