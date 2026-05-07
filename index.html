@@ -10,34 +10,52 @@
     <meta name="theme-color" content="#000a0f">
     <title>👑 PHUC SIX HEX</title>
     <style>
-        :root{--cyan:#00fff2;--tai:#ff4d4d;--xiu:#33ff88;--bg:#000a0f;--card:#0a1520}
+        :root{--cyan:#00fff2;--tai:#ff4d4d;--xiu:#33ff88;--bg:#000a0f;--card:#0a1520;--gold:#ffd700}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);height:100vh;overflow:hidden;font-family:Arial;color:#fff}
+        body{background:var(--bg);height:100vh;overflow:hidden;font-family:'Segoe UI',Arial;color:#fff}
         #gf{position:fixed;inset:0;width:100%;height:100%;border:none;z-index:1}
-        .bw{position:fixed;right:10px;top:100px;z-index:999999;display:flex;flex-direction:column;align-items:center;cursor:grab}
+        
+        .bw{position:fixed;right:10px;top:80px;z-index:999999;display:flex;align-items:flex-start;gap:8px;cursor:grab;user-select:none}
         .bw:active{cursor:grabbing}
-        .bot-tip{background:rgba(0,20,30,.92);border:1px solid var(--cyan);border-radius:12px;padding:6px 12px;margin-bottom:6px;text-align:center}
-        .pp{font-size:1.2em;font-weight:900}.pp.TAI{color:var(--tai)}.pp.XIU{color:var(--xiu)}
-        .bi{font-size:.72em;color:#bbb}
-        .bot-wrap{width:105px;height:105px;display:flex;align-items:center;justify-content:center}
-        .bot-wrap::before{content:'';position:absolute;inset:-15px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,242,.4),transparent 70%);filter:blur(14px);animation:glow 2s infinite}
-        .bot-img{width:100px;height:100px;z-index:2}
+        
+        .bot-col{display:flex;flex-direction:column;align-items:center;gap:4px}
+        .bot-wrap{width:90px;height:90px;display:flex;align-items:center;justify-content:center;position:relative}
+        .bot-wrap::before{content:'';position:absolute;inset:-12px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,242,.4),transparent 70%);filter:blur(12px);animation:glow 2s infinite}
+        .bot-img{width:80px;height:80px;z-index:2;filter:drop-shadow(0 0 12px rgba(0,255,242,.6))}
         @keyframes glow{0%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:.6}}
-        .bm{background:var(--card);border:2px solid var(--cyan);border-radius:14px;padding:10px;width:320px;display:none;margin-top:8px;text-align:center;font-size:.65em}
-        .bm.show{display:block!important}
-        .bm h3{color:#ffd700;font-size:.9em;margin-bottom:6px}
+        .bot-tip{background:rgba(0,20,30,.92);border:1px solid var(--cyan);border-radius:10px;padding:4px 10px;text-align:center;font-size:.6em}
+        .pp{font-size:1.3em;font-weight:900}.pp.TAI{color:var(--tai)}.pp.XIU{color:var(--xiu)}
+        .bi{font-size:.7em;color:#bbb}
+        
+        .panel{background:var(--card);border:1px solid rgba(0,255,242,.3);border-radius:12px;padding:10px;width:280px;display:none;font-size:.6em;max-height:450px;overflow-y:auto}
+        .panel.show{display:block}
+        .panel h3{color:#ffd700;font-size:.9em;margin-bottom:6px;text-align:center}
         .st{display:flex;justify-content:space-around;margin-bottom:6px;color:#888;font-size:.75em}
         .st b{color:#ffd700}
-        .scroll-box{max-height:200px;overflow-y:auto}
-        table{width:100%;font-size:.9em;border-collapse:collapse;margin-top:4px}
-        th{background:rgba(255,255,255,.05);padding:4px 2px;color:#888}
-        td{padding:4px 2px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
+        
+        .dice-row{display:flex;align-items:center;gap:4px;margin:3px 0;font-size:.7em}
+        .dice-label{width:60px;color:#888}
+        .dice-bar{flex:1;height:8px;background:#111;border-radius:4px;overflow:hidden;display:flex}
+        .dice-seg{height:100%}
+        .dice-seg.high{background:var(--tai)}.dice-seg.low{background:var(--xiu)}
+        .dice-val{width:25px;text-align:center;font-weight:900}
+        
+        .history-chain{display:flex;gap:3px;flex-wrap:wrap;margin:4px 0}
+        .chain-dot{width:16px;height:16px;border-radius:50%;font-size:.5em;display:flex;align-items:center;justify-content:center;font-weight:900}
+        .chain-dot.T{background:var(--tai)}.chain-dot.X{background:var(--xiu)}
+        
+        table{width:100%;font-size:.8em;border-collapse:collapse;margin-top:4px}
+        th{background:rgba(255,255,255,.05);padding:3px 1px;color:#888}
+        td{padding:3px 1px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
         .T{color:var(--tai);font-weight:bold}.X{color:var(--xiu);font-weight:bold}
         .ok{color:var(--xiu)}.no{color:var(--tai)}
-        .win-lose-overlay{position:fixed;inset:0;z-index:999999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.85);font-size:3em;font-weight:900}
+        
+        .win-lose-overlay{position:fixed;inset:0;z-index:999999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.85);font-size:2.5em;font-weight:900}
         .win-lose-overlay.show{display:flex}
         .win-lose-overlay.win{color:var(--xiu);text-shadow:0 0 30px var(--xiu)}
         .win-lose-overlay.lose{color:var(--tai);text-shadow:0 0 30px var(--tai)}
+        
+        @media screen and (orientation:landscape){.panel{max-height:60vh}}
     </style>
 </head>
 <body>
@@ -46,31 +64,40 @@
 <div class="win-lose-overlay" id="winLoseOverlay"></div>
 
 <div class="bw" id="bw">
-    <div class="bot-tip"><div class="pp" id="pp">--</div><div class="bi" id="bi">READY</div></div>
-    <div class="bot-wrap" id="botBtn"><img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img"></div>
-    <div class="bm" id="bm">
+    <div class="bot-col">
+        <div class="bot-tip"><div class="pp" id="pp">--</div><div class="bi" id="bi">READY</div></div>
+        <div class="bot-wrap" id="botBtn"><img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img"></div>
+    </div>
+    <div class="panel" id="panel">
         <h3>👑 PHUC SIX HEX</h3>
         <div class="st"><span>✅ <b id="w" style="color:var(--xiu)">0</b></span><span>❌ <b id="l" style="color:var(--tai)">0</b></span><span>WR <b id="r">0%</b></span></div>
-        <div class="scroll-box"><table><thead><tr><th>#</th><th>Dự</th><th>KQ</th><th></th></tr></thead><tbody id="tb"><tr><td colspan="4">Đang tải...</td></tr></tbody></table></div>
+        
+        <div style="color:#ffd700;font-size:.75em;margin-bottom:4px">📊 20 PHIÊN GẦN NHẤT</div>
+        <div class="history-chain" id="historyChain"></div>
+        
+        <div style="color:#ffd700;font-size:.75em;margin:6px 0 4px">🎲 PHÂN TÍCH XÍ NGẦU</div>
+        <div id="diceAnalysis"></div>
+        
+        <div style="color:#ffd700;font-size:.75em;margin:6px 0 4px">📋 LỊCH SỬ</div>
+        <table><thead><tr><th>#</th><th>Dự</th><th>KQ</th><th></th></tr></thead><tbody id="tb"><tr><td colspan="4">Đang tải...</td></tr></tbody></table>
     </div>
 </div>
 
 <script>
 const DATA_SERVER='https://isa-accomplish-fork-capitol.trycloudflare.com';
-const FETCH_INTERVAL=3000; // Check phiên mới mỗi 3 giây
-const WIN_LOSE_DURATION=5000; // Hiện Win/Lose 5 giây
+const FETCH_INTERVAL=3000;
+const WIN_LOSE_DURATION=5000;
 
 // CLICK + DRAG
-document.getElementById('botBtn').onclick=function(e){e.stopPropagation();document.getElementById('bm').classList.toggle('show');};
+document.getElementById('botBtn').onclick=function(e){e.stopPropagation();document.getElementById('panel').classList.toggle('show');};
 var bw=document.getElementById('bw'),dg=!1,sx,sy,sl,st;
-bw.addEventListener('pointerdown',function(e){if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop;bw.setPointerCapture(e.pointerId)});
+bw.addEventListener('pointerdown',function(e){if(e.target.closest('.panel'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop;bw.setPointerCapture(e.pointerId)});
 document.addEventListener('pointermove',function(e){if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px';bw.style.right='auto'});
 document.addEventListener('pointerup',function(){dg=!1});
 
-// DATA
 let D={sessions:[],predictions:[],lastPred:null,lastPhien:null,isShowingWinLose:false};
-try{let c=localStorage.getItem('psv_hex2');if(c)D=JSON.parse(c);}catch(e){}
-function save(){localStorage.setItem('psv_hex2',JSON.stringify(D));}
+try{let c=localStorage.getItem('psv_hex3');if(c)D=JSON.parse(c);}catch(e){}
+function save(){localStorage.setItem('psv_hex3',JSON.stringify(D));}
 
 async function fetchLast20(){
     try{let r=await fetch(DATA_SERVER+'/api/history');let d=await r.json();let all=d.sessions||[];all.sort((a,b)=>parseInt(a.phien)-parseInt(b.phien));D.sessions=all.slice(-20);save();return true;}catch(e){return false;}
@@ -97,6 +124,31 @@ const ALGOS=[algo1,algo2,algo3,algo4,algo5,algo6,algo7,algo8,algo9,algo10,algo11
 
 function analyzeHex(hex){let v={T:0,X:0};for(let a of ALGOS){a(hex)==='T'?v.T++:v.X++;}let t=v.T+v.X;let p=v.T>v.X?'TAI':'XIU';let c=Math.round((Math.max(v.T,v.X)/t)*100);return{pred:p,confidence:Math.max(52,Math.min(68,c))};}
 
+function analyzeDice(sessions){
+    let html='';
+    for(let vi=0;vi<3;vi++){
+        let vals=sessions.map(s=>(s.dice||s.dc)[vi]);
+        let last=vals[vals.length-1];
+        let high=vals.filter(v=>v>=4).length;
+        let low=vals.length-high;
+        let nextPred='';
+        if(high>low*1.3)nextPred='CAO';
+        else if(low>high*1.3)nextPred='THẤP';
+        else nextPred=last>=4?'CAO':'THẤP';
+        
+        html+=`<div class="dice-row">
+            <span class="dice-label">Xí ngầu ${vi+1}</span>
+            <div class="dice-bar">
+                <div class="dice-seg high" style="width:${(high/vals.length)*100}%"></div>
+                <div class="dice-seg low" style="width:${(low/vals.length)*100}%"></div>
+            </div>
+            <span class="dice-val" style="color:${last>=4?'var(--tai)':'var(--xiu)'}">${last}</span>
+            <span style="font-size:.7em;color:#888">→${nextPred}</span>
+        </div>`;
+    }
+    return html;
+}
+
 function showWinLose(isWin){
     let o=document.getElementById('winLoseOverlay');
     o.textContent=isWin?'★ VICTORY ★':'✖ LOSE ✖';
@@ -106,8 +158,7 @@ function showWinLose(isWin){
 }
 
 async function mainLoop(){
-    if(D.isShowingWinLose){setTimeout(mainLoop,1000);return;} // Đợi Win/Lose hiện xong
-
+    if(D.isShowingWinLose){setTimeout(mainLoop,1000);return;}
     await fetchLast20();
     let s=D.sessions;
     if(s.length<3){setTimeout(mainLoop,FETCH_INTERVAL);return;}
@@ -115,11 +166,8 @@ async function mainLoop(){
     let last=s[s.length-1];
     let dice=last.dice||last.dc;
     let hex=createDiceHex(dice);
-
-    // Phân tích
     let result=analyzeHex(hex);
 
-    // Check kết quả thực tế
     if(D.lastPred && D.lastPhien && last.phien!==D.lastPhien){
         let real=last.result||last.r;
         let isWin=D.lastPred===real;
@@ -129,12 +177,19 @@ async function mainLoop(){
         showWinLose(isWin);
     }
 
-    // Cập nhật dự đoán
     D.lastPred=result.pred;
     D.lastPhien=last.phien;
     document.getElementById('pp').textContent=result.pred==='TAI'?'🔴 TÀI':'🟢 XỈU';
     document.getElementById('pp').className='pp '+result.pred;
-    document.getElementById('bi').textContent=result.confidence+'% | 📦 '+s.length+' phiên';
+    document.getElementById('bi').textContent=result.confidence+'% | 📦 '+s.length;
+
+    // History chain
+    let chain='';
+    for(let i=0;i<s.length;i++){let r=s[i].result||s[i].r;chain+=`<div class="chain-dot ${r==='TAI'?'T':'X'}">${r==='TAI'?'T':'X'}</div>`;}
+    document.getElementById('historyChain').innerHTML=chain;
+
+    // Dice analysis
+    document.getElementById('diceAnalysis').innerHTML=analyzeDice(s);
 
     updateMenu();
     save();
@@ -145,7 +200,7 @@ function updateMenu(){
     let p=D.predictions,w=p.filter(x=>x.ok).length,t=p.length;
     document.getElementById('w').textContent=w;document.getElementById('l').textContent=t-w;document.getElementById('r').textContent=t?Math.round(w/t*100)+'%':'0%';
     let tb=document.getElementById('tb');if(!p.length){tb.innerHTML='<tr><td colspan="4">Chưa có</td></tr>';return;}
-    tb.innerHTML=p.slice(-50).reverse().map(x=>`<tr><td>#${x.phien}</td><td class="${x.pred==='TAI'?'T':'X'}">${x.pred}</td><td class="${x.actual==='TAI'?'T':'X'}">${x.actual}</td><td class="${x.ok?'ok':'no'}">${x.ok?'✔':'✖'}</td></tr>`).join('');
+    tb.innerHTML=p.slice(-30).reverse().map(x=>`<tr><td>#${x.phien}</td><td class="${x.pred==='TAI'?'T':'X'}">${x.pred}</td><td class="${x.actual==='TAI'?'T':'X'}">${x.actual}</td><td class="${x.ok?'ok':'no'}">${x.ok?'✔':'✖'}</td></tr>`).join('');
 }
 
 mainLoop();
