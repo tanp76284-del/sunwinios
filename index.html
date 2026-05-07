@@ -49,38 +49,55 @@
     </div>
 </div>
 <script>
-// ==================== CLICK BOT ====================
-document.getElementById('botBtn').addEventListener('click', function(e){
+// CLICK BOT
+document.getElementById('botBtn').addEventListener('click',function(e){
     e.stopPropagation();
-    var bm = document.getElementById('bm');
-    if(bm.classList.contains('show')){bm.classList.remove('show');}
-    else{bm.classList.add('show');renderMenu();checkKey();if(authState==='main')rm();}
+    var bm=document.getElementById('bm');
+    bm.classList.toggle('show');
+    if(bm.classList.contains('show')){renderMenu();checkKey();if(authState==='main')rm();}
 });
 
-// ==================== CONFIG ====================
+// CONFIG
 const DATA_SERVER='https://isa-accomplish-fork-capitol.trycloudflare.com';
 const KS='https://charts-merit-irc-abilities.trycloudflare.com';
 const AK='phuctoolnetad';
 let did=localStorage.getItem('pd')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('pd',did);}
 let authState='key';
 
-// ==================== MENU ====================
+// MENU
 function renderMenu(){
     var mc=document.getElementById('menuContent');
-    if(authState==='key'){
-        mc.innerHTML='<div class="key-box"><p style="color:#888;font-size:.8em">Nhập key</p><input type="text" id="keyInput" placeholder="Nhập key..." maxlength="20"><button id="keyBtn">🔓 MỞ KHÓA</button><p class="msg" id="keyMsg"></p></div>';
-        setTimeout(function(){var kb=document.getElementById('keyBtn');if(kb)kb.addEventListener('click',function(e){e.stopPropagation();verifyKey();});},100);
-    }else{
-        mc.innerHTML='<div class="st"><span>Tổng: <b id="mt">0</b></span><span>✅: <b id="md" style="color:#33ff88">0</b></span><span>❌: <b id="ms" style="color:#ff4d4d">0</b></span><span>🎯: <b id="ma">--%</b></span></div><div class="scroll-box"><table><thead><tr><th>#</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead><tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody></table></div>';
-    }
+    // LUÔN HIỆN Ô NHẬP KEY TRƯỚC - KỂ CẢ ADMIN
+    mc.innerHTML='<div class="key-box"><p style="color:#888;font-size:.8em">Nhập key</p><input type="text" id="keyInput" placeholder="Nhập key..." maxlength="20"><button id="keyBtn">🔓 MỞ KHÓA</button><p class="msg" id="keyMsg"></p></div>';
+    setTimeout(function(){
+        var kb=document.getElementById('keyBtn');if(kb)kb.addEventListener('click',function(e){e.stopPropagation();verifyKey();});
+        // Tự động kiểm tra nếu đã có key
+        autoLogin();
+    },200);
 }
 
-// ==================== KEY (FIX ADMIN) ====================
+// TỰ ĐỘNG ĐĂNG NHẬP NẾU ĐÃ CÓ KEY
+async function autoLogin(){
+    var sk=localStorage.getItem('pk');
+    if(!sk)return;
+    // Admin key
+    if(sk===AK){authState='main';showMainMenu();return;}
+    // Key thường
+    try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(sk)+'&device='+encodeURIComponent(did));var d=await r.json();
+        if(d.valid){authState='main';showMainMenu();}
+    }catch(e){}
+}
+
+function showMainMenu(){
+    var mc=document.getElementById('menuContent');
+    mc.innerHTML='<div class="st"><span>Tổng: <b id="mt">0</b></span><span>✅: <b id="md" style="color:#33ff88">0</b></span><span>❌: <b id="ms" style="color:#ff4d4d">0</b></span><span>🎯: <b id="ma">--%</b></span></div><div class="scroll-box"><table><thead><tr><th>#</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead><tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody></table></div>';
+    document.getElementById('bpDiv').style.display='block';
+    rm();
+}
+
 async function checkKey(){
     var sk=localStorage.getItem('pk');
-    if(sk===AK){authState='main';renderMenu();showMain();return;}
-    if(sk){try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(sk)+'&device='+encodeURIComponent(did));var d=await r.json();if(d.valid){authState='main';renderMenu();showMain();return;}}catch(e){}}
-    authState='key';renderMenu();showKeyInput();
+    if(sk){autoLogin();}
 }
 function showKeyInput(){document.getElementById('bpDiv').style.display='none';}
 function showMain(){document.getElementById('bpDiv').style.display='block';}
@@ -88,23 +105,23 @@ function showMain(){document.getElementById('bpDiv').style.display='block';}
 async function verifyKey(){
     var k=document.getElementById('keyInput').value.trim();var m=document.getElementById('keyMsg');m.className='msg';m.textContent='';
     if(!k||k.length<7){m.className='msg e';m.textContent='❌ Key phải đủ 7 ký tự!';return;}
-    if(k===AK){localStorage.setItem('pk',k);authState='main';renderMenu();showMain();return;}
+    if(k===AK){localStorage.setItem('pk',k);authState='main';showMainMenu();return;}
     try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(k)+'&device='+encodeURIComponent(did));var d=await r.json();
-        if(d.valid){localStorage.setItem('pk',k);authState='main';renderMenu();showMain();}
+        if(d.valid){localStorage.setItem('pk',k);authState='main';showMainMenu();}
         else{m.className='msg e';m.textContent='❌ '+(d.msg||'Key không hợp lệ!');}
     }catch(e){m.className='msg e';m.textContent='❌ Không kết nối server!';}
 }
 
-// ==================== DRAG ====================
+// DRAG
 var bw=document.getElementById('bw'),dg=!1,sx,sy,sl,st;
 bw.addEventListener('pointerdown',function(e){if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop;bw.setPointerCapture(e.pointerId)});
 document.addEventListener('pointermove',function(e){if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px';bw.style.right='auto'});
 document.addEventListener('pointerup',function(){dg=!1});
 
-// ==================== DATA ====================
+// DATA
 var D={s:[],pr:[],lp:''};
-try{var r=localStorage.getItem('psv43');if(r){var p=JSON.parse(r);D.s=p.s||[];D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psv43',JSON.stringify({s:D.s.slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+try{var r=localStorage.getItem('psv44');if(r){var p=JSON.parse(r);D.s=p.s||[];D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psv44',JSON.stringify({s:D.s.slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
 
 async function loadData(){
     try{var r=await fetch(DATA_SERVER+'/api/history');var d=await r.json();var ns=d.sessions||[];
@@ -113,45 +130,52 @@ async function loadData(){
     }catch(e){return false;}
 }
 
-// ==================== DỰ ĐOÁN CÂN BẰNG ====================
+// DỰ ĐOÁN CÂN BẰNG TUYỆT ĐỐI
 function predict(s){
     var n=s.length;if(n<5)return{pr:null,cf:50};
     var r=s.map(function(x){return x.r}),t=s.map(function(x){return x.t}),dc=s.map(function(x){return x.dice||x.dc});
     var lr=r[n-1],lt=t[n-1],sc={TAI:0,XIU:0};
-    if(lt>=17)return{pr:'TAI',cf:70};if(lt<=4)return{pr:'XIU',cf:70};
+    if(lt>=17)return{pr:'TAI',cf:68};if(lt<=4)return{pr:'XIU',cf:68};
 
-    // Xí ngầu độc lập (quan trọng nhất)
+    // Xí ngầu - yếu tố QUAN TRỌNG NHẤT
+    var diceScore={TAI:0,XIU:0};
     for(var vi=0;vi<3;vi++){
         var vals=[];for(var ii=0;ii<n;ii++)vals.push(dc[ii][vi]);
         var vlen=vals.length,vlast=vals[vlen-1],vprev=vals[vlen-2]||vlast,vprev2=vals[vlen-3]||vprev;
         var big=vals.filter(function(x){return x>=4}).length;
-        var vstreak=1;for(var j=vlen-2;j>=0;j--){if(vals[j]===vlast)vstreak++;else break;}
         var nv=vlast;
-        if(vstreak>=5)nv=vlast===6?5:vlast+1;else if(vstreak>=3)nv=vlast;
-        else if(vlast>vprev&&vprev>vprev2)nv=Math.min(6,vlast+1);else if(vlast<vprev&&vprev<vprev2)nv=Math.max(1,vlast-1);
-        else nv=big>vlen/2?Math.round(4.5):Math.round(2.5);
+        if(vlast>vprev&&vprev>vprev2)nv=Math.min(6,vlast+1);else if(vlast<vprev&&vprev<vprev2)nv=Math.max(1,vlast-1);
+        else nv=big>vlen/2?5:2;
         nv=Math.max(1,Math.min(6,Math.round(nv)));
-        if(nv>=4)sc.TAI+=6;else sc.XIU+=6;
+        if(nv>=4)diceScore.TAI+=7;else diceScore.XIU+=7;
     }
-    // Cầu 1-1
-    if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2])sc[r[n-2]]+=25;
-    // Bệt
-    var streak=1;for(var i=n-2;i>=0;i--){if(r[i]===lr)streak++;else break;}
-    if(streak>=6)sc[lr==='TAI'?'XIU':'TAI']+=20;else if(streak>=4)sc[lr]+=12;else if(streak>=2)sc[lr]+=5;else sc[lr==='TAI'?'XIU':'TAI']+=10;
-    // Điểm
-    if(lt>=14&&lt<=16)sc.TAI+=10;else if(lt>=5&&lt<=7)sc.XIU+=10;
-    // Xu hướng
-    var l8=r.slice(-8),t8=l8.filter(function(x){return x==='TAI'}).length;
-    if(t8>=6)sc.XIU+=10;else if(t8<=2)sc.TAI+=10;
-    // Pattern
-    if(n>=10){var l3=r.slice(-3).join(''),mt=0,mx=0;for(var i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=5){if(mt>mx)sc.TAI+=10;else sc.XIU+=10;}}
+    sc.TAI+=diceScore.TAI;sc.XIU+=diceScore.XIU;
 
+    // Cầu 1-1
+    if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2])sc[r[n-2]]+=20;
+
+    // Bệt cân bằng
+    var streak=1;for(var i=n-2;i>=0;i--){if(r[i]===lr)streak++;else break;}
+    if(streak>=5)sc[lr==='TAI'?'XIU':'TAI']+=18;else if(streak>=3)sc[lr]+=10;else if(streak>=2)sc[lr]+=4;else sc[lr==='TAI'?'XIU':'TAI']+=8;
+
+    // Điểm
+    if(lt>=14&&lt<=16)sc.TAI+=8;else if(lt>=5&&lt<=7)sc.XIU+=8;
+
+    // Xu hướng
+    var l6=r.slice(-6),t6=l6.filter(function(x){return x==='TAI'}).length;
+    if(t6>=5)sc.XIU+=8;else if(t6<=1)sc.TAI+=8;
+
+    // Pattern
+    if(n>=8){var l3=r.slice(-3).join(''),mt=0,mx=0;for(var i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=4){if(mt>mx)sc.TAI+=8;else sc.XIU+=8;}}
+
+    // QUYẾT ĐỊNH - CÂN BẰNG
     var pr=sc.TAI>sc.XIU?'TAI':'XIU',tot=sc.TAI+sc.XIU;
-    var cf=Math.min(70,Math.max(50,Math.round(Math.max(sc.TAI,sc.XIU)/tot*100)));
+    var cf=Math.round(Math.max(sc.TAI,sc.XIU)/tot*100);
+    cf=Math.min(68,Math.max(50,cf));
     return{pr:pr,cf:cf};
 }
 
-// ==================== MAIN LOOP ====================
+// MAIN LOOP
 async function mainLoop(){
     await loadData();var s=D.s,n=s.length;
     if(n>=5){var p=predict(s);
@@ -176,7 +200,7 @@ function rm(){
     else tb.innerHTML=[...pr].reverse().slice(0,100).map(function(p){return'<tr><td>#'+p.p+'</td><td class="'+(p.pr==='TAI'?'T':'X')+'">'+p.pr+'</td><td class="'+(p.ac==='TAI'?'T':'X')+'">'+p.ac+'</td><td class="'+(p.ok?'ok':'no')+'">'+(p.ok?'✅':'❌')+'</td></tr>';}).join('');
 }
 
-// ==================== START ====================
+// START
 renderMenu();checkKey();mainLoop();
 </script>
 </body>
