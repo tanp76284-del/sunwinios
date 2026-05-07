@@ -6,26 +6,26 @@
 <title>PHUC SIX V15</title>
 
 <style>
-body{margin:0;background:#000;font-family:Arial;color:#fff;overflow:hidden}
+body{margin:0;background:#000;font-family:Arial;overflow:hidden;color:#fff}
 #gf{position:fixed;width:100%;height:100%;border:none}
 
 .bw{position:fixed;right:10px;top:120px;z-index:9999;display:flex;flex-direction:column;align-items:center}
 
-.bot-wrap{width:90px;height:90px;display:flex;align-items:center;justify-content:center}
 .bot-wrap img{width:90px;height:90px}
 
-.bot-tip{background:#111;padding:6px 10px;border:1px solid #0ff;border-radius:10px;text-align:center;margin-bottom:5px}
+.bot-tip{background:#111;border:1px solid #0ff;padding:6px 10px;border-radius:10px;text-align:center;margin-bottom:6px}
+
 .pp{font-weight:bold}
 .TAI{color:#ff4d4d}
 .XIU{color:#33ff88}
 
-.bm{display:none;background:#111;border:1px solid #0ff;padding:10px;border-radius:10px;width:300px}
+.bm{display:none;background:#111;border:1px solid #0ff;width:300px;padding:10px;border-radius:10px}
 .bm.show{display:block}
 
 .st{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;color:#aaa}
 
 table{width:100%;font-size:12px;border-collapse:collapse}
-td,th{padding:3px;border-bottom:1px solid #222;text-align:center}
+td,th{padding:4px;text-align:center;border-bottom:1px solid #222}
 .ok{color:#33ff88}
 .no{color:#ff4d4d}
 </style>
@@ -35,25 +35,23 @@ td,th{padding:3px;border-bottom:1px solid #222;text-align:center}
 
 <iframe id="gf" src="https://web.sunwin.mw"></iframe>
 
-<div class="bw" id="bw">
+<div class="bw">
 
 <div class="bot-tip">
-<div id="pp" class="pp">--</div>
-<div id="bi" style="font-size:11px;color:#aaa">READY</div>
+<div id="pp">--</div>
+<div id="bi">READY</div>
 </div>
 
-<div class="bot-wrap" id="botBtn">
+<div id="botBtn">
 <img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif">
 </div>
 
 <div class="bm" id="bm">
 
-<h3>AI ANALYSIS</h3>
-
 <div class="st">
-<span id="t1">T:0</span>
-<span id="t2">X:0</span>
-<span id="t3">WR:0%</span>
+<span id="win">T:0</span>
+<span id="lose">X:0</span>
+<span id="rate">0%</span>
 </div>
 
 <table>
@@ -64,13 +62,15 @@ td,th{padding:3px;border-bottom:1px solid #222;text-align:center}
 </table>
 
 </div>
+
 </div>
 
 <script>
 
+// OPEN MENU
 document.getElementById('botBtn').onclick=()=>{
 document.getElementById('bm').classList.toggle('show');
-}
+};
 
 // DATA
 let D={
@@ -80,23 +80,19 @@ lp:'',
 lastPhien:''
 };
 
-let KEY="psv44";
-
-// LOAD CACHE
+// CACHE
 try{
-let c=localStorage.getItem(KEY);
+let c=localStorage.getItem('psv44');
 if(c){
-let p=JSON.parse(c);
-D.s=p.s||[];
-D.pr=p.pr||[];
+D=JSON.parse(c);
 }
 }catch(e){}
 
 function save(){
-localStorage.setItem(KEY,JSON.stringify(D));
+localStorage.setItem('psv44',JSON.stringify(D));
 }
 
-// LOAD SERVER
+// LOAD DATA
 async function load(){
 try{
 let r=await fetch('https://isa-accomplish-fork-capitol.trycloudflare.com/api/history');
@@ -118,7 +114,7 @@ return false;
 }
 
 // =====================
-// PREDICT (THỐNG KÊ THẬT)
+// PREDICT FIX (STAT ONLY)
 // =====================
 function predict(s){
 
@@ -129,52 +125,50 @@ let r=s.map(x=>x.result||x.r);
 
 let score={TAI:0,XIU:0};
 
-// 20 phiên gần
-let last20=r.slice(-20);
-let t20=last20.filter(x=>x==='TAI').length;
-let x20=20-t20;
+// 20 gần nhất
+let last=r.slice(-20);
+let t=last.filter(x=>x==='TAI').length;
+let x=20-t;
 
-if(t20>=14)score.XIU+=10;
-if(x20>=14)score.TAI+=10;
+if(t>=14)score.XIU+=10;
+if(x>=14)score.TAI+=10;
 
-// pattern nhỏ
+// pattern ngắn
 for(let k=3;k<=5;k++){
 
-let pat=r.slice(n-k,n).join('');
+let p=r.slice(n-k,n).join('');
 
-let t=0,x=0;
+let t2=0,x2=0;
 
 for(let i=0;i<n-k;i++){
 
-if(r.slice(i,i+k).join('')===pat){
-
-r[i+k]==='TAI'?t++:x++;
-
+if(r.slice(i,i+k).join('')===p){
+r[i+k]==='TAI'?t2++:x2++;
 }
 
 }
 
-if(t+x>5){
-score.TAI+=t;
-score.XIU+=x;
+if(t2+x2>=6){
+score.TAI+=t2;
+score.XIU+=x2;
 }
 
 }
 
 // streak
-let last=r[n-1];
+let lastVal=r[n-1];
 let streak=1;
 
 for(let i=n-2;i>=0;i--){
-if(r[i]===last)streak++;
+if(r[i]===lastVal)streak++;
 else break;
 }
 
 if(streak>=5){
-score[last==='TAI'?'XIU':'TAI']+=12;
+score[lastVal==='TAI'?'XIU':'TAI']+=12;
 }
 
-// quyết định
+// result
 let diff=Math.abs(score.TAI-score.XIU);
 if(diff<5)return{pr:null,cf:50,skip:true};
 
@@ -185,6 +179,7 @@ let cf=Math.round((Math.max(score.TAI,score.XIU)/(score.TAI+score.XIU))*100);
 cf=Math.max(52,Math.min(70,cf));
 
 return{pr,cf,skip:false};
+
 }
 
 // =====================
@@ -200,9 +195,9 @@ let n=s.length;
 if(n>30){
 
 let p=predict(s);
-
 let cur=s[n-1];
 
+// check result
 if(D.lp && cur.phien!=D.lastPhien){
 
 let real=cur.result;
@@ -216,6 +211,7 @@ ok:D.lp===real
 
 }
 
+// update
 if(p.pr){
 
 D.lp=p.pr;
@@ -224,17 +220,17 @@ D.lastPhien=cur.phien;
 let win=D.pr.filter(x=>x.ok).length;
 let total=D.pr.length;
 
-let wr=total?Math.round(win/total*100):0;
+let rate=total?Math.round(win/total*100):0;
 
 document.getElementById('pp').innerText=
 p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';
 
 document.getElementById('bi').innerText=
-p.cf+'% | WR '+wr+'% | '+n+' phiên';
+p.cf+'% | WR '+rate+'% | '+n;
 
-document.getElementById('t1').innerText='T:'+win;
-document.getElementById('t2').innerText='X:'+(total-win);
-document.getElementById('t3').innerText='WR:'+wr+'%';
+document.getElementById('win').innerText='T:'+win;
+document.getElementById('lose').innerText='X:'+(total-win);
+document.getElementById('rate').innerText=rate+'%';
 
 render();
 }
@@ -245,19 +241,12 @@ save();
 setTimeout(loop,2500);
 }
 
-// =====================
 // TABLE
-// =====================
 function render(){
 
 let tb=document.getElementById('tb');
 
-if(!D.pr.length){
-tb.innerHTML='<tr><td colspan=4>---</td></tr>';
-return;
-}
-
-tb.innerHTML=D.pr.slice(-50).reverse().map(x=>`
+tb.innerHTML=(D.pr||[]).slice(-50).reverse().map(x=>`
 <tr>
 <td>#${x.p}</td>
 <td>${x.pr}</td>
@@ -265,6 +254,7 @@ tb.innerHTML=D.pr.slice(-50).reverse().map(x=>`
 <td class="${x.ok?'ok':'no'}">${x.ok?'✔':'✖'}</td>
 </tr>
 `).join('');
+
 }
 
 // START
