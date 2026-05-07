@@ -2,181 +2,32 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<title>👑 PHUC SIX V15</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHUC SIX V15</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
-#gf{position:fixed;inset:0;width:100%;height:100%;border:none;z-index:1}
+body{margin:0;background:#000;font-family:Arial;color:#fff;overflow:hidden}
+#gf{position:fixed;width:100%;height:100%;border:none}
 
-.bw{
-position:fixed;
-right:8px;
-top:100px;
-z-index:999999;
-display:flex;
-flex-direction:column;
-align-items:center;
-cursor:grab
-}
+.bw{position:fixed;right:10px;top:120px;z-index:9999;display:flex;flex-direction:column;align-items:center}
 
-.bw:active{
-cursor:grabbing
-}
+.bot-wrap{width:90px;height:90px;display:flex;align-items:center;justify-content:center}
+.bot-wrap img{width:90px;height:90px}
 
-.bot-tip{
-background:rgba(10,10,20,.92);
-border:1px solid #00fff2;
-border-radius:12px;
-padding:6px 12px;
-margin-bottom:6px;
-text-align:center;
-backdrop-filter:blur(8px)
-}
+.bot-tip{background:#111;padding:6px 10px;border:1px solid #0ff;border-radius:10px;text-align:center;margin-bottom:5px}
+.pp{font-weight:bold}
+.TAI{color:#ff4d4d}
+.XIU{color:#33ff88}
 
-.pp{
-font-size:1.2em;
-font-weight:900
-}
+.bm{display:none;background:#111;border:1px solid #0ff;padding:10px;border-radius:10px;width:300px}
+.bm.show{display:block}
 
-.pp.TAI{
-color:#ff4d4d
-}
+.st{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;color:#aaa}
 
-.pp.XIU{
-color:#33ff88
-}
-
-.bi{
-font-size:.72em;
-color:#bbb
-}
-
-.bot-wrap{
-position:relative;
-width:105px;
-height:105px;
-display:flex;
-align-items:center;
-justify-content:center
-}
-
-.bot-wrap::before{
-content:'';
-position:absolute;
-inset:-15px;
-border-radius:50%;
-background:radial-gradient(circle,rgba(0,255,255,.4),transparent 70%);
-filter:blur(14px);
-animation:glow 2s infinite
-}
-
-.bot-img{
-width:100px;
-height:100px;
-object-fit:contain;
-z-index:2;
-user-select:none;
--webkit-user-drag:none;
-filter:drop-shadow(0 0 15px rgba(0,255,255,.7))
-}
-
-@keyframes glow{
-0%{
-transform:scale(1);
-opacity:.6
-}
-50%{
-transform:scale(1.15);
-opacity:1
-}
-100%{
-transform:scale(1);
-opacity:.6
-}
-}
-
-.bm{
-background:#111522;
-border:2px solid #00fff2;
-border-radius:14px;
-padding:10px;
-width:300px;
-display:none;
-margin-top:8px;
-color:#fff;
-text-align:center;
-font-size:.65em
-}
-
-.bm.show{
-display:block!important
-}
-
-.bm h3{
-color:#ffd700;
-font-size:.9em;
-margin-bottom:6px
-}
-
-.st{
-display:flex;
-justify-content:space-around;
-margin-bottom:6px;
-color:#888;
-font-size:.75em
-}
-
-.st b{
-color:#ffd700
-}
-
-.scroll-box{
-max-height:220px;
-overflow-y:auto
-}
-
-table{
-width:100%;
-font-size:.9em;
-border-collapse:collapse;
-margin-top:4px
-}
-
-th{
-background:rgba(255,255,255,.05);
-padding:4px 2px;
-color:#888
-}
-
-td{
-padding:4px 2px;
-border-bottom:1px solid rgba(255,255,255,.04);
-text-align:center
-}
-
-.T{
-color:#ff4d4d;
-font-weight:bold
-}
-
-.X{
-color:#33ff88;
-font-weight:bold
-}
-
-.ok{
-color:#33ff88
-}
-
-.no{
-color:#ff4d4d
-}
+table{width:100%;font-size:12px;border-collapse:collapse}
+td,th{padding:3px;border-bottom:1px solid #222;text-align:center}
+.ok{color:#33ff88}
+.no{color:#ff4d4d}
 </style>
 </head>
 
@@ -186,698 +37,238 @@ color:#ff4d4d
 
 <div class="bw" id="bw">
 
-<div class="bot-tip" id="bpDiv">
-<div class="pp" id="pp">--</div>
-<div class="bi" id="bi">AI READY</div>
+<div class="bot-tip">
+<div id="pp" class="pp">--</div>
+<div id="bi" style="font-size:11px;color:#aaa">READY</div>
 </div>
 
 <div class="bot-wrap" id="botBtn">
-<img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img">
+<img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif">
 </div>
 
 <div class="bm" id="bm">
 
-<h3>👑 PHUC SIX V15</h3>
+<h3>AI ANALYSIS</h3>
 
-<div id="menuContent"></div>
-
+<div class="st">
+<span id="t1">T:0</span>
+<span id="t2">X:0</span>
+<span id="t3">WR:0%</span>
 </div>
 
+<table>
+<thead>
+<tr><th>#</th><th>Dự</th><th>KQ</th><th></th></tr>
+</thead>
+<tbody id="tb"></tbody>
+</table>
+
+</div>
 </div>
 
 <script>
 
-// CLICK BOT
-document.getElementById('botBtn').addEventListener('click',function(e){
-
-e.stopPropagation();
-
-var bm=document.getElementById('bm');
-
-bm.classList.toggle('show');
-
-if(bm.classList.contains('show')){
-
-renderMenu();
-
-setTimeout(function(){
-
-rm();
-
-},100);
-
+document.getElementById('botBtn').onclick=()=>{
+document.getElementById('bm').classList.toggle('show');
 }
-
-});
-
-// CONFIG
-const DATA_SERVER='https://isa-accomplish-fork-capitol.trycloudflare.com';
-
-let did=localStorage.getItem('pd')||'';
-
-if(!did){
-
-did='d'+Math.random().toString(36).substr(2,9);
-
-localStorage.setItem('pd',did);
-
-}
-
-// MENU
-function renderMenu(){
-
-var mc=document.getElementById('menuContent');
-
-mc.innerHTML=
-
-'<div class="st">'+
-'<span>Tổng: <b id="mt">0</b></span>'+
-'<span>✅: <b id="md" style="color:#33ff88">0</b></span>'+
-'<span>❌: <b id="ms" style="color:#ff4d4d">0</b></span>'+
-'<span>🎯: <b id="ma">0%</b></span>'+
-'</div>'+
-
-'<div style="margin-bottom:6px;color:#ffd700;font-size:.75em">'+
-'📚 AI Học Cầu + Phân Tích Xí Ngầu'+
-'</div>'+
-
-'<div class="scroll-box">'+
-'<table>'+
-'<thead>'+
-'<tr>'+
-'<th>#</th>'+
-'<th>Dự</th>'+
-'<th>KQ</th>'+
-'<th>TT</th>'+
-'</tr>'+
-'</thead>'+
-'<tbody id="mtb">'+
-'<tr><td colspan="4">Đang tải...</td></tr>'+
-'</tbody>'+
-'</table>'+
-'</div>';
-
-}
-
-// DRAG
-var bw=document.getElementById('bw'),
-dg=!1,sx,sy,sl,st;
-
-bw.addEventListener('pointerdown',function(e){
-
-if(e.target.closest('.bm'))return;
-
-dg=!0;
-
-sx=e.clientX;
-sy=e.clientY;
-
-sl=bw.offsetLeft;
-st=bw.offsetTop;
-
-bw.setPointerCapture(e.pointerId);
-
-});
-
-document.addEventListener('pointermove',function(e){
-
-if(!dg)return;
-
-bw.style.left=(sl+e.clientX-sx)+'px';
-bw.style.top=(st+e.clientY-sy)+'px';
-bw.style.right='auto';
-
-});
-
-document.addEventListener('pointerup',function(){
-
-dg=!1;
-
-});
 
 // DATA
-var D={
+let D={
 s:[],
 pr:[],
 lp:'',
 lastPhien:''
 };
 
+let KEY="psv44";
+
+// LOAD CACHE
 try{
-
-var rr=localStorage.getItem('psv44');
-
-if(rr){
-
-var p=JSON.parse(rr);
-
+let c=localStorage.getItem(KEY);
+if(c){
+let p=JSON.parse(c);
 D.s=p.s||[];
 D.pr=p.pr||[];
-D.lp=p.lp||'';
-D.lastPhien=p.lastPhien||'';
-
 }
-
 }catch(e){}
 
-function sv(){
-
-try{
-
-localStorage.setItem('psv44',
-
-JSON.stringify({
-
-s:D.s.slice(-50000),
-pr:D.pr.slice(-5000),
-lp:D.lp,
-lastPhien:D.lastPhien
-
-})
-
-);
-
-}catch(e){}
-
+function save(){
+localStorage.setItem(KEY,JSON.stringify(D));
 }
 
-async function loadData(){
-
+// LOAD SERVER
+async function load(){
 try{
+let r=await fetch('https://isa-accomplish-fork-capitol.trycloudflare.com/api/history');
+let d=await r.json();
+let ns=d.sessions||[];
 
-var r=await fetch(DATA_SERVER+'/api/history');
+let map={};
 
-var d=await r.json();
+D.s.forEach(x=>map[x.phien]=x);
+ns.forEach(x=>map[x.phien]=x);
 
-var ns=d.sessions||[];
+D.s=Object.values(map).sort((a,b)=>a.phien-b.phien);
 
-var map={};
-
-D.s.forEach(function(i){
-
-map[i.phien]=i;
-
-});
-
-ns.forEach(function(i){
-
-map[i.phien]=i;
-
-});
-
-D.s=Object.values(map).sort(function(a,b){
-
-return parseInt(a.phien)-parseInt(b.phien);
-
-});
-
-sv();
-
+save();
 return true;
-
 }catch(e){
-
 return false;
-
+}
 }
 
-}
-
-// AI PHÂN TÍCH
+// =====================
+// PREDICT (THỐNG KÊ THẬT)
+// =====================
 function predict(s){
 
-var n=s.length;
+let n=s.length;
+if(n<30)return{pr:null,cf:50,skip:true};
 
-if(n<20){
+let r=s.map(x=>x.result||x.r);
 
-return{
-pr:null,
-cf:50
-};
+let score={TAI:0,XIU:0};
 
-}
+// 20 phiên gần
+let last20=r.slice(-20);
+let t20=last20.filter(x=>x==='TAI').length;
+let x20=20-t20;
 
-var r=s.map(function(x){
+if(t20>=14)score.XIU+=10;
+if(x20>=14)score.TAI+=10;
 
-return x.result||x.r;
+// pattern nhỏ
+for(let k=3;k<=5;k++){
 
-});
+let pat=r.slice(n-k,n).join('');
 
-var dc=s.map(function(x){
+let t=0,x=0;
 
-return x.dice||x.dc;
+for(let i=0;i<n-k;i++){
 
-});
+if(r.slice(i,i+k).join('')===pat){
 
-var score={
-TAI:0,
-XIU:0
-};
-
-// HỌC 20 PHIÊN
-var recent=r.slice(-20);
-
-var rt=recent.filter(function(v){
-
-return v==='TAI';
-
-}).length;
-
-var rx=20-rt;
-
-if(rt>=14){
-
-score.XIU+=18;
-
-}else if(rx>=14){
-
-score.TAI+=18;
-
-}
-
-// PATTERN HISTORY
-for(var size=3;size<=12;size++){
-
-if(n<=size)continue;
-
-var pattern=r.slice(n-size,n).join('');
-
-var tai=0;
-var xiu=0;
-
-for(var i=0;i<n-size;i++){
-
-var p=r.slice(i,i+size).join('');
-
-if(p===pattern){
-
-var next=r[i+size];
-
-if(next==='TAI'){
-tai++;
-}else{
-xiu++;
-}
+r[i+k]==='TAI'?t++:x++;
 
 }
 
 }
 
-if(tai+xiu>0){
-
-var total=tai+xiu;
-
-if(tai>xiu){
-
-score.TAI+=(tai/total)*size*4;
-
-}else{
-
-score.XIU+=(xiu/total)*size*4;
-
+if(t+x>5){
+score.TAI+=t;
+score.XIU+=x;
 }
 
 }
 
-}
-
-// PHÂN TÍCH TỪNG VIÊN
-for(var d=0;d<3;d++){
-
-var arr=[];
-
-for(var i=0;i<n;i++){
-
-arr.push(dc[i][d]);
-
-}
-
-var recentDice=arr.slice(-20);
-
-var last=recentDice[recentDice.length-1];
-var prev=recentDice[recentDice.length-2]||last;
-var prev2=recentDice[recentDice.length-3]||prev;
-
-var high=recentDice.filter(function(v){
-
-return v>=4;
-
-}).length;
-
-var low=recentDice.length-high;
-
-// TĂNG
-if(last>prev && prev>prev2){
-
-if(last>=4){
-
-score.TAI+=14;
-
-}else{
-
-score.XIU+=10;
-
-}
-
-}
-
-// GIẢM
-else if(last<prev && prev<prev2){
-
-if(last<=3){
-
-score.XIU+=14;
-
-}else{
-
-score.TAI+=10;
-
-}
-
-}
-
-// THỐNG KÊ
-else{
-
-if(high>low){
-
-if(last>=4){
-
-score.XIU+=12;
-
-}else{
-
-score.TAI+=12;
-
-}
-
-}else{
-
-if(last<=3){
-
-score.TAI+=12;
-
-}else{
-
-score.XIU+=12;
-
-}
-
-}
-
-}
-
-// CHẴN LẺ
-var even=recentDice.filter(function(v){
-
-return v%2===0;
-
-}).length;
-
-var odd=recentDice.length-even;
-
-if(even>odd){
-
-if(last%2===0){
-
-score.XIU+=5;
-
-}else{
-
-score.TAI+=5;
-
-}
-
-}else{
-
-if(last%2!==0){
-
-score.XIU+=5;
-
-}else{
-
-score.TAI+=5;
-
-}
-
-}
-
-}
-
-// BỆT
-var last=r[n-1];
-
-var streak=1;
-
-for(var i=n-2;i>=0;i--){
-
-if(r[i]===last){
-
-streak++;
-
-}else{
-
-break;
-
-}
-
+// streak
+let last=r[n-1];
+let streak=1;
+
+for(let i=n-2;i>=0;i--){
+if(r[i]===last)streak++;
+else break;
 }
 
 if(streak>=5){
-
-score[last==='TAI'?'XIU':'TAI']+=26;
-
-}else if(streak===4){
-
-score[last==='TAI'?'XIU':'TAI']+=18;
-
-}else if(streak===3){
-
 score[last==='TAI'?'XIU':'TAI']+=12;
-
-}else if(streak===2){
-
-score[last]+=8;
-
 }
 
-// CẦU 1-1
-if(
+// quyết định
+let diff=Math.abs(score.TAI-score.XIU);
+if(diff<5)return{pr:null,cf:50,skip:true};
 
-r[n-1]===r[n-3] &&
-r[n-2]===r[n-4] &&
-r[n-1]!==r[n-2]
+let pr=score.TAI>score.XIU?'TAI':'XIU';
 
-){
+let cf=Math.round((Math.max(score.TAI,score.XIU)/(score.TAI+score.XIU))*100);
 
-score[r[n-2]]+=18;
+cf=Math.max(52,Math.min(70,cf));
 
+return{pr,cf,skip:false};
 }
 
-// KẾT QUẢ
-var pr=score.TAI>score.XIU
-?'TAI'
-:'XIU';
+// =====================
+// LOOP
+// =====================
+async function loop(){
 
-var max=Math.max(score.TAI,score.XIU);
+await load();
 
-var total=score.TAI+score.XIU;
+let s=D.s;
+let n=s.length;
 
-var raw=Math.round((max/total)*100);
+if(n>30){
 
-// CHỐNG % ẢO
-raw=Math.max(52,Math.min(82,raw));
+let p=predict(s);
 
-return{
+let cur=s[n-1];
 
-pr:pr,
-cf:raw
+if(D.lp && cur.phien!=D.lastPhien){
 
-};
-
-}
-
-// MAIN LOOP
-async function mainLoop(){
-
-await loadData();
-
-var s=D.s;
-
-var n=s.length;
-
-if(n>=20){
-
-var current=s[n-1];
-
-// CHECK ĐÚNG SAI
-if(
-
-D.lp &&
-D.lastPhien &&
-current.phien!=D.lastPhien
-
-){
-
-var real=current.result||current.r;
+let real=cur.result;
 
 D.pr.push({
-
-p:current.phien,
+p:cur.phien,
 pr:D.lp,
 ac:real,
 ok:D.lp===real
-
 });
 
-if(D.pr.length>5000){
-
-D.pr=D.pr.slice(-5000);
-
 }
-
-}
-
-// AI
-var p=predict(s);
 
 if(p.pr){
 
 D.lp=p.pr;
+D.lastPhien=cur.phien;
 
-D.lastPhien=current.phien;
+let win=D.pr.filter(x=>x.ok).length;
+let total=D.pr.length;
 
-// WINRATE THẬT
-var total=D.pr.length;
+let wr=total?Math.round(win/total*100):0;
 
-var win=D.pr.filter(function(i){
+document.getElementById('pp').innerText=
+p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';
 
-return i.ok;
+document.getElementById('bi').innerText=
+p.cf+'% | WR '+wr+'% | '+n+' phiên';
 
-}).length;
+document.getElementById('t1').innerText='T:'+win;
+document.getElementById('t2').innerText='X:'+(total-win);
+document.getElementById('t3').innerText='WR:'+wr+'%';
 
-var realRate=total>0
-?Math.round((win/total)*100)
-:50;
-
-// % THẬT
-var finalCf=Math.round(
-(p.cf*0.45)+(realRate*0.55)
-);
-
-// GIỚI HẠN
-finalCf=Math.max(
-45,
-Math.min(85,finalCf)
-);
-
-// HIỂN THỊ
-document.getElementById('pp').textContent=
-
-p.pr==='TAI'
-?'🔴 TÀI'
-:'🟢 XỈU';
-
-document.getElementById('pp').className='pp '+p.pr;
-
-document.getElementById('bi').textContent=
-
-'🎯 '+finalCf+
-'% | ✅ '+win+
-'/'+total+
-' | 📚 '+n+' phiên';
-
+render();
+}
 }
 
+save();
+
+setTimeout(loop,2500);
 }
 
-sv();
+// =====================
+// TABLE
+// =====================
+function render(){
 
-rm();
+let tb=document.getElementById('tb');
 
-setTimeout(mainLoop,3000);
-
-}
-
-// MENU
-function rm(){
-
-var pr=D.pr||[];
-
-var tp=pr.length;
-
-var cp=pr.filter(function(p){
-
-return p.ok;
-
-}).length;
-
-var xp=tp-cp;
-
-var rate=tp>0
-?Math.round((cp/tp)*100)
-:0;
-
-try{
-
-document.getElementById('mt').textContent=tp;
-
-document.getElementById('md').textContent=cp;
-
-document.getElementById('ms').textContent=xp;
-
-document.getElementById('ma').textContent=
-rate+'%';
-
-}catch(e){}
-
-var tb=document.getElementById('mtb');
-
-if(!tb)return;
-
-if(tp<=0){
-
-tb.innerHTML=
-'<tr><td colspan="4">Chưa có dữ liệu</td></tr>';
-
+if(!D.pr.length){
+tb.innerHTML='<tr><td colspan=4>---</td></tr>';
 return;
-
 }
 
-tb.innerHTML=pr
-.slice()
-.reverse()
-.slice(0,100)
-.map(function(p){
-
-return `
+tb.innerHTML=D.pr.slice(-50).reverse().map(x=>`
 <tr>
-
-<td>#${p.p}</td>
-
-<td class="${p.pr==='TAI'?'T':'X'}">
-${p.pr}
-</td>
-
-<td class="${p.ac==='TAI'?'T':'X'}">
-${p.ac}
-</td>
-
-<td class="${p.ok?'ok':'no'}">
-${p.ok?'✅':'❌'}
-</td>
-
+<td>#${x.p}</td>
+<td>${x.pr}</td>
+<td>${x.ac}</td>
+<td class="${x.ok?'ok':'no'}">${x.ok?'✔':'✖'}</td>
 </tr>
-`;
-
-}).join('');
-
+`).join('');
 }
 
 // START
-renderMenu();
-
-mainLoop();
+loop();
 
 </script>
 
