@@ -2,30 +2,32 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHUC SIX V15</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>👑 PHUC SIX V15</title>
 
 <style>
-body{margin:0;background:#000;font-family:Arial;overflow:hidden;color:#fff}
-#gf{position:fixed;width:100%;height:100%;border:none}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;height:100vh;overflow:hidden;font-family:Arial}
+#gf{position:fixed;inset:0;width:100%;height:100%;border:none}
 
-.bw{position:fixed;right:10px;top:120px;z-index:9999;display:flex;flex-direction:column;align-items:center}
+.bw{position:fixed;right:8px;top:100px;z-index:999999;display:flex;flex-direction:column;align-items:center}
 
-.bot-wrap img{width:90px;height:90px}
+.bot-wrap{width:105px;height:105px;display:flex;align-items:center;justify-content:center}
+.bot-img{width:100px;height:100px}
 
-.bot-tip{background:#111;border:1px solid #0ff;padding:6px 10px;border-radius:10px;text-align:center;margin-bottom:6px}
+.bot-tip{background:#111;border:1px solid #0ff;border-radius:10px;padding:6px 10px;text-align:center;margin-bottom:6px}
 
-.pp{font-weight:bold}
+.pp{font-weight:900}
 .TAI{color:#ff4d4d}
 .XIU{color:#33ff88}
 
 .bm{display:none;background:#111;border:1px solid #0ff;width:300px;padding:10px;border-radius:10px}
 .bm.show{display:block}
 
-.st{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;color:#aaa}
+.st{display:flex;justify-content:space-between;color:#aaa;font-size:12px;margin-bottom:5px}
 
 table{width:100%;font-size:12px;border-collapse:collapse}
-td,th{padding:4px;text-align:center;border-bottom:1px solid #222}
+td,th{padding:3px;text-align:center;border-bottom:1px solid #222}
 .ok{color:#33ff88}
 .no{color:#ff4d4d}
 </style>
@@ -35,23 +37,23 @@ td,th{padding:4px;text-align:center;border-bottom:1px solid #222}
 
 <iframe id="gf" src="https://web.sunwin.mw"></iframe>
 
-<div class="bw">
+<div class="bw" id="bw">
 
 <div class="bot-tip">
 <div id="pp">--</div>
 <div id="bi">READY</div>
 </div>
 
-<div id="botBtn">
-<img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif">
+<div class="bot-wrap" id="botBtn">
+<img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img">
 </div>
 
 <div class="bm" id="bm">
 
 <div class="st">
-<span id="win">T:0</span>
-<span id="lose">X:0</span>
-<span id="rate">0%</span>
+<span id="w">T:0</span>
+<span id="l">X:0</span>
+<span id="r">0%</span>
 </div>
 
 <table>
@@ -67,32 +69,24 @@ td,th{padding:4px;text-align:center;border-bottom:1px solid #222}
 
 <script>
 
-// OPEN MENU
+// toggle menu
 document.getElementById('botBtn').onclick=()=>{
 document.getElementById('bm').classList.toggle('show');
 };
 
 // DATA
-let D={
-s:[],
-pr:[],
-lp:'',
-lastPhien:''
-};
+let D={s:[],pr:[],lp:'',lastPhien:''};
 
-// CACHE
 try{
 let c=localStorage.getItem('psv44');
-if(c){
-D=JSON.parse(c);
-}
+if(c)D=JSON.parse(c);
 }catch(e){}
 
 function save(){
 localStorage.setItem('psv44',JSON.stringify(D));
 }
 
-// LOAD DATA
+// LOAD
 async function load(){
 try{
 let r=await fetch('https://isa-accomplish-fork-capitol.trycloudflare.com/api/history');
@@ -113,9 +107,9 @@ return false;
 }
 }
 
-// =====================
-// PREDICT FIX (STAT ONLY)
-// =====================
+//////////////////////////
+// ✅ PREDICT FIX CHUẨN
+//////////////////////////
 function predict(s){
 
 let n=s.length;
@@ -128,49 +122,46 @@ let score={TAI:0,XIU:0};
 // 20 gần nhất
 let last=r.slice(-20);
 let t=last.filter(x=>x==='TAI').length;
-let x=20-t;
 
 if(t>=14)score.XIU+=10;
-if(x>=14)score.TAI+=10;
-
-// pattern ngắn
-for(let k=3;k<=5;k++){
-
-let p=r.slice(n-k,n).join('');
-
-let t2=0,x2=0;
-
-for(let i=0;i<n-k;i++){
-
-if(r.slice(i,i+k).join('')===p){
-r[i+k]==='TAI'?t2++:x2++;
-}
-
-}
-
-if(t2+x2>=6){
-score.TAI+=t2;
-score.XIU+=x2;
-}
-
-}
+if(20-t>=14)score.TAI+=10;
 
 // streak
-let lastVal=r[n-1];
+let lastv=r[n-1];
 let streak=1;
 
 for(let i=n-2;i>=0;i--){
-if(r[i]===lastVal)streak++;
+if(r[i]===lastv)streak++;
 else break;
 }
 
 if(streak>=5){
-score[lastVal==='TAI'?'XIU':'TAI']+=12;
+score[lastv==='TAI'?'XIU':'TAI']+=12;
 }
 
-// result
+// pattern ngắn
+for(let k=3;k<=4;k++){
+
+let p=r.slice(n-k,n).join('');
+
+let a=0,b=0;
+
+for(let i=0;i<n-k;i++){
+if(r.slice(i,i+k).join('')===p){
+r[i+k]==='TAI'?a++:b++;
+}
+}
+
+if(a+b>=6){
+score.TAI+=a;
+score.XIU+=b;
+}
+
+}
+
+// quyết định
 let diff=Math.abs(score.TAI-score.XIU);
-if(diff<5)return{pr:null,cf:50,skip:true};
+if(diff<6)return{pr:null,cf:50,skip:true};
 
 let pr=score.TAI>score.XIU?'TAI':'XIU';
 
@@ -182,9 +173,9 @@ return{pr,cf,skip:false};
 
 }
 
-// =====================
+//////////////////////////
 // LOOP
-// =====================
+//////////////////////////
 async function loop(){
 
 await load();
@@ -200,18 +191,16 @@ let cur=s[n-1];
 // check result
 if(D.lp && cur.phien!=D.lastPhien){
 
-let real=cur.result;
-
 D.pr.push({
 p:cur.phien,
 pr:D.lp,
-ac:real,
-ok:D.lp===real
+ac:cur.result,
+ok:D.lp===cur.result
 });
 
 }
 
-// update
+// update UI
 if(p.pr){
 
 D.lp=p.pr;
@@ -219,7 +208,6 @@ D.lastPhien=cur.phien;
 
 let win=D.pr.filter(x=>x.ok).length;
 let total=D.pr.length;
-
 let rate=total?Math.round(win/total*100):0;
 
 document.getElementById('pp').innerText=
@@ -228,16 +216,15 @@ p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';
 document.getElementById('bi').innerText=
 p.cf+'% | WR '+rate+'% | '+n;
 
-document.getElementById('win').innerText='T:'+win;
-document.getElementById('lose').innerText='X:'+(total-win);
-document.getElementById('rate').innerText=rate+'%';
+document.getElementById('w').innerText='T:'+win;
+document.getElementById('l').innerText='X:'+(total-win);
+document.getElementById('r').innerText=rate+'%';
 
 render();
 }
 }
 
 save();
-
 setTimeout(loop,2500);
 }
 
@@ -257,7 +244,6 @@ tb.innerHTML=(D.pr||[]).slice(-50).reverse().map(x=>`
 
 }
 
-// START
 loop();
 
 </script>
