@@ -13,19 +13,15 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
         #gf{position:fixed;inset:0;width:100%;height:100%;border:none;z-index:1}
-        
         .bw{position:fixed;right:8px;top:100px;z-index:999999;display:flex;flex-direction:column;align-items:center;cursor:grab}
         .bw:active{cursor:grabbing}
-        
         .bot-tip{background:rgba(10,10,20,.92);border:1px solid #00fff2;border-radius:12px;padding:6px 12px;margin-bottom:6px;text-align:center;backdrop-filter:blur(8px)}
         .pp{font-size:1.2em;font-weight:900}.pp.TAI{color:#ff4d4d}.pp.XIU{color:#33ff88}
         .bi{font-size:.72em;color:#bbb}
-        
         .bot-wrap{position:relative;width:105px;height:105px;display:flex;align-items:center;justify-content:center}
         .bot-wrap::before{content:'';position:absolute;inset:-15px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,255,.4),transparent 70%);filter:blur(14px);animation:glow 2s infinite}
         .bot-img{width:100px;height:100px;object-fit:contain;z-index:2;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 0 15px rgba(0,255,255,.7))}
         @keyframes glow{0%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:.6}}
-        
         .bm{background:#111522;border:2px solid #00fff2;border-radius:14px;padding:10px;width:300px;display:none;margin-top:8px;color:#fff;text-align:center;font-size:.65em}
         .bm.show{display:block}
         .bm h3{color:#ffd700;font-size:.9em;margin-bottom:6px}
@@ -37,35 +33,18 @@
         td{padding:4px 2px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
         .T{color:#ff4d4d;font-weight:bold}.X{color:#33ff88;font-weight:bold}
         .ok{color:#33ff88}.no{color:#ff4d4d}
-        
         .key-box{display:none;text-align:center;padding:8px}
         .key-box input{width:100%;padding:8px;border:1px solid rgba(0,255,242,.3);background:#0a0a0f;color:#fff;border-radius:8px;font-size:.85em;text-align:center;letter-spacing:2px;margin-bottom:6px}
         .key-box button{width:100%;padding:8px;background:#00fff2;color:#000;border:none;border-radius:8px;font-weight:900;cursor:pointer;font-size:.85em}
         .key-box .msg{font-size:.7em;margin-top:4px}.msg.e{color:#ff4d4d}.msg.s{color:#33ff88}
-
-        /* XOAY NGANG - DỌC */
-        @media screen and (orientation: landscape) {
-            .bw{right:15px;top:50px}
-            .bm{width:350px;max-height:60vh}
-        }
-        @media screen and (orientation: portrait) {
-            .bw{right:8px;top:100px}
-            .bm{width:300px;max-height:40vh}
-        }
+        @media screen and (orientation: landscape){.bw{right:15px;top:50px}.bm{width:350px;max-height:60vh}}
     </style>
 </head>
 <body>
-
 <iframe id="gf" src="https://web.sunwin.mw"></iframe>
-
 <div class="bw" id="bw">
-    <div class="bot-tip" id="bpDiv">
-        <div class="pp" id="pp">--</div>
-        <div class="bi" id="bi">AI READY</div>
-    </div>
-    <div class="bot-wrap" onclick="toggleMenu()">
-        <img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img" alt="Bot">
-    </div>
+    <div class="bot-tip" id="bpDiv"><div class="pp" id="pp">--</div><div class="bi" id="bi">AI READY</div></div>
+    <div class="bot-wrap" onclick="toggleMenu()"><img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img" alt="Bot"></div>
     <div class="bm" id="bm">
         <h3>👑 PHUC SIX AI</h3>
         <div class="key-box" id="keyBox">
@@ -75,16 +54,8 @@
             <p class="msg" id="keyMsg"></p>
         </div>
         <div id="mainMenu" style="display:none">
-            <div class="st">
-                <span>Tổng: <b id="mt">0</b></span>
-                <span>✅: <b id="md" style="color:#33ff88">0</b></span>
-                <span>❌: <b id="ms" style="color:#ff4d4d">0</b></span>
-                <span>🎯: <b id="ma">--%</b></span>
-            </div>
-            <div class="scroll-box">
-                <table><thead><tr><th>#</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead>
-                <tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody></table>
-            </div>
+            <div class="st"><span>Tổng: <b id="mt">0</b></span><span>✅: <b id="md" style="color:#33ff88">0</b></span><span>❌: <b id="ms" style="color:#ff4d4d">0</b></span><span>🎯: <b id="ma">--%</b></span></div>
+            <div class="scroll-box"><table><thead><tr><th>#</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead><tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody></table></div>
         </div>
     </div>
 </div>
@@ -104,35 +75,98 @@ bw.addEventListener('touchstart',function(e){if(e.target.closest('.bm'))return;d
 document.addEventListener('mousemove',function(e){if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px';bw.style.right='auto'});
 document.addEventListener('touchmove',function(e){if(!dg)return;bw.style.left=(sl+e.touches[0].clientX-sx)+'px';bw.style.top=(st+e.touches[0].clientY-sy)+'px';bw.style.right='auto'});
 document.addEventListener('mouseup',function(){dg=!1});document.addEventListener('touchend',function(){dg=!1});
-
-// XOAY MÀN HÌNH
-window.addEventListener('orientationchange',function(){
-    setTimeout(function(){
-        bw.style.right='auto';
-        bw.style.top='100px';
-        bw.style.left='auto';
-    },300);
-});
+window.addEventListener('orientationchange',function(){setTimeout(function(){bw.style.right='auto';bw.style.top='100px';bw.style.left='auto'},300);});
 
 var A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 var D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
-try{var r=localStorage.getItem('psv33');if(r){var p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psv33',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+try{var r=localStorage.getItem('psv35');if(r){var p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psv35',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
 
-function pd(s){
-    var n=s.length;if(n<3)return{pr:null,cf:0};
-    var r=s.map(function(x){return x.r}),t=s.map(function(x){return x.t}),lr=r[n-1],lt=t[n-1],sc={TAI:0,XIU:0};
-    if(lt>=17)sc.TAI+=99;else if(lt<=4)sc.XIU+=98;else{
-        var st=1;for(var i=n-2;i>=0;i--){if(r[i]===lr)st++;else break;}
-        if(st>=7)sc[lr==='TAI'?'XIU':'TAI']+=35;else if(st>=5)sc[lr]+=25;else if(st>=3)sc[lr]+=15;else sc[lr==='TAI'?'XIU':'TAI']+=10;
-        if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2])sc[r[n-2]]+=25;
-        if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-5]&&r[n-1]!==r[n-3])sc[r[n-3]]+=20;
-        for(var i=0;i<3;i++){var v=s.map(function(x){return x.dc[i]}),vl=v.length,lv=v[vl-1],vs=1;for(var j=vl-2;j>=0;j--){if(v[j]===lv)vs++;else break;}var bg=v.filter(function(x){return x>=4}).length,nv=lv;if(vs>=5)nv=lv===6?5:lv+1;else if(vs>=3)nv=lv;else nv=bg>vl/2?5:2;nv=Math.max(1,Math.min(6,nv));if(nv>=4)sc.TAI+=5;else sc.XIU+=5;}
-        if(lt>=14&&lt<=16)sc.TAI+=18;else if(lt>=5&&lt<=7)sc.XIU+=18;
-        var l6=r.slice(-6),t6=l6.filter(function(x){return x==='TAI'}).length;if(t6>=5)sc.XIU+=12;else if(t6<=1)sc.TAI+=12;
-        if(n>=8){var l3=r.slice(-3).join(''),mt=0,mx=0;for(var i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=4){if(mt>mx)sc.TAI+=14;else sc.XIU+=14;}}
+// ============ THUẬT TOÁN MỚI - DỰA TRÊN QUY LUẬT BÀN SÂN ============
+function predictNew(s){
+    var n=s.length;
+    if(n<5)return{pr:null,cf:0};
+    
+    var r=s.map(function(x){return x.r});
+    var t=s.map(function(x){return x.t});
+    var d=s.map(function(x){return x.dc});
+    
+    var lr=r[n-1], lt=t[n-1], ld=d[n-1];
+    var sc={TAI:0,XIU:0}, reasons=[];
+    
+    // 1. PHÂN TÍCH BỆT - Dựa trên dữ liệu thật: bệt thường 2-4, max ~7
+    var streak=1;
+    for(var i=n-2;i>=0;i--){if(r[i]===lr)streak++;else break;}
+    
+    // Theo thống kê: bệt ≥5 hiếm, thường đảo sau 4-5
+    if(streak>=5){sc[lr==='TAI'?'XIU':'TAI']+=28;reasons.push('Bệt'+streak+'→ĐẢO');}
+    else if(streak>=3){sc[lr]+=
+18;reasons.push('Bệt'+streak+'→THEO');}
+    else if(streak>=2){sc[lr]+=
+10;reasons.push('Bệt'+streak);}
+    else{sc[lr==='TAI'?'XIU':'TAI']+=6;reasons.push('Xen kẽ');}
+    
+    // 2. PHÂN TÍCH XÍ NGẦU ĐỘC LẬP - Mỗi viên có quy luật riêng
+    for(var vi=0;vi<3;vi++){
+        var vals=[];
+        for(var ii=0;ii<n;ii++)vals.push(d[ii][vi]);
+        var vlen=vals.length;
+        var vlast=vals[vlen-1], vprev=vals[vlen-2]||vlast, vprev2=vals[vlen-3]||vprev;
+        
+        // Streak từng viên
+        var vstreak=1;
+        for(var j=vlen-2;j>=0;j--){if(vals[j]===vlast)vstreak++;else break;}
+        
+        // Big/Small
+        var big=vals.filter(function(x){return x>=4}).length;
+        var small=vlen-big;
+        
+        // Dự đoán giá trị tiếp theo
+        var nv=vlast;
+        if(vstreak>=4){nv=vlast===6?5:vlast+1;}
+        else if(vstreak>=3){nv=vlast;}
+        else if(vlast>vprev&&vprev>vprev2){nv=Math.min(6,vlast+1);}
+        else if(vlast<vprev&&vprev<vprev2){nv=Math.max(1,vlast-1);}
+        else{nv=big>small?Math.round(4+Math.random()):Math.round(2+Math.random());}
+        nv=Math.max(1,Math.min(6,Math.round(nv)));
+        
+        if(nv>=4)sc.TAI+=4;else sc.XIU+=4;
     }
-    return{pr:sc.TAI>sc.XIU?'TAI':'XIU',cf:Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/(sc.TAI+sc.XIU)*100)))};
+    
+    // 3. CẦU 1-1 (T X T X) - Rất phổ biến trong dữ liệu
+    if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2]){
+        sc[r[n-2]]+=22;reasons.push('Cầu 1-1');
+    }
+    
+    // 4. CẦU 2-1 (T T X T T X)
+    if(n>=5&&r[n-1]===r[n-2]&&r[n-3]===r[n-5]&&r[n-1]!==r[n-3]){
+        sc[r[n-3]]+=16;reasons.push('Cầu 2-1');
+    }
+    
+    // 5. ĐIỂM CỰC TRỊ - Rất hiếm nhưng đúng
+    if(lt>=17){sc.TAI+=99;reasons.push('🔥Tổng≥17');}
+    if(lt<=4){sc.XIU+=98;reasons.push('🔥Tổng≤4');}
+    
+    // 6. TỔNG CAO/THẤP (11-13 thường theo TÀI, 8-10 thường XIU)
+    if(lt>=14&&lt<=16){sc.TAI+=14;reasons.push('Tổng cao');}
+    else if(lt>=5&&lt<=7){sc.XIU+=14;reasons.push('Tổng thấp');}
+    else if(lt>=11&&lt<=13){sc.TAI+=6;reasons.push('Điểm TÀI');}
+    else if(lt>=8&&lt<=10){sc.XIU+=6;reasons.push('Điểm XỈU');}
+    
+    // 7. XU HƯỚNG 6 PHIÊN GẦN
+    var l6=r.slice(-6),t6=l6.filter(function(x){return x==='TAI'}).length;
+    if(t6>=5){sc.XIU+=10;reasons.push(t6+'/6 TÀI→XỈU');}
+    else if(t6<=1){sc.TAI+=10;reasons.push((6-t6)+'/6 XỈU→TÀI');}
+    
+    // 8. PATTERN MATCHING 3 PHIÊN
+    if(n>=10){
+        var l3=r.slice(-3).join(''),mt=0,mx=0;
+        for(var i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}
+        if(mt+mx>=5){if(mt>mx){sc.TAI+=12;reasons.push('Pattern→TÀI');}else{sc.XIU+=12;reasons.push('Pattern→XỈU');}}
+    }
+    
+    var pr=sc.TAI>sc.XIU?'TAI':'XIU',tot=sc.TAI+sc.XIU;
+    return{pr:pr,cf:Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/tot*100))),rs:reasons.slice(0,3).join('|')};
 }
 
 async function up(){
@@ -143,7 +177,7 @@ async function up(){
     if(d?.Phien&&d.Xuc_xac_1!==undefined)res.push({p:String(d.Phien),dc:[d.Xuc_xac_1,d.Xuc_xac_2,d.Xuc_xac_3],t:d.Tong,r:d.Ket_qua==='Tài'?'TAI':'XIU'});}catch(e){}}
     for(var i of res){if(!D.se.has(i.p)){D.se.add(i.p);if(D.lp&&D.s.length>0){var l=D.s[D.s.length-1];if(parseInt(i.p)===parseInt(l.p)+1){D.pr.push({p:i.p,pr:D.lp,ac:i.r,ok:D.lp===i.r});}}D.s.push(i);D.su+=i.t;i.r==='TAI'?D.t++:D.x++;}}
     D.s.sort(function(a,b){return parseInt(a.p)-parseInt(b.p)});
-    if(D.s.length>=3){var p=pd(D.s);if(p.pr){D.lp=p.pr;document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';document.getElementById('pp').className='pp '+p.pr;document.getElementById('bi').textContent='AI '+p.cf+'%';}}
+    if(D.s.length>=5){var p=predictNew(D.s);if(p.pr){D.lp=p.pr;document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';document.getElementById('pp').className='pp '+p.pr;document.getElementById('bi').textContent='AI '+p.cf+'%';}}
     sv();if(document.getElementById('bm').classList.contains('show')&&document.getElementById('mainMenu').style.display!=='none')rm();
 }
 
