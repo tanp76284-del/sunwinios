@@ -1,326 +1,143 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>👑 PHUC SIX AI BOT</title>
-
-<style>
-
-/* BODY */
-body{
-margin:0;
-height:100vh;
-overflow:hidden;
-background:#000;
-font-family:Arial;
-}
-
-/* GAME */
-#gf{
-position:fixed;
-inset:0;
-width:100%;
-height:100%;
-border:none;
-z-index:1;
-}
-
-/* BOT WRAP */
-.bw{
-position:fixed;
-right:10px;
-top:120px;
-z-index:999999;
-
-display:flex;
-flex-direction:column;
-align-items:center;
-
-cursor:grab;
-}
-
-.bw:active{cursor:grabbing;}
-
-/* INFO BOX */
-.bot-tip{
-background:rgba(10,10,20,.92);
-border:1px solid #00fff2;
-border-radius:12px;
-padding:6px 10px;
-margin-bottom:6px;
-text-align:center;
-backdrop-filter:blur(8px);
-}
-
-.pp{
-font-size:1.15em;
-font-weight:900;
-}
-
-.pp.TAI{color:#ff4d4d;}
-.pp.XIU{color:#33ff88;}
-
-.bi{
-font-size:.7em;
-color:#bbb;
-}
-
-/* BOT */
-.bot-wrap{
-position:relative;
-width:78px;
-height:78px;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-.bot-wrap::before{
-content:'';
-position:absolute;
-inset:-10px;
-border-radius:50%;
-
-background:radial-gradient(circle, rgba(0,255,255,.35), transparent 70%);
-filter:blur(10px);
-animation:glow 2s infinite;
-}
-
-.bot-img{
-width:75px;
-height:75px;
-object-fit:contain;
-z-index:2;
-user-select:none;
--webkit-user-drag:none;
-
-filter:
-drop-shadow(0 0 12px rgba(0,255,255,.6));
-}
-
-/* ANIMATION */
-@keyframes glow{
-0%{transform:scale(1);opacity:.6;}
-50%{transform:scale(1.15);opacity:1;}
-100%{transform:scale(1);opacity:.6;}
-}
-
-/* MENU */
-.bm{
-background:#111522;
-border:2px solid #00fff2;
-border-radius:14px;
-padding:10px;
-width:300px;
-display:none;
-margin-top:8px;
-color:#fff;
-text-align:center;
-}
-
-.bm.show{display:block;}
-
-table{
-width:100%;
-font-size:.8em;
-margin-top:8px;
-border-collapse:collapse;
-}
-
-td,th{
-border-bottom:1px solid #333;
-padding:4px;
-text-align:center;
-}
-
-.T{color:#ff4d4d;font-weight:bold;}
-.X{color:#33ff88;font-weight:bold;}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect width='180' height='180' rx='40' fill='%230a0a0f'/><text x='90' y='115' text-anchor='middle' font-size='90' font-weight='bold' fill='%23ffd700'>👑</text></svg>">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>👑 PHUC SIX AI BOT</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#000;height:100vh;overflow:hidden;font-family:'Segoe UI',Arial}
+        #gf{position:fixed;inset:0;width:100%;height:100%;border:none;z-index:1}
+        
+        .bw{position:fixed;right:10px;top:120px;z-index:999999;display:flex;flex-direction:column;align-items:center;cursor:grab}
+        .bw:active{cursor:grabbing}
+        
+        .bot-tip{background:rgba(10,10,20,.92);border:1px solid #00fff2;border-radius:12px;padding:6px 10px;margin-bottom:6px;text-align:center;backdrop-filter:blur(8px)}
+        .pp{font-size:1.15em;font-weight:900}.pp.TAI{color:#ff4d4d}.pp.XIU{color:#33ff88}
+        .bi{font-size:.7em;color:#bbb}
+        
+        .bot-wrap{position:relative;width:78px;height:78px;display:flex;align-items:center;justify-content:center}
+        .bot-wrap::before{content:'';position:absolute;inset:-10px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,255,.35),transparent 70%);filter:blur(10px);animation:glow 2s infinite}
+        .bot-img{width:75px;height:75px;object-fit:contain;z-index:2;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 0 12px rgba(0,255,255,.6))}
+        @keyframes glow{0%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:.6}}
+        
+        .bm{background:#111522;border:2px solid #00fff2;border-radius:14px;padding:10px;width:300px;display:none;margin-top:8px;color:#fff;text-align:center;font-size:.65em}
+        .bm.show{display:block}
+        .bm h3{color:#ffd700;font-size:.9em;margin-bottom:6px}
+        .st{display:flex;justify-content:space-around;margin-bottom:6px;color:#888;font-size:.75em}
+        .st b{color:#ffd700}
+        .scroll-box{max-height:200px;overflow-y:auto}
+        table{width:100%;font-size:.9em;border-collapse:collapse;margin-top:4px}
+        th{background:rgba(255,255,255,.05);padding:4px 2px;color:#888}
+        td{padding:4px 2px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
+        .T{color:#ff4d4d;font-weight:bold}.X{color:#33ff88;font-weight:bold}
+        .ok{color:#33ff88}.no{color:#ff4d4d}
+        
+        .key-box{display:none;text-align:center;padding:8px}
+        .key-box input{width:100%;padding:8px;border:1px solid rgba(0,255,242,.3);background:#0a0a0f;color:#fff;border-radius:8px;font-size:.85em;text-align:center;letter-spacing:2px;margin-bottom:6px}
+        .key-box button{width:100%;padding:8px;background:#00fff2;color:#000;border:none;border-radius:8px;font-weight:900;cursor:pointer;font-size:.85em}
+        .key-box .msg{font-size:.7em;margin-top:4px}.msg.e{color:#ff4d4d}.msg.s{color:#33ff88}
+    </style>
 </head>
-
 <body>
 
 <iframe id="gf" src="https://web.sunwin.mw"></iframe>
 
 <div class="bw" id="bw">
-
-<!-- STATUS -->
-<div class="bot-tip">
-<div class="pp" id="pp">--</div>
-<div class="bi" id="bi">AI READY</div>
-</div>
-
-<!-- BOT -->
-<div class="bot-wrap" onclick="toggleMenu()">
-<img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img">
-</div>
-
-<!-- MENU -->
-<div class="bm" id="bm">
-
-<h3>👑 PHUC SIX AI</h3>
-
-<div>
-📊 Phiên: <span id="total">0</span>
-</div>
-
-<table>
-<thead>
-<tr>
-<th>Phiên</th>
-<th>KQ</th>
-</tr>
-</thead>
-<tbody id="tb">
-<tr><td colspan="2">loading...</td></tr>
-</tbody>
-</table>
-
-</div>
-
+    <div class="bot-tip" id="bpDiv">
+        <div class="pp" id="pp">--</div>
+        <div class="bi" id="bi">AI READY</div>
+    </div>
+    <div class="bot-wrap" onclick="toggleMenu()">
+        <img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img" alt="Bot">
+    </div>
+    <div class="bm" id="bm">
+        <h3>👑 PHUC SIX AI</h3>
+        <div class="key-box" id="keyBox">
+            <p style="color:#888;font-size:.8em">Nhập key để mở khóa</p>
+            <input type="text" id="keyInput" placeholder="Nhập key..." maxlength="20">
+            <button onclick="verifyKey()">🔓 MỞ KHÓA</button>
+            <p class="msg" id="keyMsg"></p>
+        </div>
+        <div id="mainMenu" style="display:none">
+            <div class="st">
+                <span>Tổng: <b id="mt">0</b></span>
+                <span>✅: <b id="md" style="color:#33ff88">0</b></span>
+                <span>❌: <b id="ms" style="color:#ff4d4d">0</b></span>
+                <span>🎯: <b id="ma">--%</b></span>
+            </div>
+            <div class="scroll-box">
+                <table><thead><tr><th>#</th><th>Dự đoán</th><th>KQ</th><th>TT</th></tr></thead>
+                <tbody id="mtb"><tr><td colspan="4">Chưa có</td></tr></tbody></table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
+const KS='https://safely-christmas-das-classes.trycloudflare.com',AK='phuctoolnetad';
+let did=localStorage.getItem('pd')||'';if(!did){did='d'+Math.random().toString(36).substr(2,9);localStorage.setItem('pd',did);}
+function toggleMenu(){var bm=document.getElementById('bm');bm.classList.toggle('show');if(bm.classList.contains('show')){checkKey();if(document.getElementById('mainMenu').style.display!=='none')rm();}}
+async function checkKey(){var sk=localStorage.getItem('pk');if(sk===AK){showMain();return;}if(sk){try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(sk)+'&device='+encodeURIComponent(did));var d=await r.json();if(d.valid){showMain();return;}}catch(e){}}showKeyInput();}
+function showKeyInput(){document.getElementById('keyBox').style.display='block';document.getElementById('mainMenu').style.display='none';document.getElementById('bpDiv').style.display='none';}
+function showMain(){document.getElementById('keyBox').style.display='none';document.getElementById('mainMenu').style.display='block';document.getElementById('bpDiv').style.display='block';}
+async function verifyKey(){var k=document.getElementById('keyInput').value.trim();var m=document.getElementById('keyMsg');m.className='msg';m.textContent='';if(!k||k.length<7){m.className='msg e';m.textContent='❌ Key phải đủ 7 ký tự!';return;}if(k===AK){localStorage.setItem('pk',k);showMain();return;}try{var r=await fetch(KS+'/api/check?key='+encodeURIComponent(k)+'&device='+encodeURIComponent(did));var d=await r.json();if(d.valid){localStorage.setItem('pk',k);showMain();}else{m.className='msg e';m.textContent='❌ '+(d.msg||'Key không hợp lệ!');}}catch(e){m.className='msg e';m.textContent='❌ Không kết nối server!';}}
 
-/* MENU */
-function toggleMenu(){
-document.getElementById('bm').classList.toggle('show');
+var bw=document.getElementById('bw'),dg=!1,sx,sy,sl,st;
+bw.addEventListener('mousedown',function(e){if(e.target.closest('.bm'))return;dg=!0;sx=e.clientX;sy=e.clientY;sl=bw.offsetLeft;st=bw.offsetTop});
+bw.addEventListener('touchstart',function(e){if(e.target.closest('.bm'))return;dg=!0;sx=e.touches[0].clientX;sy=e.touches[0].clientY;sl=bw.offsetLeft;st=bw.offsetTop});
+document.addEventListener('mousemove',function(e){if(!dg)return;bw.style.left=(sl+e.clientX-sx)+'px';bw.style.top=(st+e.clientY-sy)+'px';bw.style.right='auto'});
+document.addEventListener('touchmove',function(e){if(!dg)return;bw.style.left=(sl+e.touches[0].clientX-sx)+'px';bw.style.top=(st+e.touches[0].clientY-sy)+'px';bw.style.right='auto'});
+document.addEventListener('mouseup',function(){dg=!1});document.addEventListener('touchend',function(){dg=!1});
+
+var A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
+var D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
+try{var r=localStorage.getItem('psv31');if(r){var p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psv31',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+
+function pd(s){
+    var n=s.length;if(n<3)return{pr:null,cf:0};
+    var r=s.map(function(x){return x.r}),t=s.map(function(x){return x.t}),lr=r[n-1],lt=t[n-1],sc={TAI:0,XIU:0};
+    if(lt>=17)sc.TAI+=99;else if(lt<=4)sc.XIU+=98;else{
+        var st=1;for(var i=n-2;i>=0;i--){if(r[i]===lr)st++;else break;}
+        if(st>=7)sc[lr==='TAI'?'XIU':'TAI']+=35;else if(st>=5)sc[lr]+=25;else if(st>=3)sc[lr]+=15;else sc[lr==='TAI'?'XIU':'TAI']+=10;
+        if(n>=4&&r[n-1]===r[n-3]&&r[n-2]===r[n-4]&&r[n-1]!==r[n-2])sc[r[n-2]]+=25;
+        if(n>=6&&r[n-1]===r[n-2]&&r[n-3]===r[n-5]&&r[n-1]!==r[n-3])sc[r[n-3]]+=20;
+        for(var i=0;i<3;i++){var v=s.map(function(x){return x.dc[i]}),vl=v.length,lv=v[vl-1],vs=1;for(var j=vl-2;j>=0;j--){if(v[j]===lv)vs++;else break;}var bg=v.filter(function(x){return x>=4}).length,nv=lv;if(vs>=5)nv=lv===6?5:lv+1;else if(vs>=3)nv=lv;else nv=bg>vl/2?5:2;nv=Math.max(1,Math.min(6,nv));if(nv>=4)sc.TAI+=5;else sc.XIU+=5;}
+        if(lt>=14&&lt<=16)sc.TAI+=18;else if(lt>=5&&lt<=7)sc.XIU+=18;
+        var l6=r.slice(-6),t6=l6.filter(function(x){return x==='TAI'}).length;if(t6>=5)sc.XIU+=12;else if(t6<=1)sc.TAI+=12;
+        if(n>=8){var l3=r.slice(-3).join(''),mt=0,mx=0;for(var i=0;i<=n-4;i++){if(r.slice(i,i+3).join('')===l3){r[i+3]==='TAI'?mt++:mx++;}}if(mt+mx>=4){if(mt>mx)sc.TAI+=14;else sc.XIU+=14;}}
+    }
+    return{pr:sc.TAI>sc.XIU?'TAI':'XIU',cf:Math.min(99,Math.max(55,Math.round(Math.max(sc.TAI,sc.XIU)/(sc.TAI+sc.XIU)*100)))};
 }
 
-/* DRAG BOT */
-const bw=document.getElementById('bw');
-
-let down=false,ox,oy;
-
-bw.addEventListener('mousedown',e=>{
-down=true;
-ox=e.clientX-bw.offsetLeft;
-oy=e.clientY-bw.offsetTop;
-});
-
-document.addEventListener('mousemove',e=>{
-if(!down)return;
-bw.style.left=(e.clientX-ox)+'px';
-bw.style.top=(e.clientY-oy)+'px';
-bw.style.right='auto';
-});
-
-document.addEventListener('mouseup',()=>down=false);
-
-/* ===== API SYSTEM ===== */
-
-const API_MAIN =
-"https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx";
-
-const API_FALLBACK = [
-"https://sun-ls.onrender.com/sunlon",
-"https://toolsunwin-gq58.onrender.com/api/ditmemaysun"
-];
-
-let data=[];
-
-/* NORMALIZE */
-function norm(d,res){
-
-if(d?.phien){
-res.push({
-p:String(d.phien),
-k:(d.ket_qua||"").includes("T")?"TAI":"XIU"
-});
+async function up(){
+    var res=[];
+    for(var a of A){try{var r=await fetch(a,{signal:AbortSignal.timeout(4000)});var d=await r.json();
+    if(d?.phien&&d.xuc_xac_1!==undefined)res.push({p:String(d.phien),dc:[d.xuc_xac_1,d.xuc_xac_2,d.xuc_xac_3],t:d.tong,r:(d.ket_qua==='Tài'||d.ket_qua==='TAI')?'TAI':'XIU'});
+    if(d?.phien_hien_tai&&d.xuc_xac_1!==undefined)res.push({p:String(d.phien_hien_tai),dc:[d.xuc_xac_1,d.xuc_xac_2,d.xuc_xac_3],t:d.tong,r:(d.ket_qua==='Tài'||d.ket_qua==='TAI')?'TAI':'XIU'});
+    if(d?.Phien&&d.Xuc_xac_1!==undefined)res.push({p:String(d.Phien),dc:[d.Xuc_xac_1,d.Xuc_xac_2,d.Xuc_xac_3],t:d.Tong,r:d.Ket_qua==='Tài'?'TAI':'XIU'});}catch(e){}}
+    for(var i of res){if(!D.se.has(i.p)){D.se.add(i.p);if(D.lp&&D.s.length>0){var l=D.s[D.s.length-1];if(parseInt(i.p)===parseInt(l.p)+1){D.pr.push({p:i.p,pr:D.lp,ac:i.r,ok:D.lp===i.r});}}D.s.push(i);D.su+=i.t;i.r==='TAI'?D.t++:D.x++;}}
+    D.s.sort(function(a,b){return parseInt(a.p)-parseInt(b.p)});
+    if(D.s.length>=3){var p=pd(D.s);if(p.pr){D.lp=p.pr;document.getElementById('pp').textContent=p.pr==='TAI'?'🔴 TÀI':'🟢 XỈU';document.getElementById('pp').className='pp '+p.pr;document.getElementById('bi').textContent='AI '+p.cf+'%';}}
+    sv();if(document.getElementById('bm').classList.contains('show')&&document.getElementById('mainMenu').style.display!=='none')rm();
 }
 
-if(d?.Phien){
-res.push({
-p:String(d.Phien),
-k:(d.Ket_qua||"").includes("T")?"TAI":"XIU"
-});
+function rm(){
+    var pr=D.pr,tp=pr.length,cp=pr.filter(function(p){return p.ok}).length;
+    document.getElementById('mt').textContent=tp;document.getElementById('md').textContent=cp;
+    document.getElementById('ms').textContent=tp-cp;document.getElementById('ma').textContent=tp>0?Math.round(cp/tp*100)+'%':'--%';
+    var tb=document.getElementById('mtb');
+    if(pr.length===0)tb.innerHTML='<tr><td colspan="4">Chưa có</td></tr>';
+    else tb.innerHTML=[...pr].reverse().slice(0,100).map(function(p){return'<tr><td>#'+p.p+'</td><td class="'+(p.pr==='TAI'?'T':'X')+'">'+p.pr+'</td><td class="'+(p.ac==='TAI'?'T':'X')+'">'+p.ac+'</td><td class="'+(p.ok?'ok':'no')+'">'+(p.ok?'✅':'❌')+'</td></tr>';}).join('');
 }
 
-}
-
-/* LOAD */
-async function load(){
-
-let res=[];
-
-/* MAIN */
-try{
-let r=await fetch(API_MAIN,{signal:AbortSignal.timeout(4000)});
-let d=await r.json();
-norm(d,res);
-}catch(e){}
-
-/* FALLBACK */
-if(res.length===0){
-for(let a of API_FALLBACK){
-try{
-let r=await fetch(a);
-let d=await r.json();
-norm(d,res);
-}catch(e){}
-}
-}
-
-/* UNIQUE */
-let map=new Map();
-res.forEach(i=>map.set(i.p,i));
-
-data=[...map.values()].slice(-50);
-
-render();
-predict();
-
-}
-
-/* RENDER */
-function render(){
-
-document.getElementById('total').innerText=data.length;
-
-let html="";
-
-data.slice().reverse().forEach(i=>{
-html+=`
-<tr>
-<td>${i.p}</td>
-<td class="${i.k==='TAI'?'T':'X'}">${i.k}</td>
-</tr>`;
-});
-
-document.getElementById('tb').innerHTML=
-html||"<tr><td colspan='2'>no data</td></tr>";
-
-}
-
-/* PREDICT */
-function predict(){
-
-if(data.length<5)return;
-
-let last=data.slice(-5).map(x=>x.k);
-
-let t=last.filter(x=>x==="TAI").length;
-
-let result=t>2?"TAI":"XIU";
-
-document.getElementById('pp').innerText=result;
-document.getElementById('pp').className="pp "+result;
-
-document.getElementById('bi').innerText=
-"AI "+Math.round((Math.max(t,5-t)/5)*100)+"%";
-
-}
-
-/* LOOP */
-setInterval(load,3000);
-load();
-
+checkKey();up();setInterval(up,3000);
 </script>
-
 </body>
 </html>
