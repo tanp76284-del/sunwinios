@@ -2,80 +2,325 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bot Test</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>👑 PHUC SIX AI BOT</title>
 
 <style>
 
+/* BODY */
 body{
-    margin:0;
-    height:100vh;
-    background:#000;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+margin:0;
+height:100vh;
+overflow:hidden;
+background:#000;
+font-family:Arial;
 }
 
-/* KHUNG BOT */
-.bot-wrap{
-    position:relative;
-    width:90px;
-    height:90px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
+/* GAME */
+#gf{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+border:none;
+z-index:1;
 }
 
-/* HIỆU ỨNG GLOW */
-.bot-wrap::before{
-    content:'';
-    position:absolute;
-    inset:-12px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(0,255,255,.4), transparent 70%);
-    filter:blur(10px);
-    animation:glow 2s infinite ease-in-out;
+/* BOT WRAP */
+.bw{
+position:fixed;
+right:10px;
+top:120px;
+z-index:999999;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+
+cursor:grab;
+}
+
+.bw:active{cursor:grabbing;}
+
+/* INFO BOX */
+.bot-tip{
+background:rgba(10,10,20,.92);
+border:1px solid #00fff2;
+border-radius:12px;
+padding:6px 10px;
+margin-bottom:6px;
+text-align:center;
+backdrop-filter:blur(8px);
+}
+
+.pp{
+font-size:1.15em;
+font-weight:900;
+}
+
+.pp.TAI{color:#ff4d4d;}
+.pp.XIU{color:#33ff88;}
+
+.bi{
+font-size:.7em;
+color:#bbb;
 }
 
 /* BOT */
+.bot-wrap{
+position:relative;
+width:78px;
+height:78px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.bot-wrap::before{
+content:'';
+position:absolute;
+inset:-10px;
+border-radius:50%;
+
+background:radial-gradient(circle, rgba(0,255,255,.35), transparent 70%);
+filter:blur(10px);
+animation:glow 2s infinite;
+}
+
 .bot-img{
-    width:80px;
-    height:80px;
-    object-fit:contain;
+width:75px;
+height:75px;
+object-fit:contain;
+z-index:2;
+user-select:none;
+-webkit-user-drag:none;
 
-    z-index:2;
-    position:relative;
-
-    user-select:none;
-    -webkit-user-drag:none;
-
-    filter:
-    drop-shadow(0 0 10px rgba(0,255,255,.6))
-    drop-shadow(0 0 20px rgba(255,255,255,.25));
+filter:
+drop-shadow(0 0 12px rgba(0,255,255,.6));
 }
 
-/* FLOAT */
+/* ANIMATION */
 @keyframes glow{
-    0%{transform:scale(1); opacity:.6;}
-    50%{transform:scale(1.15); opacity:1;}
-    100%{transform:scale(1); opacity:.6;}
+0%{transform:scale(1);opacity:.6;}
+50%{transform:scale(1.15);opacity:1;}
+100%{transform:scale(1);opacity:.6;}
 }
+
+/* MENU */
+.bm{
+background:#111522;
+border:2px solid #00fff2;
+border-radius:14px;
+padding:10px;
+width:300px;
+display:none;
+margin-top:8px;
+color:#fff;
+text-align:center;
+}
+
+.bm.show{display:block;}
+
+table{
+width:100%;
+font-size:.8em;
+margin-top:8px;
+border-collapse:collapse;
+}
+
+td,th{
+border-bottom:1px solid #333;
+padding:4px;
+text-align:center;
+}
+
+.T{color:#ff4d4d;font-weight:bold;}
+.X{color:#33ff88;font-weight:bold;}
 
 </style>
-
 </head>
 
 <body>
 
-<div class="bot-wrap">
+<iframe id="gf" src="https://web.sunwin.mw"></iframe>
 
-    <img
-    src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif"
-    class="bot-img">
+<div class="bw" id="bw">
+
+<!-- STATUS -->
+<div class="bot-tip">
+<div class="pp" id="pp">--</div>
+<div class="bi" id="bi">AI READY</div>
+</div>
+
+<!-- BOT -->
+<div class="bot-wrap" onclick="toggleMenu()">
+<img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img">
+</div>
+
+<!-- MENU -->
+<div class="bm" id="bm">
+
+<h3>👑 PHUC SIX AI</h3>
+
+<div>
+📊 Phiên: <span id="total">0</span>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Phiên</th>
+<th>KQ</th>
+</tr>
+</thead>
+<tbody id="tb">
+<tr><td colspan="2">loading...</td></tr>
+</tbody>
+</table>
 
 </div>
+
+</div>
+
+<script>
+
+/* MENU */
+function toggleMenu(){
+document.getElementById('bm').classList.toggle('show');
+}
+
+/* DRAG BOT */
+const bw=document.getElementById('bw');
+
+let down=false,ox,oy;
+
+bw.addEventListener('mousedown',e=>{
+down=true;
+ox=e.clientX-bw.offsetLeft;
+oy=e.clientY-bw.offsetTop;
+});
+
+document.addEventListener('mousemove',e=>{
+if(!down)return;
+bw.style.left=(e.clientX-ox)+'px';
+bw.style.top=(e.clientY-oy)+'px';
+bw.style.right='auto';
+});
+
+document.addEventListener('mouseup',()=>down=false);
+
+/* ===== API SYSTEM ===== */
+
+const API_MAIN =
+"https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx";
+
+const API_FALLBACK = [
+"https://sun-ls.onrender.com/sunlon",
+"https://toolsunwin-gq58.onrender.com/api/ditmemaysun"
+];
+
+let data=[];
+
+/* NORMALIZE */
+function norm(d,res){
+
+if(d?.phien){
+res.push({
+p:String(d.phien),
+k:(d.ket_qua||"").includes("T")?"TAI":"XIU"
+});
+}
+
+if(d?.Phien){
+res.push({
+p:String(d.Phien),
+k:(d.Ket_qua||"").includes("T")?"TAI":"XIU"
+});
+}
+
+}
+
+/* LOAD */
+async function load(){
+
+let res=[];
+
+/* MAIN */
+try{
+let r=await fetch(API_MAIN,{signal:AbortSignal.timeout(4000)});
+let d=await r.json();
+norm(d,res);
+}catch(e){}
+
+/* FALLBACK */
+if(res.length===0){
+for(let a of API_FALLBACK){
+try{
+let r=await fetch(a);
+let d=await r.json();
+norm(d,res);
+}catch(e){}
+}
+}
+
+/* UNIQUE */
+let map=new Map();
+res.forEach(i=>map.set(i.p,i));
+
+data=[...map.values()].slice(-50);
+
+render();
+predict();
+
+}
+
+/* RENDER */
+function render(){
+
+document.getElementById('total').innerText=data.length;
+
+let html="";
+
+data.slice().reverse().forEach(i=>{
+html+=`
+<tr>
+<td>${i.p}</td>
+<td class="${i.k==='TAI'?'T':'X'}">${i.k}</td>
+</tr>`;
+});
+
+document.getElementById('tb').innerHTML=
+html||"<tr><td colspan='2'>no data</td></tr>";
+
+}
+
+/* PREDICT */
+function predict(){
+
+if(data.length<5)return;
+
+let last=data.slice(-5).map(x=>x.k);
+
+let t=last.filter(x=>x==="TAI").length;
+
+let result=t>2?"TAI":"XIU";
+
+document.getElementById('pp').innerText=result;
+document.getElementById('pp').className="pp "+result;
+
+document.getElementById('bi').innerText=
+"AI "+Math.round((Math.max(t,5-t)/5)*100)+"%";
+
+}
+
+/* LOOP */
+setInterval(load,3000);
+load();
+
+</script>
 
 </body>
 </html>
