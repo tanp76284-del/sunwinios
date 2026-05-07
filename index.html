@@ -42,6 +42,16 @@
         .key-box input{width:100%;padding:8px;border:1px solid rgba(0,255,242,.3);background:#0a0a0f;color:#fff;border-radius:8px;font-size:.85em;text-align:center;letter-spacing:2px;margin-bottom:6px}
         .key-box button{width:100%;padding:8px;background:#00fff2;color:#000;border:none;border-radius:8px;font-weight:900;cursor:pointer;font-size:.85em}
         .key-box .msg{font-size:.7em;margin-top:4px}.msg.e{color:#ff4d4d}.msg.s{color:#33ff88}
+
+        /* XOAY NGANG - DỌC */
+        @media screen and (orientation: landscape) {
+            .bw{right:15px;top:50px}
+            .bm{width:350px;max-height:60vh}
+        }
+        @media screen and (orientation: portrait) {
+            .bw{right:8px;top:100px}
+            .bm{width:300px;max-height:40vh}
+        }
     </style>
 </head>
 <body>
@@ -95,10 +105,19 @@ document.addEventListener('mousemove',function(e){if(!dg)return;bw.style.left=(s
 document.addEventListener('touchmove',function(e){if(!dg)return;bw.style.left=(sl+e.touches[0].clientX-sx)+'px';bw.style.top=(st+e.touches[0].clientY-sy)+'px';bw.style.right='auto'});
 document.addEventListener('mouseup',function(){dg=!1});document.addEventListener('touchend',function(){dg=!1});
 
+// XOAY MÀN HÌNH
+window.addEventListener('orientationchange',function(){
+    setTimeout(function(){
+        bw.style.right='auto';
+        bw.style.top='100px';
+        bw.style.left='auto';
+    },300);
+});
+
 var A=['https://bracket-ellen-roads-prefer.trycloudflare.com/api/tx','https://sun-ls.onrender.com/sunlon','https://toolsunwin-gq58.onrender.com/api/ditmemaysun'];
 var D={s:[],t:0,x:0,su:0,se:new Set(),pr:[],lp:''};
-try{var r=localStorage.getItem('psv32');if(r){var p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
-function sv(){try{localStorage.setItem('psv32',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
+try{var r=localStorage.getItem('psv33');if(r){var p=JSON.parse(r);D.s=p.s||[];D.t=p.t||0;D.x=p.x||0;D.su=p.su||0;D.se=new Set(p.se||[]);D.pr=p.pr||[];D.lp=p.lp||'';}}catch(e){}
+function sv(){try{localStorage.setItem('psv33',JSON.stringify({s:D.s.slice(-50000),t:D.t,x:D.x,su:D.su,se:[...D.se].slice(-50000),pr:D.pr.slice(-5000),lp:D.lp}));}catch(e){}}
 
 function pd(s){
     var n=s.length;if(n<3)return{pr:null,cf:0};
