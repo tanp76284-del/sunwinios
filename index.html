@@ -25,7 +25,9 @@ align-items:center;
 cursor:grab
 }
 
-.bw:active{cursor:grabbing}
+.bw:active{
+cursor:grabbing
+}
 
 .bot-tip{
 background:rgba(10,10,20,.92);
@@ -42,8 +44,13 @@ font-size:1.2em;
 font-weight:900
 }
 
-.pp.TAI{color:#ff4d4d}
-.pp.XIU{color:#33ff88}
+.pp.TAI{
+color:#ff4d4d
+}
+
+.pp.XIU{
+color:#33ff88
+}
 
 .bi{
 font-size:.72em;
@@ -80,9 +87,18 @@ filter:drop-shadow(0 0 15px rgba(0,255,255,.7))
 }
 
 @keyframes glow{
-0%{transform:scale(1);opacity:.6}
-50%{transform:scale(1.15);opacity:1}
-100%{transform:scale(1);opacity:.6}
+0%{
+transform:scale(1);
+opacity:.6
+}
+50%{
+transform:scale(1.15);
+opacity:1
+}
+100%{
+transform:scale(1);
+opacity:.6
+}
 }
 
 .bm{
@@ -205,7 +221,9 @@ if(bm.classList.contains('show')){
 renderMenu();
 
 setTimeout(function(){
+
 rm();
+
 },100);
 
 }
@@ -240,7 +258,7 @@ mc.innerHTML=
 '</div>'+
 
 '<div style="margin-bottom:6px;color:#ffd700;font-size:.75em">'+
-'📚 AI Học Cầu Toàn Bộ Phiên'+
+'📚 AI Học Cầu + Phân Tích Xí Ngầu'+
 '</div>'+
 
 '<div class="scroll-box">'+
@@ -307,11 +325,11 @@ lastPhien:''
 
 try{
 
-var r=localStorage.getItem('psv44');
+var rr=localStorage.getItem('psv44');
 
-if(r){
+if(rr){
 
-var p=JSON.parse(r);
+var p=JSON.parse(rr);
 
 D.s=p.s||[];
 D.pr=p.pr||[];
@@ -385,12 +403,12 @@ return false;
 
 }
 
-// AI HỌC CẦU
+// AI PHÂN TÍCH
 function predict(s){
 
 var n=s.length;
 
-if(n<10){
+if(n<20){
 
 return{
 pr:null,
@@ -416,7 +434,28 @@ TAI:0,
 XIU:0
 };
 
-// HỌC PATTERN TOÀN BỘ PHIÊN
+// HỌC 20 PHIÊN
+var recent=r.slice(-20);
+
+var rt=recent.filter(function(v){
+
+return v==='TAI';
+
+}).length;
+
+var rx=20-rt;
+
+if(rt>=14){
+
+score.XIU+=18;
+
+}else if(rx>=14){
+
+score.TAI+=18;
+
+}
+
+// PATTERN HISTORY
 for(var size=3;size<=12;size++){
 
 if(n<=size)continue;
@@ -450,11 +489,11 @@ var total=tai+xiu;
 
 if(tai>xiu){
 
-score.TAI+=(tai/total)*size*5;
+score.TAI+=(tai/total)*size*4;
 
 }else{
 
-score.XIU+=(xiu/total)*size*5;
+score.XIU+=(xiu/total)*size*4;
 
 }
 
@@ -462,7 +501,130 @@ score.XIU+=(xiu/total)*size*5;
 
 }
 
-// HỌC BỆT
+// PHÂN TÍCH TỪNG VIÊN
+for(var d=0;d<3;d++){
+
+var arr=[];
+
+for(var i=0;i<n;i++){
+
+arr.push(dc[i][d]);
+
+}
+
+var recentDice=arr.slice(-20);
+
+var last=recentDice[recentDice.length-1];
+var prev=recentDice[recentDice.length-2]||last;
+var prev2=recentDice[recentDice.length-3]||prev;
+
+var high=recentDice.filter(function(v){
+
+return v>=4;
+
+}).length;
+
+var low=recentDice.length-high;
+
+// TĂNG
+if(last>prev && prev>prev2){
+
+if(last>=4){
+
+score.TAI+=14;
+
+}else{
+
+score.XIU+=10;
+
+}
+
+}
+
+// GIẢM
+else if(last<prev && prev<prev2){
+
+if(last<=3){
+
+score.XIU+=14;
+
+}else{
+
+score.TAI+=10;
+
+}
+
+}
+
+// THỐNG KÊ
+else{
+
+if(high>low){
+
+if(last>=4){
+
+score.XIU+=12;
+
+}else{
+
+score.TAI+=12;
+
+}
+
+}else{
+
+if(last<=3){
+
+score.TAI+=12;
+
+}else{
+
+score.XIU+=12;
+
+}
+
+}
+
+}
+
+// CHẴN LẺ
+var even=recentDice.filter(function(v){
+
+return v%2===0;
+
+}).length;
+
+var odd=recentDice.length-even;
+
+if(even>odd){
+
+if(last%2===0){
+
+score.XIU+=5;
+
+}else{
+
+score.TAI+=5;
+
+}
+
+}else{
+
+if(last%2!==0){
+
+score.XIU+=5;
+
+}else{
+
+score.TAI+=5;
+
+}
+
+}
+
+}
+
+// BỆT
 var last=r[n-1];
 
 var streak=1;
@@ -481,13 +643,17 @@ break;
 
 }
 
-if(streak>=4){
+if(streak>=5){
 
-score[last==='TAI'?'XIU':'TAI']+=25;
+score[last==='TAI'?'XIU':'TAI']+=26;
+
+}else if(streak===4){
+
+score[last==='TAI'?'XIU':'TAI']+=18;
 
 }else if(streak===3){
 
-score[last==='TAI'?'XIU':'TAI']+=15;
+score[last==='TAI'?'XIU':'TAI']+=12;
 
 }else if(streak===2){
 
@@ -495,7 +661,7 @@ score[last]+=8;
 
 }
 
-// HỌC CẦU 1-1
+// CẦU 1-1
 if(
 
 r[n-1]===r[n-3] &&
@@ -504,56 +670,7 @@ r[n-1]!==r[n-2]
 
 ){
 
-score[r[n-2]]+=20;
-
-}
-
-// HỌC XÍ NGẦU
-for(var d=0;d<3;d++){
-
-var arr=[];
-
-for(var i=0;i<n;i++){
-
-arr.push(dc[i][d]);
-
-}
-
-var high=arr.filter(function(v){
-
-return v>=4;
-
-}).length;
-
-var low=arr.length-high;
-
-var lastDice=arr[arr.length-1];
-
-if(high>low){
-
-if(lastDice>=4){
-
-score.XIU+=10;
-
-}else{
-
-score.TAI+=10;
-
-}
-
-}else{
-
-if(lastDice<=3){
-
-score.TAI+=10;
-
-}else{
-
-score.XIU+=10;
-
-}
-
-}
+score[r[n-2]]+=18;
 
 }
 
@@ -566,15 +683,15 @@ var max=Math.max(score.TAI,score.XIU);
 
 var total=score.TAI+score.XIU;
 
-var cf=Math.round((max/total)*100);
+var raw=Math.round((max/total)*100);
 
 // CHỐNG % ẢO
-cf=Math.max(52,Math.min(88,cf));
+raw=Math.max(52,Math.min(82,raw));
 
 return{
 
 pr:pr,
-cf:cf
+cf:raw
 
 };
 
@@ -589,11 +706,11 @@ var s=D.s;
 
 var n=s.length;
 
-if(n>=10){
+if(n>=20){
 
 var current=s[n-1];
 
-// CHẤM ĐÚNG SAI
+// CHECK ĐÚNG SAI
 if(
 
 D.lp &&
@@ -621,7 +738,7 @@ D.pr=D.pr.slice(-5000);
 
 }
 
-// AI HỌC TOÀN BỘ PHIÊN
+// AI
 var p=predict(s);
 
 if(p.pr){
@@ -645,13 +762,13 @@ var realRate=total>0
 
 // % THẬT
 var finalCf=Math.round(
-(p.cf*0.4)+(realRate*0.6)
+(p.cf*0.45)+(realRate*0.55)
 );
 
-// CHỐNG ẢO
+// GIỚI HẠN
 finalCf=Math.max(
 45,
-Math.min(88,finalCf)
+Math.min(85,finalCf)
 );
 
 // HIỂN THỊ
@@ -682,7 +799,7 @@ setTimeout(mainLoop,3000);
 
 }
 
-// MENU ĐÚNG SAI
+// MENU
 function rm(){
 
 var pr=D.pr||[];
