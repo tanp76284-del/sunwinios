@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect width='180' height='180' rx='40' fill='%230a0a0f'/><text x='90' y='115' text-anchor='middle' font-size='90' font-weight='bold' fill='%23ffd700'>👑</text></svg>">
     <meta name="theme-color" content="#0a0a0f">
-    <title>👑 PHUC SIX V15</title>
+    <title>👑 PHUC SIX V15 FINAL</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:#000;height:100vh;overflow:hidden;font-family:Arial}
@@ -54,11 +54,11 @@
         <img src="https://i.postimg.cc/4dRg6Mrt/IMG-3575.gif" class="bot-img" alt="Bot">
     </div>
     <div class="bm" id="bm">
-        <h3>👑 PHUC SIX V15</h3>
+        <h3>👑 PHUC SIX V15 FINAL</h3>
         <div class="st">
-            <span>T: <b id="w" style="color:#33ff88">0</b></span>
-            <span>X: <b id="l" style="color:#ff4d4d">0</b></span>
-            <span>WR: <b id="r">0%</b></span>
+            <span>✅ <b id="w" style="color:#33ff88">0</b></span>
+            <span>❌ <b id="l" style="color:#ff4d4d">0</b></span>
+            <span>WR <b id="r">0%</b></span>
         </div>
         <div class="scroll-box">
             <table>
@@ -99,8 +99,8 @@ document.addEventListener('pointerup', function(){ dg = false; });
 
 // ============ DATA ============
 let D = {s:[], pr:[], lp:'', lastPhien:''};
-try{ let c = localStorage.getItem('psv44'); if(c) D = JSON.parse(c); }catch(e){}
-function save(){ localStorage.setItem('psv44', JSON.stringify(D)); }
+try{ let c = localStorage.getItem('psv45'); if(c) D = JSON.parse(c); }catch(e){}
+function save(){ localStorage.setItem('psv45', JSON.stringify(D)); }
 
 // ============ LOAD API ============
 async function load(){
@@ -124,18 +124,15 @@ function predict(s){
     let r = s.map(x => x.result || x.r);
     let score = {TAI:0, XIU:0};
     
-    // 20 gần nhất
     let last20 = r.slice(-20);
     let t20 = last20.filter(x => x === 'TAI').length;
-    if(t20 >= 14) score.XIU += 10;
-    if(20 - t20 >= 14) score.TAI += 10;
+    if(t20 >= 14) score.XIU += 8;
+    if(20 - t20 >= 14) score.TAI += 8;
     
-    // Streak
     let lastv = r[n-1], streak = 1;
     for(let i = n-2; i >= 0; i--){ if(r[i] === lastv) streak++; else break; }
-    if(streak >= 5) score[lastv === 'TAI' ? 'XIU' : 'TAI'] += 12;
+    if(streak >= 5) score[lastv === 'TAI' ? 'XIU' : 'TAI'] += 10;
     
-    // Pattern
     for(let k = 3; k <= 4; k++){
         let p = r.slice(n-k, n).join('');
         let a = 0, b = 0;
@@ -146,11 +143,12 @@ function predict(s){
     }
     
     let diff = Math.abs(score.TAI - score.XIU);
-    if(diff < 6) return {pr:null, cf:50, skip:true};
+    if(diff < 4) return {pr:null, cf:50, skip:true};
     
     let pr = score.TAI > score.XIU ? 'TAI' : 'XIU';
-    let cf = Math.round((Math.max(score.TAI, score.XIU) / (score.TAI + score.XIU)) * 100);
-    cf = Math.max(52, Math.min(70, cf));
+    let total = score.TAI + score.XIU;
+    let cf = 50 + Math.round((diff / total) * 40);
+    cf = Math.max(50, Math.min(68, cf));
     
     return {pr, cf, skip:false};
 }
@@ -164,18 +162,17 @@ async function loop(){
         let p = predict(s);
         let cur = s[n-1];
         
-        // Check kết quả cũ
         if(D.lp && cur.phien != D.lastPhien){
             D.pr.push({p:cur.phien, pr:D.lp, ac:cur.result, ok:D.lp === cur.result});
         }
         
-        // Update UI
         if(p.pr){
             D.lp = p.pr;
             D.lastPhien = cur.phien;
             
-            let win = D.pr.filter(x => x.ok).length;
-            let total = D.pr.length;
+            let recent50 = D.pr.slice(-50);
+            let win = recent50.filter(x => x.ok).length;
+            let total = recent50.length;
             let rate = total ? Math.round(win / total * 100) : 0;
             
             document.getElementById('pp').textContent = p.pr === 'TAI' ? '🔴 TÀI' : '🟢 XỈU';
