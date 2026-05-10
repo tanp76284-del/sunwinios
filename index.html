@@ -2,549 +2,550 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BAPE · TÀI XỈU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>PHUC SIX HEX · AI TÀI XỈU</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
+
         body {
-            background: #000a0f;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-        #gameFrame {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            z-index: 1;
-        }
-        /* TOOL NHỎ GỌN */
-        .float-tool {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 99999;
-            cursor: grab;
-        }
-        .float-tool:active { cursor: grabbing; }
-        
-        .tool-main {
-            width: 260px;
-            background: rgba(0, 18, 14, 0.96);
-            backdrop-filter: blur(16px);
-            border-radius: 24px;
-            border: 1px solid rgba(0, 255, 180, 0.4);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-            overflow: hidden;
-        }
-        .tool-header {
-            padding: 10px 14px;
-            background: rgba(0, 255, 180, 0.08);
+            background: linear-gradient(145deg, #0a0f1a 0%, #061218 100%);
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: grab;
-            border-bottom: 1px solid rgba(0, 255, 180, 0.2);
-        }
-        .tool-header h4 {
-            color: #00ffb3;
-            font-size: 0.8rem;
-            font-weight: 800;
-        }
-        .ctrl-btn {
-            background: rgba(0, 255, 180, 0.2);
-            border: none;
-            color: #00ffb3;
-            width: 26px;
-            height: 26px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        .tool-body {
-            padding: 14px;
-        }
-        /* Kết quả chính */
-        .pred-box {
-            text-align: center;
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            padding: 10px;
-            margin-bottom: 12px;
-        }
-        .pred-label {
-            font-size: 0.55rem;
-            color: #77ffbb;
-        }
-        .pred-value {
-            font-size: 2.5rem;
-            font-weight: 900;
-            line-height: 1.2;
-        }
-        .pred-value.TAI { color: #ff4d4d; text-shadow: 0 0 10px #ff4d4d; }
-        .pred-value.XIU { color: #33ff88; text-shadow: 0 0 10px #33ff88; }
-        .confidence {
-            font-size: 0.65rem;
-            color: #00ffb3;
-        }
-        /* Thống kê nhỏ */
-        .small-stats {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .small-stats div {
-            flex: 1;
-            background: rgba(0,30,25,0.5);
-            border-radius: 12px;
-            padding: 5px;
-            text-align: center;
-        }
-        .small-stats .num {
-            font-size: 1rem;
-            font-weight: 900;
-            color: #00ffb3;
-        }
-        .small-stats .txt {
-            font-size: 0.5rem;
-            color: #88ffcc;
-        }
-        /* Chain ngắn */
-        .chain-area {
-            margin-bottom: 10px;
-        }
-        .chain-title {
-            font-size: 0.55rem;
-            color: #77ffbb;
-            margin-bottom: 5px;
-        }
-        .chain-list {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        .chain-dot {
-            width: 26px;
-            height: 26px;
-            border-radius: 7px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-weight: 900;
-            font-size: 0.65rem;
-            background: #0a2a22;
+            align-items: center;
+            font-family: 'Segoe UI', 'Nunito', 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 25px;
         }
-        .chain-dot.TAI { background: #ff4d4d; box-shadow: 0 0 4px #ff4d4d; }
-        .chain-dot.XIU { background: #33ff88; box-shadow: 0 0 4px #33ff88; color: #000; }
-        
-        .api-status {
-            font-size: 0.5rem;
-            text-align: center;
-            margin-top: 8px;
-            color: #338866;
+
+        /* MENU CHÍNH - MÀU SẮC PHUC SIX HEX */
+        .phucsix-menu {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(8, 20, 25, 0.92);
+            backdrop-filter: blur(14px);
+            border-radius: 32px;
+            border: 1px solid rgba(0, 255, 180, 0.35);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 180, 0.1) inset;
+            overflow: hidden;
+            transition: all 0.2s;
         }
-        /* THU NHỎ */
-        .tool-mini {
-            background: rgba(0, 18, 14, 0.96);
-            backdrop-filter: blur(16px);
-            border-radius: 50px;
-            padding: 6px 16px;
+
+        /* Header */
+        .phucsix-header {
+            background: linear-gradient(115deg, #0a2a22 0%, #051a12 100%);
+            padding: 18px 24px;
+            border-bottom: 2px solid rgba(0, 255, 180, 0.5);
+        }
+        .phucsix-header h1 {
+            color: #00ffb3;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 12px;
-            border: 1px solid rgba(0, 255, 180, 0.4);
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
-        .mini-pred {
-            font-size: 1rem;
-            font-weight: 900;
+        .phucsix-header h1 small {
+            font-size: 0.7rem;
+            background: rgba(0, 255, 180, 0.2);
+            padding: 4px 12px;
+            border-radius: 40px;
+            color: #ccffdd;
+            font-weight: normal;
         }
-        .mini-pred.TAI { color: #ff4d4d; }
-        .mini-pred.XIU { color: #33ff88; }
-        .mini-conf {
-            font-size: 0.65rem;
-            color: #00ffb3;
+
+        /* Body - có thể cuộn */
+        .phucsix-body {
+            padding: 22px 24px;
+            max-height: 85vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
         }
-        .hidden { display: none; }
-        
-        /* OVERLAY THÔNG BÁO ĐÚNG/SAI 1 LẦN */
-        .result-toast {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 999999;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(20px);
-            padding: 20px 35px;
-            border-radius: 60px;
-            font-size: 2rem;
-            font-weight: 900;
+        .phucsix-body::-webkit-scrollbar {
+            width: 5px;
+        }
+        .phucsix-body::-webkit-scrollbar-track {
+            background: #0a2a22;
+            border-radius: 10px;
+        }
+        .phucsix-body::-webkit-scrollbar-thumb {
+            background: #00ffb3;
+            border-radius: 10px;
+        }
+
+        /* Khu vực dự đoán */
+        .prediction-panel {
+            background: linear-gradient(125deg, #001f1a, #000c08);
+            border-radius: 28px;
+            padding: 20px;
             text-align: center;
-            white-space: nowrap;
-            border: 2px solid;
-            opacity: 0;
-            transition: 0.15s;
-            pointer-events: none;
+            margin-bottom: 28px;
+            border: 1px solid rgba(0, 255, 180, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
-        .result-toast.show {
-            opacity: 1;
+        .prediction-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: #77ffcc;
         }
-        .result-toast.win {
-            color: #33ff88;
-            border-color: #33ff88;
-            text-shadow: 0 0 15px #33ff88;
-            background: rgba(0,30,0,0.95);
+        .prediction-value {
+            font-size: 3.8rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin: 12px 0 8px;
         }
-        .result-toast.lose {
-            color: #ff4d4d;
-            border-color: #ff4d4d;
-            text-shadow: 0 0 15px #ff4d4d;
-            background: rgba(30,0,0,0.95);
+        .prediction-value.TAI { color: #ff5e5e; text-shadow: 0 0 16px #ff4d4d; }
+        .prediction-value.XIU { color: #5eff9e; text-shadow: 0 0 16px #33ff88; }
+        .confidence {
+            font-size: 0.85rem;
+            background: rgba(0, 255, 180, 0.15);
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 40px;
+            color: #aaffdd;
+        }
+
+        /* Thống kê nhỏ */
+        .stats-badge {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+        .stats-badge div {
+            background: #0a1f1a;
+            padding: 6px 20px;
+            border-radius: 32px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: 1px solid #1f4a3a;
+        }
+        .win { color: #5eff9e; }
+        .lose { color: #ff7777; }
+
+        /* Biểu đồ */
+        .chart-block {
+            margin-bottom: 30px;
+        }
+        .chart-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ffdb7e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 3px solid #ffc107;
+            padding-left: 12px;
+        }
+        .chart-canvas {
+            background: #071a1a;
+            border-radius: 20px;
+            padding: 12px;
+            width: 100%;
+            height: 220px;
+            border: 1px solid #2a5545;
+        }
+
+        /* Nút bấm */
+        .button-bar {
+            display: flex;
+            gap: 18px;
+            margin: 20px 0 25px;
+            flex-wrap: wrap;
+        }
+        .btn-ai {
+            flex: 1;
+            background: linear-gradient(95deg, #00cc88, #008866);
+            border: none;
+            padding: 14px 0;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #021c14;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 255, 180, 0.3);
+        }
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0, 255, 180, 0.5);
+        }
+        .btn-refresh {
+            flex: 1;
+            background: rgba(0, 255, 180, 0.12);
+            border: 1px solid #2a8f70;
+            padding: 14px 0;
+            border-radius: 60px;
+            font-weight: 700;
+            color: #b3ffe0;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-refresh:hover {
+            background: rgba(0, 255, 180, 0.25);
+            border-color: #00ffb3;
+        }
+
+        /* Kết quả phân tích */
+        .analysis-result {
+            background: #071a14;
+            border-radius: 24px;
+            padding: 18px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            border-left: 5px solid #ffdb7e;
+            color: #cce6dd;
+        }
+        .analysis-result strong {
+            color: #ffdb7e;
+        }
+
+        /* trạng thái */
+        .status-text {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 22px;
+            padding-top: 12px;
+            border-top: 1px dashed #2a6b55;
+            color: #4fba97;
+        }
+
+        @media (max-width: 680px) {
+            .phucsix-body { padding: 16px; }
+            .prediction-value { font-size: 2.5rem; }
+            .chart-canvas { height: 170px; }
+            .btn-ai, .btn-refresh { padding: 10px 0; font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
 
-<iframe id="gameFrame" src="https://web.sunwin.mw"></iframe>
-
-<div class="float-tool" id="floatTool">
-    <!-- Trạng thái thu nhỏ -->
-    <div class="tool-mini" id="miniState">
-        <span class="mini-pred" id="miniPred">TÀI</span>
-        <span class="mini-conf" id="miniConf">--%</span>
-        <button class="ctrl-btn" id="expandBtn" style="width:22px;height:22px;">🔓</button>
+<div class="phucsix-menu">
+    <div class="phucsix-header">
+        <h1>
+            🎲 PHUC SIX HEX · AI TÀI XỈU
+            <small>⚡ PHÂN TÍCH BIỂU ĐỒ 20 PHIÊN</small>
+        </h1>
     </div>
 
-    <!-- Trạng thái mở -->
-    <div class="tool-main hidden" id="expandedState">
-        <div class="tool-header" id="dragHandle">
-            <h4>🔮 BAPE · TÀI XỈU</h4>
-            <div>
-                <button class="ctrl-btn" id="minimizeBtn">─</button>
-                <button class="ctrl-btn" id="clearHistoryBtn" style="font-size:0.7rem;">🗑️</button>
+    <div class="phucsix-body">
+        <!-- Vùng dự đoán -->
+        <div class="prediction-panel">
+            <div class="prediction-label">🎯 DỰ ĐOÁN PHIÊN TIẾP THEO</div>
+            <div class="prediction-value" id="predictionValue">--</div>
+            <div class="confidence" id="confidenceText">🔮 ĐỘ TIN CẬY: --%</div>
+
+            <div class="stats-badge">
+                <div>✅ ĐÚNG: <span class="win" id="winCount">0</span></div>
+                <div>❌ SAI: <span class="lose" id="loseCount">0</span></div>
+                <div>📊 TỈ LỆ: <span id="winRate">0%</span></div>
             </div>
         </div>
-        <div class="tool-body">
-            <div class="pred-box">
-                <div class="pred-label">📡 DỰ ĐOÁN TIẾP THEO</div>
-                <div class="pred-value" id="mainPred">--</div>
-                <div class="confidence" id="mainConf">Độ chuẩn: --%</div>
-            </div>
-            <div class="small-stats">
-                <div><div class="num" id="winCount">0</div><div class="txt">THẮNG</div></div>
-                <div><div class="num" id="loseCount">0</div><div class="txt">THUA</div></div>
-                <div><div class="num" id="wrCount">0%</div><div class="txt">WR</div></div>
-            </div>
-            <div class="chain-area">
-                <div class="chain-title">🎲 12 PHIÊN GẦN NHẤT</div>
-                <div class="chain-list" id="chainList"></div>
-            </div>
-            <div class="api-status" id="apiStatus">🟢 KẾT NỐI VPS...</div>
+
+        <!-- Biểu đồ 1: Tổng điểm 20 phiên -->
+        <div class="chart-block">
+            <div class="chart-title">📊 BIỂU ĐỒ TỔNG ĐIỂM (t1 → t20)</div>
+            <canvas id="totalChart" class="chart-canvas"></canvas>
+        </div>
+
+        <!-- Biểu đồ 2: 3 mặt xí ngầu -->
+        <div class="chart-block">
+            <div class="chart-title">🎲 BIỂU ĐỒ 3 MẶT XÍ NGẦU (Tím ➖ Vàng ➖ Đỏ)</div>
+            <canvas id="diceChart" class="chart-canvas"></canvas>
+        </div>
+
+        <!-- Thanh nút -->
+        <div class="button-bar">
+            <button class="btn-ai" id="analyzeBtn">🧠 PHÂN TÍCH AI</button>
+            <button class="btn-refresh" id="refreshBtn">🔄 CẬP NHẬT DỮ LIỆU</button>
+        </div>
+
+        <!-- Kết quả phân tích chi tiết -->
+        <div class="analysis-result" id="analysisResult">
+            ✨ Bấm "PHÂN TÍCH AI" để dự đoán dựa trên <strong>hơn 4000 phiên</strong> lịch sử.
+        </div>
+
+        <div class="status-text" id="statusText">
+            🟢 ĐANG KẾT NỐI VPS ...
         </div>
     </div>
 </div>
 
-<div class="result-toast" id="resultToast"></div>
-
 <script>
-    // ========== CẤU HÌNH ==========
-    const API_URL = 'https://isa-accomplish-fork-capitol.trycloudflare.com/api/history';
-    const FETCH_INTERVAL = 3500;  // fetch liên tục để lấy phiên mới
-    const TOAST_DURATION = 2500;   // hiện đúng/sai trong 2.5s
+    // ========== API VPS CỦA MÀY ==========
+    const VPS_API = 'https://isa-accomplish-fork-capitol.trycloudflare.com/api/history';
+    
+    // Dữ liệu
+    let fullHistory = [];         // toàn bộ lịch sử từ VPS (4000+)
+    let current20 = [];           // 20 phiên gần nhất để vẽ
+    let predictionLog = [];       // lưu kết quả đúng/sai
+    
+    // Biểu đồ
+    let totalChart = null;
+    let diceChart = null;
 
-    // ========== DATA ==========
-    let sessions = [];
-    let predictions = [];
-    let lastPredictedPhien = null;
-    let lastPredictionValue = null;
-    let hasShownResultForPhien = new Set(); // tránh báo lại nhiều lần cùng 1 phiên
-
-    // Load cache
-    try {
-        let saved = localStorage.getItem('bape_final');
-        if(saved) {
-            let d = JSON.parse(saved);
-            if(d.predictions) predictions = d.predictions;
-            if(d.sessions) sessions = d.sessions;
-            if(d.lastPredictedPhien) lastPredictedPhien = d.lastPredictedPhien;
-            if(d.lastPredictionValue) lastPredictionValue = d.lastPredictionValue;
-        }
-    } catch(e) {}
-
-    function saveData() {
-        localStorage.setItem('bape_final', JSON.stringify({
-            predictions, sessions, lastPredictedPhien, lastPredictionValue
-        }));
+    // ========== TIỆN ÍCH ==========
+    function getTaiXiu(total) {
+        if (total >= 4 && total <= 10) return 'XỈU';
+        if (total >= 11 && total <= 17) return 'TÀI';
+        return '?';
     }
 
-    // ========== HEX ENGINE 15 THUẬT TOÁN ==========
-    function createHex(dice) {
-        let raw = dice.map(d => d.toString(16)).join('');
-        raw += dice.reduce((a,b)=>a+b,0).toString(16);
-        while(raw.length < 32) raw += raw;
-        return raw.substring(0,32);
+    function getTotalFromSession(s) {
+        let d = s.dice || s.dc;
+        return d[0] + d[1] + d[2];
     }
 
-    const algos = [
-        h => parseInt(h.slice(0,2),16)%2===0 ? 'TAI' : 'XIU',
-        h => parseInt(h.slice(2,4),16)%3===0 ? 'TAI' : 'XIU',
-        h => parseInt(h.slice(4,6),16)>128 ? 'TAI' : 'XIU',
-        h => h.charCodeAt(0)%2===0 ? 'TAI' : 'XIU',
-        h => h.charCodeAt(15)%2===0 ? 'TAI' : 'XIU',
-        h => h.charCodeAt(31)%2===0 ? 'TAI' : 'XIU',
-        h => { let s=0; for(let i=0;i<32;i++) s+=parseInt(h[i],16); return s%2===0?'TAI':'XIU'; },
-        h => { let x=0; for(let i=0;i<16;i++) x^=parseInt(h[i],16); return x%2===0?'TAI':'XIU'; },
-        h => { let odd=0; for(let i=0;i<32;i++) if(parseInt(h[i],16)%2===1) odd++; return odd>16?'TAI':'XIU'; },
-        h => parseInt(h.slice(10,12),16)%5!==0 ? 'TAI' : 'XIU',
-        h => parseInt(h.slice(20,22),16)%3!==0 ? 'TAI' : 'XIU',
-        h => parseInt(h.slice(30,32),16)%4!==0 ? 'TAI' : 'XIU',
-        h => { let s=0; for(let i=0;i<32;i+=2) s+=parseInt(h.slice(i,i+2),16); return s%2===0?'TAI':'XIU'; },
-        h => parseInt(h.slice(0,4),16)>32768 ? 'TAI' : 'XIU',
-        h => h.charCodeAt(0)%3!==0 ? 'TAI' : 'XIU'
-    ];
-
-    function analyzeHex(hex) {
-        let tai=0, xiu=0;
-        for(let a of algos) a(hex)==='TAI' ? tai++ : xiu++;
-        let pred = tai > xiu ? 'TAI' : 'XIU';
-        let conf = Math.min(85, Math.max(52, Math.round(Math.max(tai,xiu)/(tai+xiu)*100)));
-        return { pred, conf };
-    }
-
-    // ========== HIỂN THỊ ĐÚNG/SAI 1 LẦN DUY NHẤT ==========
-    function showResultToast(isWin) {
-        const toast = document.getElementById('resultToast');
-        toast.textContent = isWin ? '✅ CHÍNH XÁC' : '❌ SAI RỒI';
-        toast.className = `result-toast show ${isWin ? 'win' : 'lose'}`;
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, TOAST_DURATION);
-    }
-
-    // ========== KIỂM TRA KẾT QUẢ PHIÊN TRƯỚC ==========
-    // Chỉ gọi 1 lần duy nhất khi có kết quả mới
-    function checkAndNotifyResult(prevPhien, actualResult) {
-        if (!prevPhien || !actualResult) return false;
-        // Nếu đã thông báo cho phiên này rồi thì bỏ qua
-        if (hasShownResultForPhien.has(prevPhien)) return false;
-        
-        // Nếu có dự đoán cho phiên đó
-        if (lastPredictedPhien === prevPhien && lastPredictionValue) {
-            const isWin = (lastPredictionValue === actualResult);
-            
-            // Lưu vào lịch sử
-            predictions.push({
-                phien: prevPhien,
-                pred: lastPredictionValue,
-                actual: actualResult,
-                ok: isWin
-            });
-            if (predictions.length > 100) predictions.shift();
-            saveData();
-            
-            // Hiển thị đúng/sai 1 lần
-            showResultToast(isWin);
-            
-            // Đánh dấu phiên này đã được xử lý
-            hasShownResultForPhien.add(prevPhien);
-            
-            // Cập nhật UI thống kê
-            updateStatsUI();
-            renderHistoryChainUI();
-            return true;
-        }
-        return false;
-    }
-
-    // ========== UI RENDER ==========
-    function updatePredictionUI(pred, conf) {
-        // Mở rộng
-        const predEl = document.getElementById('mainPred');
-        predEl.innerText = pred;
-        predEl.className = `pred-value ${pred}`;
-        document.getElementById('mainConf').innerHTML = `Độ chuẩn: ${conf}%`;
-        // Thu nhỏ
-        const miniPred = document.getElementById('miniPred');
-        miniPred.innerText = pred === 'TAI' ? '🔴 TÀI' : '🟢 XỈU';
-        miniPred.className = `mini-pred ${pred}`;
-        document.getElementById('miniConf').innerHTML = `${conf}%`;
-    }
-
-    function renderHistoryChainUI() {
-        let recent = sessions.slice(-12);
-        if (!recent.length) {
-            document.getElementById('chainList').innerHTML = '<div style="color:#888">Chờ...</div>';
-            return;
-        }
-        let html = '';
-        for (let s of recent) {
-            let res = s.result || s.r;
-            html += `<div class="chain-dot ${res}">${res === 'TAI' ? 'T' : 'X'}</div>`;
-        }
-        document.getElementById('chainList').innerHTML = html;
-    }
-
-    function updateStatsUI() {
-        let wins = predictions.filter(p => p.ok).length;
-        let total = predictions.length;
-        let wr = total ? Math.round(wins / total * 100) : 0;
-        document.getElementById('winCount').innerText = wins;
-        document.getElementById('loseCount').innerText = total - wins;
-        document.getElementById('wrCount').innerText = wr + '%';
-    }
-
-    // ========== FETCH TỪ VPS ==========
-    async function fetchSessions() {
+    // ========== LẤY TOÀN BỘ DỮ LIỆU TỪ VPS (đồng bộ) ==========
+    async function fetchFullHistory() {
         try {
-            const res = await fetch(API_URL);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 12000);
+            const res = await fetch(VPS_API, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             let all = data.sessions || [];
-            all.sort((a, b) => parseInt(a.phien) - parseInt(b.phien));
-            
-            const oldLength = sessions.length;
-            sessions = all.slice(-50);
-            saveData();
-            
-            document.getElementById('apiStatus').innerHTML = `🟢 VPS | ${sessions.length} phiên`;
-            document.getElementById('apiStatus').style.color = '#33ff88';
+            all.sort((a,b) => parseInt(a.phien) - parseInt(b.phien));
+            fullHistory = all;
+            document.getElementById('statusText').innerHTML = `🟢 VPS ONLINE | ${fullHistory.length} phiên lịch sử | ${new Date().toLocaleTimeString()}`;
             return true;
-        } catch (err) {
-            document.getElementById('apiStatus').innerHTML = '🔴 Chờ VPS...';
-            document.getElementById('apiStatus').style.color = '#ff8866';
+        } catch(e) {
+            console.warn(e);
+            document.getElementById('statusText').innerHTML = `🔴 LỖI: ${e.message} | DÙNG CACHE CŨ`;
             return false;
         }
     }
 
-    // ========== MAIN LOOP ==========
-    async function mainLoop() {
-        await fetchSessions();
+    // ========== CẬP NHẬT 20 PHIÊN GẦN NHẤT VÀ VẼ LẠI BIỂU ĐỒ ==========
+    async function updateCurrentAndDraw() {
+        if (fullHistory.length === 0) await fetchFullHistory();
+        if (fullHistory.length < 5) return false;
+
+        current20 = fullHistory.slice(-20);
+        if (current20.length < 5) return false;
+
+        // Chuẩn bị dữ liệu cho biểu đồ
+        let totals = current20.map(s => getTotalFromSession(s));
+        let dice1 = current20.map(s => (s.dice || s.dc)[0]);
+        let dice2 = current20.map(s => (s.dice || s.dc)[1]);
+        let dice3 = current20.map(s => (s.dice || s.dc)[2]);
+        let labels = totals.map((_, idx) => idx+1);
+
+        // Vẽ biểu đồ tổng
+        if (totalChart) totalChart.destroy();
+        const totalCtx = document.getElementById('totalChart').getContext('2d');
+        totalChart = new Chart(totalCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Tổng 3 mặt',
+                    data: totals,
+                    borderColor: '#f7b32b',
+                    backgroundColor: 'rgba(247,179,43,0.08)',
+                    borderWidth: 2.5,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#ffcf6e',
+                    tension: 0.2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { labels: { color: '#ccc' } } },
+                scales: { y: { min: 3, max: 18, grid: { color: '#2a5545' }, ticks: { stepSize: 1, color: '#bbb' } }, x: { ticks: { color: '#bbb' } } }
+            }
+        });
+
+        // Vẽ biểu đồ 3 mặt
+        if (diceChart) diceChart.destroy();
+        const diceCtx = document.getElementById('diceChart').getContext('2d');
+        diceChart = new Chart(diceCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Tím (hàng trăm)', data: dice1, borderColor: '#b77cff', borderWidth: 2, pointRadius: 5, tension: 0.2, fill: false },
+                    { label: 'Vàng (hàng chục)', data: dice2, borderColor: '#fac05e', borderWidth: 2, pointRadius: 5, tension: 0.2, fill: false },
+                    { label: 'Đỏ (đơn vị)', data: dice3, borderColor: '#ff7359', borderWidth: 2, pointRadius: 5, tension: 0.2, fill: false }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { position: 'top', labels: { color: '#ccc', font: { size: 9 } } } },
+                scales: { y: { min: 1, max: 6, grid: { color: '#2a5545' }, ticks: { stepSize: 1, color: '#bbb' } }, x: { ticks: { color: '#bbb' } } }
+            }
+        });
+        return true;
+    }
+
+    // ========== PHÂN TÍCH AI – TÌM CẦU TRÙNG TRONG 4000+ PHIÊN ==========
+    async function runAIPrediction() {
+        const statusDiv = document.getElementById('analysisResult');
+        const predValueSpan = document.getElementById('predictionValue');
+        const confSpan = document.getElementById('confidenceText');
         
-        if (sessions.length < 2) {
-            setTimeout(mainLoop, FETCH_INTERVAL);
+        if (current20.length < 5) {
+            statusDiv.innerHTML = '⚠️ Chưa đủ 5 phiên, cần thêm dữ liệu từ VPS. Hãy bấm "CẬP NHẬT" trước.';
             return;
         }
-        
-        const latest = sessions[sessions.length - 1];
-        const previous = sessions[sessions.length - 2];
-        
-        // Lấy kết quả thực tế của phiên trước (nếu có)
-        if (previous && (previous.result || previous.r)) {
-            const actualRes = previous.result || previous.r;
-            // Chỉ xử lý 1 lần duy nhất cho phiên đó
-            checkAndNotifyResult(previous.phien, actualRes);
+        if (fullHistory.length < 100) {
+            statusDiv.innerHTML = '⏳ Đang tải lịch sử từ VPS, vui lòng chờ vài giây rồi thử lại...';
+            await fetchFullHistory();
+            if (fullHistory.length < 100) return;
         }
+
+        statusDiv.innerHTML = '🔍 ĐANG TÌM CẦU TRÙNG... (quét ' + fullHistory.length + ' phiên)';
         
-        // Dự đoán cho phiên hiện tại
-        if (latest && (latest.dice || latest.dc)) {
-            const dice = latest.dice || latest.dc;
-            const hex = createHex(dice);
-            const { pred, conf } = analyzeHex(hex);
-            
-            // Cập nhật UI
-            updatePredictionUI(pred, conf);
-            renderHistoryChainUI();
-            updateStatsUI();
-            
-            // Lưu dự đoán cho phiên hiện tại (để mai sau so sánh)
-            if (lastPredictedPhien !== latest.phien) {
-                lastPredictionValue = pred;
-                lastPredictedPhien = latest.phien;
-                saveData();
+        // Lấy 20 tổng hiện tại
+        const currentTotals = current20.map(s => getTotalFromSession(s));
+        const lastNumber = currentTotals[currentTotals.length - 1];
+        
+        // Tìm kiếm cầu trùng
+        let matchList = []; // lưu kết quả phiên kế tiếp
+        
+        // Duyệt toàn bộ lịch sử, cần ít nhất 21 phiên để có 20 + 1
+        for (let i = 0; i <= fullHistory.length - 21; i++) {
+            let identical = true;
+            for (let j = 0; j < 20; j++) {
+                let histTotal = getTotalFromSession(fullHistory[i + j]);
+                if (histTotal !== currentTotals[j]) {
+                    identical = false;
+                    break;
+                }
+            }
+            if (identical) {
+                let nextTotal = getTotalFromSession(fullHistory[i + 20]);
+                matchList.push(nextTotal);
             }
         }
         
-        setTimeout(mainLoop, FETCH_INTERVAL);
-    }
-
-    // ========== DRAG & MINIMIZE ==========
-    const toolDiv = document.getElementById('floatTool');
-    const miniState = document.getElementById('miniState');
-    const expandedState = document.getElementById('expandedState');
-    const dragHandle = document.getElementById('dragHandle');
-    
-    let isExpanded = false;
-    let dragActive = false, startX, startY, startLeft, startTop;
-    
-    function setExpanded(exp) {
-        isExpanded = exp;
-        if (isExpanded) {
-            miniState.classList.add('hidden');
-            expandedState.classList.remove('hidden');
+        // Nếu không có khớp chính xác → tìm cầu gần giống 18/20
+        if (matchList.length === 0) {
+            for (let i = 0; i <= fullHistory.length - 21; i++) {
+                let matchCount = 0;
+                for (let j = 0; j < 20; j++) {
+                    let histTotal = getTotalFromSession(fullHistory[i + j]);
+                    if (histTotal === currentTotals[j]) matchCount++;
+                }
+                if (matchCount >= 18) {
+                    let nextTotal = getTotalFromSession(fullHistory[i + 20]);
+                    matchList.push(nextTotal);
+                }
+            }
+        }
+        
+        // Nếu vẫn chưa có → dùng thống kê cơ bản: sau con số cuối cùng
+        let taiCount = 0, xiuCount = 0;
+        let usedFallback = false;
+        
+        if (matchList.length > 0) {
+            for (let t of matchList) {
+                if (t >= 11) taiCount++;
+                else if (t <= 10) xiuCount++;
+            }
         } else {
-            miniState.classList.remove('hidden');
-            expandedState.classList.add('hidden');
+            usedFallback = true;
+            // Tìm tất cả lần xuất hiện số cuối cùng trong lịch sử
+            let nextAfterLast = [];
+            for (let i = 0; i < fullHistory.length - 1; i++) {
+                let curTotal = getTotalFromSession(fullHistory[i]);
+                if (curTotal === lastNumber) {
+                    let nxt = getTotalFromSession(fullHistory[i + 1]);
+                    nextAfterLast.push(nxt);
+                }
+            }
+            for (let t of nextAfterLast) {
+                if (t >= 11) taiCount++;
+                else if (t <= 10) xiuCount++;
+            }
+            if (nextAfterLast.length === 0) {
+                statusDiv.innerHTML = `❌ Không tìm thấy cầu trùng, cũng không có dữ liệu cho số ${lastNumber}. Cần thêm phiên trong VPS.`;
+                return;
+            }
         }
-        localStorage.setItem('tool_expanded', isExpanded);
+        
+        let totalMatches = matchList.length > 0 ? matchList.length : (usedFallback ? (taiCount + xiuCount) : 0);
+        let prediction = (taiCount > xiuCount) ? 'TÀI' : (xiuCount > taiCount ? 'XỈU' : (Math.random() < 0.5 ? 'TÀI' : 'XỈU'));
+        let confidence = (taiCount + xiuCount) > 0 ? Math.round((Math.max(taiCount, xiuCount) / (taiCount + xiuCount)) * 100) : 0;
+        
+        // Cập nhật giao diện
+        predValueSpan.innerText = prediction;
+        predValueSpan.className = `prediction-value ${prediction === 'TÀI' ? 'TAI' : 'XIU'}`;
+        confSpan.innerHTML = `🎲 ĐỘ TIN CẬY: ${confidence}% | ${matchList.length} cầu trùng`;
+        
+        // Chi tiết
+        let detailHtml = `
+            🔎 Tìm thấy <strong>${matchList.length}</strong> cầu trùng trong ${fullHistory.length} phiên.<br>
+            📊 Sau con số <strong>${lastNumber}</strong>: 
+            🟢 TÀI = ${taiCount} (${Math.round(taiCount/(taiCount+xiuCount)*100)}%) &nbsp;&nbsp;
+            🔴 XỈU = ${xiuCount} (${Math.round(xiuCount/(taiCount+xiuCount)*100)}%)<br>
+            🎯 DỰ ĐOÁN: <strong style="color:${prediction === 'TÀI' ? '#ff5e5e' : '#5eff9e'}">${prediction}</strong> (độ tin cậy ${confidence}%)
+        `;
+        if (usedFallback && matchList.length === 0) detailHtml = `⚠️ Không có cầu trùng 20/20 hay 18/20. Dùng thống kê cơ bản theo số ${lastNumber}<br>${detailHtml}`;
+        statusDiv.innerHTML = detailHtml;
+        
+        // Tự động cập nhật thống kê đúng/sai (nếu có phiên tiếp theo xuất hiện, sẽ tính sau)
+        // Nhưng hiện tại chỉ làm dự đoán, không cần nút bấm thủ công
     }
     
-    document.getElementById('expandBtn').onclick = () => setExpanded(true);
-    document.getElementById('minimizeBtn').onclick = () => setExpanded(false);
-    document.getElementById('clearHistoryBtn').onclick = () => {
-        if (confirm('Xóa lịch sử dự đoán?')) {
-            predictions = [];
-            hasShownResultForPhien.clear();
-            saveData();
-            updateStatsUI();
-        }
-    };
-    
-    // Kéo thả
-    toolDiv.onmousedown = (e) => {
-        if (e.target.closest('.ctrl-btn') || e.target.closest('#expandBtn')) return;
-        dragActive = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        const rect = toolDiv.getBoundingClientRect();
-        startLeft = rect.left;
-        startTop = rect.top;
-        toolDiv.style.left = startLeft + 'px';
-        toolDiv.style.top = startTop + 'px';
-        toolDiv.style.right = 'auto';
-        toolDiv.style.bottom = 'auto';
-        toolDiv.style.cursor = 'grabbing';
-        e.preventDefault();
-    };
-    
-    window.onmousemove = (e) => {
-        if (!dragActive) return;
-        let left = startLeft + (e.clientX - startX);
-        let top = startTop + (e.clientY - startY);
-        left = Math.min(window.innerWidth - toolDiv.offsetWidth, Math.max(0, left));
-        top = Math.min(window.innerHeight - toolDiv.offsetHeight, Math.max(0, top));
-        toolDiv.style.left = left + 'px';
-        toolDiv.style.top = top + 'px';
-    };
-    
-    window.onmouseup = () => {
-        if (dragActive) {
-            dragActive = false;
-            toolDiv.style.cursor = '';
-            localStorage.setItem('tool_left', toolDiv.style.left);
-            localStorage.setItem('tool_top', toolDiv.style.top);
-        }
-    };
-    
-    // Load vị trí
-    const savedLeft = localStorage.getItem('tool_left');
-    const savedTop = localStorage.getItem('tool_top');
-    if (savedLeft && savedTop) {
-        toolDiv.style.left = savedLeft;
-        toolDiv.style.top = savedTop;
-        toolDiv.style.right = 'auto';
-        toolDiv.style.bottom = 'auto';
+    // ========== CẬP NHẬT TOÀN DIỆN ==========
+    async function fullRefresh() {
+        document.getElementById('analysisResult').innerHTML = '⏳ Đang tải dữ liệu từ VPS, vui lòng chờ...';
+        document.getElementById('statusText').innerHTML = '🟡 ĐANG CẬP NHẬT...';
+        await fetchFullHistory();
+        await updateCurrentAndDraw();
+        document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Sẵn sàng`;
+        document.getElementById('analysisResult').innerHTML = '✅ Đã cập nhật 20 phiên mới nhất. Bấm "PHÂN TÍCH AI" để dự đoán.';
+        
+        // Tự động tính lại thống kê đúng/sai nếu có history
+        let wins = predictionLog.filter(p => p.ok).length;
+        let totalPred = predictionLog.length;
+        document.getElementById('winCount').innerText = wins;
+        document.getElementById('loseCount').innerText = totalPred - wins;
+        document.getElementById('winRate').innerText = totalPred ? Math.round(wins/totalPred*100)+'%' : '0%';
     }
-    const savedExp = localStorage.getItem('tool_expanded') === 'true';
-    setExpanded(savedExp);
     
-    // Start
-    mainLoop();
+    // ========== TỰ ĐỘNG CẬP NHẬT BIỂU ĐỒ THEO THỜI GIAN THỰC ==========
+    async function autoUpdateCharts() {
+        await fetchFullHistory();
+        if (fullHistory.length > 0) {
+            let newCurrent = fullHistory.slice(-20);
+            if (JSON.stringify(newCurrent) !== JSON.stringify(current20)) {
+                current20 = newCurrent;
+                await updateCurrentAndDraw();
+                document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Biểu đồ cập nhật`;
+            }
+        }
+    }
+    
+    // ========== KHỞI TẠO + SỰ KIỆN ==========
+    document.getElementById('analyzeBtn').addEventListener('click', async () => {
+        if (fullHistory.length === 0) await fullRefresh();
+        if (current20.length < 5) await updateCurrentAndDraw();
+        await runAIPrediction();
+    });
+    document.getElementById('refreshBtn').addEventListener('click', fullRefresh);
+    
+    (async function init() {
+        await fullRefresh();
+        // Tự động cập nhật biểu đồ mỗi 10 giây
+        setInterval(autoUpdateCharts, 10000);
+    })();
 </script>
 </body>
 </html>
