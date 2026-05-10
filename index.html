@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PHUC SIX HEX · TÀI XỈU · PHÂN TÍCH LỊCH SỬ</title>
+    <title>PHUC SIX HEX · TÀI XỈU · FULL TÍNH NĂNG</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,143 +28,147 @@
         }
         .phucsix-header {
             background: linear-gradient(115deg, #0a2a22 0%, #051a12 100%);
-            padding: 14px 20px;
+            padding: 12px 18px;
             border-bottom: 2px solid rgba(0, 255, 180, 0.5);
         }
         .phucsix-header h1 {
             color: #00ffb3;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 800;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         .phucsix-header small {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             background: #1a4a3a;
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 40px;
             color: #ccffdd;
         }
         .phucsix-body {
-            padding: 20px;
+            padding: 18px;
             max-height: 85vh;
             overflow-y: auto;
         }
-        .phucsix-body::-webkit-scrollbar { width: 5px; }
-        .phucsix-body::-webkit-scrollbar-track { background: #0a2a22; border-radius: 10px; }
-        .phucsix-body::-webkit-scrollbar-thumb { background: #00ffb3; border-radius: 10px; }
-
         .result-box {
             background: linear-gradient(125deg, #001f1a, #000c08);
-            border-radius: 28px;
-            padding: 16px;
+            border-radius: 24px;
+            padding: 14px;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border: 1px solid rgba(0, 255, 180, 0.4);
         }
-        .result-label { font-size: 0.7rem; letter-spacing: 2px; color: #77ffcc; }
-        .result-value { font-size: 3rem; font-weight: 900; margin: 8px 0; }
-        .result-value.TAI { color: #ff5e5e; text-shadow: 0 0 12px #ff4d4d; }
-        .result-value.XIU { color: #5eff9e; text-shadow: 0 0 12px #33ff88; }
-        .confidence { font-size: 0.75rem; background: #0a2f26; display: inline-block; padding: 4px 16px; border-radius: 40px; color: #bbffdd; }
+        .result-label { font-size: 0.65rem; letter-spacing: 2px; color: #77ffcc; }
+        .result-value { font-size: 2.8rem; font-weight: 900; margin: 6px 0; }
+        .result-value.TAI { color: #ff5e5e; text-shadow: 0 0 10px #ff4d4d; }
+        .result-value.XIU { color: #5eff9e; text-shadow: 0 0 10px #33ff88; }
+        .confidence { font-size: 0.7rem; background: #0a2f26; display: inline-block; padding: 3px 14px; border-radius: 40px; color: #bbffdd; }
 
         .stats {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 12px;
+            gap: 15px;
+            margin-top: 10px;
             flex-wrap: wrap;
         }
         .stats-card {
             background: #071f19;
-            padding: 5px 14px;
-            border-radius: 32px;
+            padding: 4px 12px;
+            border-radius: 28px;
             border: 1px solid #2a6b55;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: bold;
         }
         .win { color: #5eff9e; }
         .lose { color: #ff7777; }
 
-        .chart-box { margin-bottom: 25px; }
+        .chart-box { margin-bottom: 20px; }
         .chart-title {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
             color: #ffdb7e;
-            margin-bottom: 8px;
-            padding-left: 10px;
+            margin-bottom: 6px;
+            padding-left: 8px;
             border-left: 3px solid #ffc107;
         }
         canvas {
             background: #071a1a;
-            border-radius: 18px;
-            padding: 8px;
+            border-radius: 14px;
+            padding: 6px;
             width: 100%;
-            height: 190px;
+            height: 170px;
             border: 1px solid #2a6b55;
         }
 
         .button-group {
             display: flex;
-            gap: 15px;
-            margin: 18px 0 18px;
+            gap: 12px;
+            margin: 15px 0 15px;
             flex-wrap: wrap;
         }
         .btn-primary {
             flex: 1;
             background: linear-gradient(95deg, #00cc88, #008866);
             border: none;
-            padding: 11px 0;
-            border-radius: 60px;
+            padding: 9px 0;
+            border-radius: 50px;
             font-weight: 800;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: #021c14;
             cursor: pointer;
-            transition: 0.2s;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,255,180,0.4); }
         .btn-secondary {
             flex: 1;
             background: rgba(0, 255, 180, 0.12);
             border: 1px solid #2a8f70;
-            padding: 11px 0;
-            border-radius: 60px;
+            padding: 9px 0;
+            border-radius: 50px;
             font-weight: 700;
             color: #b3ffe0;
             cursor: pointer;
         }
+        .btn-test {
+            flex: 0.5;
+            background: #2a4a3a;
+            border: 1px solid #ffaa33;
+            padding: 9px 0;
+            border-radius: 50px;
+            font-weight: 700;
+            color: #ffcc66;
+            cursor: pointer;
+        }
         .analysis-detail {
             background: #071a14;
-            border-radius: 22px;
-            padding: 14px;
-            margin-top: 12px;
-            font-size: 0.75rem;
-            line-height: 1.5;
-            border-left: 5px solid #ffdb7e;
+            border-radius: 20px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.7rem;
+            line-height: 1.4;
+            border-left: 4px solid #ffdb7e;
             color: #cce6dd;
         }
         .status {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             text-align: center;
-            margin-top: 18px;
-            padding-top: 10px;
+            margin-top: 15px;
+            padding-top: 8px;
             border-top: 1px dashed #2a6b55;
             color: #4fba97;
         }
         @media (max-width: 680px) {
             .phucsix-body { padding: 12px; }
-            .result-value { font-size: 2.2rem; }
-            canvas { height: 140px; }
+            .result-value { font-size: 2rem; }
+            canvas { height: 130px; }
         }
     </style>
 </head>
 <body>
 <div class="phucsix-menu">
     <div class="phucsix-header">
-        <h1>🎲 PHUC SIX HEX · TÀI XỈU <small>⚡ PHÂN TÍCH LỊCH SỬ (TỔNG ĐIỂM + 3 MẶT)</small></h1>
+        <h1>🎲 PHUC SIX HEX · TÀI XỈU <small>PHÂN TÍCH LỊCH SỬ</small></h1>
     </div>
     <div class="phucsix-body">
         <div class="result-box">
@@ -174,27 +178,29 @@
             <div class="stats">
                 <div class="stats-card">✅ ĐÚNG: <span class="win" id="winCount">0</span></div>
                 <div class="stats-card">❌ SAI: <span class="lose" id="loseCount">0</span></div>
-                <div class="stats-card">📊 TỈ LỆ ĐÚNG: <span id="winRate">0%</span></div>
+                <div class="stats-card">📊 TỈ LỆ: <span id="winRate">0%</span></div>
             </div>
         </div>
 
         <div class="chart-box">
-            <div class="chart-title">📊 BIỂU ĐỒ TỔNG ĐIỂM 20 PHIÊN GẦN NHẤT</div>
+            <div class="chart-title">📊 TỔNG ĐIỂM 20 PHIÊN GẦN NHẤT</div>
             <canvas id="totalChart"></canvas>
         </div>
         <div class="chart-box">
-            <div class="chart-title">🎲 BIỂU ĐỒ 3 MẶT XÍ NGẦU (Tím ➖ Vàng ➖ Đỏ)</div>
+            <div class="chart-title">🎲 3 MẶT XÍ NGẦU (Tím ➖ Vàng ➖ Đỏ)</div>
             <canvas id="diceChart"></canvas>
         </div>
 
         <div class="button-group">
             <button class="btn-primary" id="analyzeBtn">🧠 PHÂN TÍCH CẦU</button>
             <button class="btn-secondary" id="refreshBtn">🔄 CẬP NHẬT &amp; KIỂM TRA</button>
+            <button class="btn-test" id="testBtn">🔍 TEST ĐÚNG/SAI</button>
         </div>
 
         <div class="analysis-detail" id="analysisDetail">
             ✨ Bấm "PHÂN TÍCH CẦU" để dự đoán.<br>
-            🔄 Bấm "CẬP NHẬT &amp; KIỂM TRA" để lấy phiên mới và kiểm tra đúng/sai.
+            🔄 Bấm "CẬP NHẬT &amp; KIỂM TRA" để lấy phiên mới.<br>
+            🔍 Bấm "TEST ĐÚNG/SAI" để thử hiển thị đúng/sai (demo).
         </div>
         <div class="status" id="statusText">🟢 ĐANG KẾT NỐI VPS...</div>
     </div>
@@ -202,11 +208,11 @@
 
 <script>
     const API = 'https://isa-accomplish-fork-capitol.trycloudflare.com/api/history';
-    const SIMILARITY = 25; // cho tổng điểm
+    const SIMILARITY = 25;
     
     let fullHistory = [];
     let current20 = [];
-    let predictionsLog = []; // mỗi phần tử: { phien, predicted, actual, correct }
+    let predictionsLog = [];
     let totalChart = null, diceChart = null;
 
     function getTaiXiu(total) {
@@ -233,7 +239,7 @@
             all.sort((a,b) => parseInt(a.phien) - parseInt(b.phien));
             fullHistory = all;
             current20 = fullHistory.slice(-20);
-            document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Đã sẵn sàng`;
+            document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên`;
             return true;
         } catch(e) {
             document.getElementById('statusText').innerHTML = `🔴 LỖI: ${e.message}`;
@@ -252,8 +258,8 @@
         if (totalChart) totalChart.destroy();
         totalChart = new Chart(document.getElementById('totalChart'), {
             type: 'line',
-            data: { labels, datasets: [{ label: 'Tổng điểm', data: totals, borderColor: '#f7b32b', borderWidth: 2.5, pointRadius: 5, tension: 0.2, fill: true }] },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#ccc' } } }, scales: { y: { min: 3, max: 18, grid: { color: '#2a5545' }, ticks: { color: '#bbb' } }, x: { ticks: { color: '#bbb' } } } }
+            data: { labels, datasets: [{ label: 'Tổng điểm', data: totals, borderColor: '#f7b32b', borderWidth: 2.5, pointRadius: 4, tension: 0.2, fill: true }] },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#ccc', font: { size: 9 } } } }, scales: { y: { min: 3, max: 18 }, x: { ticks: { color: '#bbb' } } } }
         });
 
         if (diceChart) diceChart.destroy();
@@ -264,7 +270,7 @@
                 { label: 'Vàng', data: d2, borderColor: '#fac05e', borderWidth: 2, tension: 0.2 },
                 { label: 'Đỏ', data: d3, borderColor: '#ff7359', borderWidth: 2, tension: 0.2 }
             ] },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { color: '#ccc', font: { size: 9 } } } }, scales: { y: { min: 1, max: 6, grid: { color: '#2a5545' }, ticks: { color: '#bbb' } }, x: { ticks: { color: '#bbb' } } } }
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { color: '#ccc', font: { size: 8 } } } }, scales: { y: { min: 1, max: 6 }, x: { ticks: { color: '#bbb' } } } }
         });
     }
 
@@ -276,14 +282,11 @@
         document.getElementById('winRate').innerText = total ? Math.round(wins/total*100) + '%' : '0%';
     }
 
-    // ========== DỰ ĐOÁN TỪ TỔNG ĐIỂM (QUÉT TOÀN BỘ LỊCH SỬ) ==========
     function predictByTotalPoints() {
-        if (current20.length < 10) return { prediction: '?', confidence: 0, details: 'Chưa đủ 20 phiên', totalMatches: 0 };
-        
+        if (current20.length < 10) return { prediction: '?', confidence: 0, details: 'Chưa đủ', totalMatches: 0 };
         let targetTotals = current20.map(s => getTotal(s));
         let lastNumber = targetTotals[targetTotals.length-1];
         let matchedNext = [];
-        
         for (let i = 0; i <= fullHistory.length - 21; i++) {
             let histTotals = [];
             for (let j = 0; j < 20; j++) {
@@ -297,29 +300,19 @@
                 matchedNext.push(next[0]+next[1]+next[2]);
             }
         }
-        
         let tai = matchedNext.filter(t => t >= 11).length;
         let xiu = matchedNext.filter(t => t <= 10).length;
         let total = matchedNext.length;
         let pred = (tai > xiu) ? 'TÀI' : (xiu > tai) ? 'XỈU' : '?';
         let conf = total ? Math.round(Math.max(tai,xiu)/total*100) : 0;
-        
-        return {
-            prediction: pred,
-            confidence: conf,
-            details: `📊 Tìm được ${total} cầu (độ tương đồng ≥ ${SIMILARITY}%) | Sau số ${lastNumber}: Tài ${tai}, Xỉu ${xiu}`,
-            totalMatches: total, tai, xiu
-        };
+        return { prediction: pred, confidence: conf, details: `📊 ${total} cầu | Sau ${lastNumber}: Tài ${tai}, Xỉu ${xiu}`, totalMatches: total };
     }
 
-    // ========== DỰ ĐOÁN TỪ BỘ XÍ NGẦU CUỐI CÙNG (QUÉT TOÀN BỘ LỊCH SỬ) ==========
     function predictByLastDice() {
-        if (current20.length < 1) return { prediction: '?', confidence: 0, details: 'Chưa có dữ liệu', totalMatches: 0 };
-        
+        if (current20.length < 1) return { prediction: '?', confidence: 0, details: 'Chưa có', totalMatches: 0 };
         let lastDice = getDiceArray(current20[current20.length-1]);
         let lastKey = diceKey(lastDice);
         let matchedNext = [];
-        
         for (let i = 0; i <= fullHistory.length - 2; i++) {
             let curDice = getDiceArray(fullHistory[i]);
             if (diceKey(curDice) === lastKey) {
@@ -327,142 +320,131 @@
                 matchedNext.push(nextDice[0]+nextDice[1]+nextDice[2]);
             }
         }
-        
         let tai = matchedNext.filter(t => t >= 11).length;
         let xiu = matchedNext.filter(t => t <= 10).length;
         let total = matchedNext.length;
         let pred = (tai > xiu) ? 'TÀI' : (xiu > tai) ? 'XỈU' : '?';
         let conf = total ? Math.round(Math.max(tai,xiu)/total*100) : 0;
-        
-        return {
-            prediction: pred,
-            confidence: conf,
-            details: `🎲 Bộ [${lastDice.join(',')}]: Tìm được ${total} lần xuất hiện | Sau đó: Tài ${tai}, Xỉu ${xiu}`,
-            totalMatches: total, tai, xiu
-        };
+        return { prediction: pred, confidence: conf, details: `🎲 [${lastDice.join(',')}] | ${total} lần | Tài ${tai}, Xỉu ${xiu}`, totalMatches: total };
     }
 
-    // ========== TỔNG HỢP ==========
     async function analyze() {
-        if (current20.length < 10) {
-            document.getElementById('analysisDetail').innerHTML = '⚠️ Chưa đủ 20 phiên, bấm CẬP NHẬT.';
-            return;
-        }
+        if (current20.length < 10) { alert('Chưa đủ 20 phiên'); return; }
         if (fullHistory.length === 0) await fetchData();
-        
         document.getElementById('analysisDetail').innerHTML = '🔍 ĐANG PHÂN TÍCH...';
         
         let totalRes = predictByTotalPoints();
         let diceRes = predictByLastDice();
         
-        // Ưu tiên bên nào có nhiều mẫu hơn
-        let finalPred = '?';
-        let finalConf = 0;
-        let finalDetail = '';
-        
+        let finalPred = '?', finalConf = 0, finalDetail = '';
         if (totalRes.totalMatches >= 3 && totalRes.totalMatches >= diceRes.totalMatches) {
-            finalPred = totalRes.prediction;
-            finalConf = totalRes.confidence;
-            finalDetail = `🎯 TỔNG HỢP: Ưu tiên TỔNG ĐIỂM (${totalRes.totalMatches} cầu)`;
+            finalPred = totalRes.prediction; finalConf = totalRes.confidence;
+            finalDetail = `🎯 Ưu tiên TỔNG ĐIỂM (${totalRes.totalMatches} cầu)`;
         } else if (diceRes.totalMatches >= 2) {
-            finalPred = diceRes.prediction;
-            finalConf = diceRes.confidence;
-            finalDetail = `🎯 TỔNG HỢP: Ưu tiên BỘ XÍ NGẦU (${diceRes.totalMatches} lần)`;
+            finalPred = diceRes.prediction; finalConf = diceRes.confidence;
+            finalDetail = `🎯 Ưu tiên BỘ XÍ NGẦU (${diceRes.totalMatches} lần)`;
         } else {
             finalPred = totalRes.prediction !== '?' ? totalRes.prediction : (diceRes.prediction !== '?' ? diceRes.prediction : 'XỈU');
             finalConf = Math.max(totalRes.confidence, diceRes.confidence);
-            finalDetail = `🎯 TỔNG HỢP: Dùng dữ liệu có sẵn`;
+            finalDetail = `🎯 Dùng dữ liệu có sẵn`;
         }
         
         document.getElementById('mainResult').innerText = finalPred;
         document.getElementById('mainResult').className = `result-value ${finalPred === 'TÀI' ? 'TAI' : 'XIU'}`;
         document.getElementById('mainConf').innerHTML = `🎲 ĐỘ TIN CẬY: ${finalConf}%`;
         
-        let detail = `
-            📊 PHÂN TÍCH TỔNG ĐIỂM:<br>${totalRes.details}<br><br>
-            🎲 PHÂN TÍCH BỘ XÍ NGẦU CUỐI:<br>${diceRes.details}<br><br>
-            ${finalDetail}<br>
-            🧠 KẾT LUẬN: <strong style="color:${finalPred==='TÀI'?'#ff5e5e':'#5eff9e'}">${finalPred}</strong> (${finalConf}%)
-        `;
+        let detail = `📊 TỔNG ĐIỂM:<br>${totalRes.details}<br><br>🎲 BỘ XÍ NGẦU:<br>${diceRes.details}<br><br>${finalDetail}<br>🧠 KẾT LUẬN: <strong style="color:${finalPred==='TÀI'?'#ff5e5e':'#5eff9e'}">${finalPred}</strong> (${finalConf}%)`;
         document.getElementById('analysisDetail').innerHTML = detail;
         
-        // Lưu dự đoán cho phiên hiện tại
         let currentPhien = current20[current20.length-1].phien;
         if (!predictionsLog.some(p => p.phien === currentPhien)) {
-            predictionsLog.push({
-                phien: currentPhien,
-                predicted: finalPred,
-                actual: null,
-                correct: false
-            });
+            predictionsLog.push({ phien: currentPhien, predicted: finalPred, actual: null, correct: false });
             if (predictionsLog.length > 100) predictionsLog.shift();
         }
     }
     
-    // ========== CẬP NHẬT & KIỂM TRA ĐÚNG SAI ==========
     async function refreshAndCheck() {
         let oldLen = fullHistory.length;
         await fetchData();
-        
         if (fullHistory.length > oldLen && oldLen > 0) {
-            // Có phiên mới, kiểm tra dự đoán của phiên cũ
             let newSessions = fullHistory.slice(oldLen);
             for (let newSesh of newSessions) {
                 let actualTotal = getTotal(newSesh);
                 let actualTx = getTaiXiu(actualTotal);
                 let actualPhien = newSesh.phien;
-                
                 let found = predictionsLog.find(p => p.phien === actualPhien);
                 if (found && found.actual === null) {
                     found.actual = actualTx;
                     found.correct = (found.predicted === actualTx);
                     updateStatsDisplay();
-                    document.getElementById('analysisDetail').innerHTML = `✅ KIỂM TRA: Phiên ${actualPhien} dự đoán ${found.predicted} → Kết quả thực ${actualTx} (${found.correct ? 'ĐÚNG ✅' : 'SAI ❌'})`;
+                    document.getElementById('analysisDetail').innerHTML = `✅ KIỂM TRA: Phiên ${actualPhien} dự đoán ${found.predicted} → Kết quả ${actualTx} (${found.correct ? 'ĐÚNG ✅' : 'SAI ❌'})`;
                 }
             }
         }
-        
         if (fullHistory.length >= 20) {
             current20 = fullHistory.slice(-20);
             drawCharts();
-            document.getElementById('analysisDetail').innerHTML = `✅ ĐÃ CẬP NHẬT ${fullHistory.length} phiên. Bấm "PHÂN TÍCH CẦU" để dự đoán mới.`;
+            if (fullHistory.length === oldLen) document.getElementById('analysisDetail').innerHTML = `✅ ĐÃ CẬP NHẬT ${fullHistory.length} phiên. Không có phiên mới.`;
         } else {
             document.getElementById('analysisDetail').innerHTML = '⚠️ CHƯA ĐỦ 20 PHIÊN.';
         }
         document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên`;
     }
     
-    async function autoUpdate() {
-        let oldLen = fullHistory.length;
-        await fetchData();
-        if (fullHistory.length > oldLen) {
-            current20 = fullHistory.slice(-20);
-            drawCharts();
-            // Kiểm tra đúng/sai cho phiên mới
-            if (fullHistory.length > oldLen && oldLen > 0) {
-                let newSessions = fullHistory.slice(oldLen);
-                for (let newSesh of newSessions) {
-                    let actualTotal = getTotal(newSesh);
-                    let actualTx = getTaiXiu(actualTotal);
-                    let actualPhien = newSesh.phien;
-                    let found = predictionsLog.find(p => p.phien === actualPhien);
-                    if (found && found.actual === null) {
-                        found.actual = actualTx;
-                        found.correct = (found.predicted === actualTx);
-                        updateStatsDisplay();
-                    }
-                }
-            }
-            document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Tự cập nhật`;
-        }
+    // NÚT TEST ĐÚNG/SAI - demo
+    function testDungSai() {
+        // Thêm 1 dự đoán giả vào log để test
+        let testPhien = fullHistory.length > 0 ? fullHistory[fullHistory.length-1].phien + 1 : 999999;
+        predictionsLog.push({
+            phien: testPhien,
+            predicted: 'TÀI',
+            actual: 'TÀI',
+            correct: true
+        });
+        predictionsLog.push({
+            phien: testPhien + 1,
+            predicted: 'XỈU',
+            actual: 'TÀI',
+            correct: false
+        });
+        updateStatsDisplay();
+        document.getElementById('analysisDetail').innerHTML = `🔍 TEST: Đã thêm 2 dự đoán mẫu (1 đúng, 1 sai). Xem bảng thống kê bên trên.`;
     }
     
     document.getElementById('analyzeBtn').onclick = analyze;
     document.getElementById('refreshBtn').onclick = refreshAndCheck;
+    document.getElementById('testBtn').onclick = testDungSai;
     
     (async () => {
-        await refreshAndCheck();
-        setInterval(autoUpdate, 15000);
+        await fetchData();
+        if (fullHistory.length >= 20) {
+            current20 = fullHistory.slice(-20);
+            drawCharts();
+        }
+        updateStatsDisplay();
+        setInterval(async () => {
+            let oldLen = fullHistory.length;
+            await fetchData();
+            if (fullHistory.length > oldLen) {
+                current20 = fullHistory.slice(-20);
+                drawCharts();
+                if (oldLen > 0) {
+                    let newSessions = fullHistory.slice(oldLen);
+                    for (let newSesh of newSessions) {
+                        let actualTotal = getTotal(newSesh);
+                        let actualTx = getTaiXiu(actualTotal);
+                        let actualPhien = newSesh.phien;
+                        let found = predictionsLog.find(p => p.phien === actualPhien);
+                        if (found && found.actual === null) {
+                            found.actual = actualTx;
+                            found.correct = (found.predicted === actualTx);
+                            updateStatsDisplay();
+                        }
+                    }
+                }
+                document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Tự cập nhật`;
+            }
+        }, 15000);
     })();
 </script>
 </body>
