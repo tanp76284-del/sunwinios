@@ -201,11 +201,11 @@
 
 <script>
     const API = 'https://isa-accomplish-fork-capitol.trycloudflare.com/api/history';
-    const SIMILARITY = 55; // % tương đồng tối thiểu (vừa phải, không quá sát)
+    const SIMILARITY = 45; // 45% là vừa, tìm được nhiều cầu gần giống
     
-    let fullHistory = [];      // toàn bộ lịch sử
-    let current20 = [];        // 20 phiên gần nhất
-    let predictionsLog = [];    // lưu dự đoán để tính đúng/sai
+    let fullHistory = [];
+    let current20 = [];
+    let predictionsLog = [];
     let totalChart = null, diceChart = null;
 
     function getTaiXiu(total) {
@@ -216,7 +216,6 @@
     function getTotal(s) { let d = s.dice || s.dc; return d[0] + d[1] + d[2]; }
     function getDiceArray(s) { return s.dice || s.dc; }
 
-    // Tính độ tương đồng giữa 2 mảng (0-100%)
     function calcSimilarity(arrA, arrB) {
         if (arrA.length !== arrB.length) return 0;
         let same = 0;
@@ -224,7 +223,6 @@
         return (same / arrA.length) * 100;
     }
 
-    // Lấy dữ liệu từ API
     async function fetchData() {
         try {
             const res = await fetch(API);
@@ -241,7 +239,6 @@
         }
     }
 
-    // Vẽ biểu đồ
     function drawCharts() {
         if (!current20.length) return;
         let totals = current20.map(s => getTotal(s));
@@ -269,7 +266,6 @@
         });
     }
 
-    // Cập nhật bảng đúng/sai
     function updateStats() {
         let total = predictionsLog.length;
         let wins = predictionsLog.filter(p => p.correct).length;
@@ -278,7 +274,6 @@
         document.getElementById('winRate').innerText = total ? Math.round(wins/total*100) + '%' : '0%';
     }
 
-    // PHÂN TÍCH CHÍNH
     async function analyze() {
         if (current20.length < 10) {
             document.getElementById('analysisDetail').innerHTML = '⚠️ Chưa đủ 20 phiên, hãy bấm CẬP NHẬT.';
@@ -288,16 +283,14 @@
         
         document.getElementById('analysisDetail').innerHTML = '🔍 ĐANG QUÉT ' + fullHistory.length + ' PHIÊN...';
         
-        // Mẫu hiện tại
         let targetTotals = current20.map(s => getTotal(s));
         let targetD1 = current20.map(s => getDiceArray(s)[0]);
         let targetD2 = current20.map(s => getDiceArray(s)[1]);
         let targetD3 = current20.map(s => getDiceArray(s)[2]);
         let lastNumber = targetTotals[targetTotals.length-1];
         
-        let matched = []; // lưu các cầu tìm được: { nextTotal, dice1, dice2, dice3 }
+        let matched = [];
         
-        // Quét toàn bộ lịch sử (cần ít nhất 21 phiên để có 20 + 1)
         for (let i = 0; i <= fullHistory.length - 21; i++) {
             let histTotals = [], histD1 = [], histD2 = [], histD3 = [];
             for (let j = 0; j < 20; j++) {
@@ -307,10 +300,8 @@
                 histD2.push(d[1]);
                 histD3.push(d[2]);
             }
-            // Kiểm tra số cuối phải trùng
             if (histTotals[19] !== lastNumber) continue;
             
-            // Tính độ tương đồng (tổng điểm + 3 mặt)
             let simTotal = calcSimilarity(targetTotals, histTotals);
             let simD1 = calcSimilarity(targetD1, histD1);
             let simD2 = calcSimilarity(targetD2, histD2);
@@ -327,9 +318,8 @@
             }
         }
         
-        // Thống kê
         let tai = 0, xiu = 0;
-        let diceStats = {}; // thống kê bộ xí ngầu
+        let diceStats = {};
         for (let m of matched) {
             if (m.nextTotal >= 11) tai++;
             else if (m.nextTotal <= 10) xiu++;
@@ -338,7 +328,6 @@
         }
         let totalMatch = matched.length;
         
-        // Tìm bộ xí ngầu phổ biến nhất
         let bestDice = null, bestDiceCount = 0;
         for (let k in diceStats) {
             if (diceStats[k] > bestDiceCount) {
@@ -350,7 +339,6 @@
         let prediction = (tai > xiu) ? 'TÀI' : (xiu > tai) ? 'XỈU' : '?';
         let confidence = (tai + xiu) > 0 ? Math.round(Math.max(tai, xiu) / (tai + xiu) * 100) : 0;
         
-        // Cập nhật giao diện
         document.getElementById('mainResult').innerText = prediction;
         document.getElementById('mainResult').className = `result-value ${prediction === 'TÀI' ? 'TAI' : 'XIU'}`;
         document.getElementById('mainConf').innerHTML = `🎲 ĐỘ TIN CẬY: ${confidence}% | ${totalMatch} cầu gần giống`;
@@ -370,7 +358,6 @@
         }
         document.getElementById('analysisDetail').innerHTML = detail;
         
-        // LƯU DỰ ĐOÁN để sau kiểm tra đúng/sai
         let currentPhien = current20[current20.length-1].phien;
         if (!predictionsLog.some(p => p.phien === currentPhien)) {
             predictionsLog.push({
@@ -383,7 +370,6 @@
         }
     }
     
-    // CẬP NHẬT DỮ LIỆU VÀ KIỂM TRA ĐÚNG/SAI CỦA DỰ ĐOÁN CŨ
     async function refresh() {
         document.getElementById('analysisDetail').innerHTML = '⏳ ĐANG CẬP NHẬT...';
         await fetchData();
@@ -391,14 +377,12 @@
             current20 = fullHistory.slice(-20);
             drawCharts();
             
-            // KIỂM TRA ĐÚNG/SAI: so sánh dự đoán cũ với phiên thực tế (nếu có)
             if (fullHistory.length >= 21) {
                 let actualSession = fullHistory[fullHistory.length - 21];
                 let actualTotal = getTotal(actualSession);
                 let actualTx = getTaiXiu(actualTotal);
                 let actualPhien = actualSession.phien;
                 
-                // Tìm dự đoán tương ứng
                 let found = predictionsLog.find(p => p.phien === actualPhien);
                 if (found && found.actual === null && actualTx !== '?') {
                     found.actual = actualTx;
@@ -417,14 +401,12 @@
         }
     }
     
-    // Tự động cập nhật định kỳ (lấy dữ liệu mới)
     async function autoUpdate() {
         let oldLen = fullHistory.length;
         await fetchData();
         if (fullHistory.length > oldLen) {
             current20 = fullHistory.slice(-20);
             drawCharts();
-            // Kiểm tra đúng/sai cho dự đoán cũ
             if (fullHistory.length >= 21) {
                 let actualSession = fullHistory[fullHistory.length - 21];
                 let actualTotal = getTotal(actualSession);
