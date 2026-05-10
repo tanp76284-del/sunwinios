@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PHUC SIX HEX · TÀI XỈU · PHÂN TÍCH TỔNG ĐIỂM + BỘ XÍ NGẦU</title>
+    <title>PHUC SIX HEX · TÀI XỈU · TỔNG ĐIỂM + XU HƯỚNG 3 MẶT</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -164,7 +164,7 @@
 <body>
 <div class="phucsix-menu">
     <div class="phucsix-header">
-        <h1>🎲 PHUC SIX HEX · TÀI XỈU <small>⚡ TỔNG ĐIỂM + BỘ XÍ NGẦU</small></h1>
+        <h1>🎲 PHUC SIX HEX · TÀI XỈU <small>⚡ TỔNG ĐIỂM + XU HƯỚNG 3 MẶT</small></h1>
     </div>
     <div class="phucsix-body">
         <div class="result-box">
@@ -183,7 +183,7 @@
             <canvas id="totalChart"></canvas>
         </div>
         <div class="chart-box">
-            <div class="chart-title">🎲 BIỂU ĐỒ 3 MẶT XÍ NGẦU (Tím - Vàng - Đỏ)</div>
+            <div class="chart-title">🎲 BIỂU ĐỒ 3 MẶT XÍ NGẦU (Tím ➖ Vàng ➖ Đỏ)</div>
             <canvas id="diceChart"></canvas>
         </div>
 
@@ -193,7 +193,7 @@
         </div>
 
         <div class="analysis-detail" id="analysisDetail">
-            ✨ Bấm "PHÂN TÍCH CẦU" để phân tích tổng điểm + bộ xí ngầu.
+            ✨ Bấm "PHÂN TÍCH CẦU" để phân tích tổng điểm + xu hướng 3 mặt.
         </div>
         <div class="status" id="statusText">🟢 ĐANG KẾT NỐI VPS...</div>
     </div>
@@ -201,8 +201,7 @@
 
 <script>
     const API = 'https://isa-accomplish-fork-capitol.trycloudflare.com/api/history';
-    const SIMILARITY = 25; // 25% cho tổng điểm
-    const DICE_MATCH_EXACT = true; // bộ xí ngầu cuối phải trùng 100%
+    const SIMILARITY = 25; // giữ nguyên 25% cho phần tổng điểm
     
     let fullHistory = [];
     let current20 = [];
@@ -217,7 +216,6 @@
     function getTotal(s) { let d = s.dice || s.dc; return d[0] + d[1] + d[2]; }
     function getDiceArray(s) { return s.dice || s.dc; }
 
-    // Tương tự cũ (giữ nguyên)
     function calcSimilarity(arrA, arrB) {
         if (arrA.length !== arrB.length) return 0;
         let same = 0;
@@ -276,38 +274,56 @@
         document.getElementById('winRate').innerText = total ? Math.round(wins/total*100) + '%' : '0%';
     }
 
-    // Phân tích dây của bộ xí ngầu (3 bước gần nhất trong lịch sử)
-    function analyzeDiceTrend(diceSequence) {
-        if (diceSequence.length < 3) return "Chưa đủ dữ liệu";
+    // ========== DỰ ĐOÁN TỪ XU HƯỚNG 3 MẶT (giống tao làm bằng mắt) ==========
+    function predictByDiceTrend(diceHistory) {
+        if (diceHistory.length < 3) return { prediction: '?', confidence: 0, details: 'Chưa đủ dữ liệu' };
         
-        // Đếm số lần tăng/giảm/giữ của tổng (vì khó so bộ 3 số nên lấy tổng để dễ)
-        let trendUp = 0, trendDown = 0;
-        for (let i = 1; i < diceSequence.length; i++) {
-            let sumPrev = diceSequence[i-1][0] + diceSequence[i-1][1] + diceSequence[i-1][2];
-            let sumCurr = diceSequence[i][0] + diceSequence[i][1] + diceSequence[i][2];
-            if (sumCurr > sumPrev) trendUp++;
-            else if (sumCurr < sumPrev) trendDown++;
-        }
+        // Lấy 3 phiên gần nhất của từng viên
+        let len = diceHistory.length;
+        let tim = diceHistory.map(d => d[0]);
+        let vang = diceHistory.map(d => d[1]);
+        let do_ = diceHistory.map(d => d[2]);
         
-        if (trendUp > trendDown + 1) return "DÂY ĐANG ĐI LÊN (DÀI)";
-        if (trendDown > trendUp + 1) return "DÂY ĐANG ĐI XUỐNG (DÀI)";
-        return "DÂY ĐI NGANG (NGẮN)";
+        let tim3 = tim.slice(-3);
+        let vang3 = vang.slice(-3);
+        let do3 = do_.slice(-3);
+        
+        // Tính xu hướng từng viên: tăng (+1), giảm (-1), giữ (0)
+        let timTrend = (tim3[2] > tim3[1]) ? 1 : (tim3[2] < tim3[1]) ? -1 : 0;
+        let vangTrend = (vang3[2] > vang3[1]) ? 1 : (vang3[2] < vang3[1]) ? -1 : 0;
+        let doTrend = (do3[2] > do3[1]) ? 1 : (do3[2] < do3[1]) ? -1 : 0;
+        
+        // Dự đoán giá trị tiếp theo của từng viên
+        let timNext = tim3[2] + timTrend;
+        let vangNext = vang3[2] + vangTrend;
+        let doNext = do3[2] + doTrend;
+        
+        // Giới hạn trong 1-6
+        timNext = Math.min(6, Math.max(1, timNext));
+        vangNext = Math.min(6, Math.max(1, vangNext));
+        doNext = Math.min(6, Math.max(1, doNext));
+        
+        let totalNext = timNext + vangNext + doNext;
+        let prediction = getTaiXiu(totalNext);
+        
+        // Độ tin cậy dựa trên mức độ rõ ràng của xu hướng
+        let trendStrength = Math.abs(timTrend) + Math.abs(vangTrend) + Math.abs(doTrend);
+        let confidence = 50 + trendStrength * 8;
+        confidence = Math.min(85, Math.max(50, confidence));
+        
+        return {
+            prediction: prediction,
+            confidence: Math.round(confidence),
+            details: `📈 Xu hướng 3 phiên cuối: Tím ${timTrend>0?'+':(timTrend<0?'-':'=')}${Math.abs(timTrend)} → ${timNext}, Vàng ${vangTrend>0?'+':(vangTrend<0?'-':'=')}${Math.abs(vangTrend)} → ${vangNext}, Đỏ ${doTrend>0?'+':(doTrend<0?'-':'=')}${Math.abs(doTrend)} → ${doNext} | Tổng dự: ${totalNext} (${prediction})`,
+            timNext, vangNext, doNext, totalNext
+        };
     }
 
-    async function analyze() {
-        if (current20.length < 10) {
-            document.getElementById('analysisDetail').innerHTML = '⚠️ Chưa đủ 20 phiên, bấm CẬP NHẬT.';
-            return;
-        }
-        if (fullHistory.length === 0) await fetchData();
+    // ========== DỰ ĐOÁN TỪ TỔNG ĐIỂM (giữ nguyên code cũ) ==========
+    function predictByTotalPoints() {
+        if (current20.length < 10) return { prediction: '?', confidence: 0, details: 'Chưa đủ dữ liệu', totalMatches: 0 };
         
-        document.getElementById('analysisDetail').innerHTML = '🔍 ĐANG PHÂN TÍCH...';
-        
-        // === 1. PHÂN TÍCH TỔNG ĐIỂM (giữ nguyên code cũ) ===
         let targetTotals = current20.map(s => getTotal(s));
-        let targetD1 = current20.map(s => getDiceArray(s)[0]);
-        let targetD2 = current20.map(s => getDiceArray(s)[1]);
-        let targetD3 = current20.map(s => getDiceArray(s)[2]);
         let lastNumber = targetTotals[targetTotals.length-1];
         
         let matchedTotal = [];
@@ -324,91 +340,71 @@
                 matchedTotal.push(next[0]+next[1]+next[2]);
             }
         }
+        
         let taiTotal = matchedTotal.filter(t => t >= 11).length;
         let xiuTotal = matchedTotal.filter(t => t <= 10).length;
-        let totalMatchesTotal = matchedTotal.length;
-        let predTotal = (taiTotal > xiuTotal) ? 'TÀI' : (xiuTotal > taiTotal) ? 'XỈU' : '?';
-        let confTotal = (taiTotal+xiuTotal) ? Math.round(Math.max(taiTotal,xiuTotal)/(taiTotal+xiuTotal)*100) : 0;
+        let totalMatches = matchedTotal.length;
+        let prediction = (taiTotal > xiuTotal) ? 'TÀI' : (xiuTotal > taiTotal) ? 'XỈU' : '?';
+        let confidence = (taiTotal+xiuTotal) ? Math.round(Math.max(taiTotal,xiuTotal)/(taiTotal+xiuTotal)*100) : 0;
         
-        // === 2. PHÂN TÍCH BỘ XÍ NGẦU CUỐI CÙNG ===
-        let lastDice = getDiceArray(current20[current20.length-1]);
-        let lastDiceKey = lastDice.join(',');
-        
-        let matchedDice = [];
-        let diceHistory = []; // lưu chuỗi các bộ xí ngầu xuất hiện trước đó để phân tích dây
-        for (let i = 0; i <= fullHistory.length - 2; i++) {
-            let currentDice = getDiceArray(fullHistory[i]);
-            let currentKey = currentDice.join(',');
-            if (currentKey === lastDiceKey) {
-                let nextDice = getDiceArray(fullHistory[i+1]);
-                matchedDice.push(nextDice);
-                // Lấy 3 bộ trước đó để phân tích dây
-                if (i >= 3) {
-                    diceHistory.push({
-                        b3: getDiceArray(fullHistory[i-3]),
-                        b2: getDiceArray(fullHistory[i-2]),
-                        b1: getDiceArray(fullHistory[i-1]),
-                        current: currentDice
-                    });
-                }
-            }
+        return {
+            prediction: prediction,
+            confidence: confidence,
+            details: `📊 Tìm được ${totalMatches} cầu (độ tương đồng ≥ ${SIMILARITY}%) | Sau số ${lastNumber}: Tài ${taiTotal}, Xỉu ${xiuTotal}`,
+            totalMatches: totalMatches,
+            tai: taiTotal,
+            xiu: xiuTotal
+        };
+    }
+
+    async function analyze() {
+        if (current20.length < 10) {
+            document.getElementById('analysisDetail').innerHTML = '⚠️ Chưa đủ 20 phiên, bấm CẬP NHẬT.';
+            return;
         }
+        if (fullHistory.length === 0) await fetchData();
         
-        let taiDice = 0, xiuDice = 0;
-        for (let d of matchedDice) {
-            let total = d[0]+d[1]+d[2];
-            if (total >= 11) taiDice++;
-            else if (total <= 10) xiuDice++;
-        }
-        let totalMatchesDice = matchedDice.length;
-        let predDice = (taiDice > xiuDice) ? 'TÀI' : (xiuDice > taiDice) ? 'XỈU' : '?';
-        let confDice = (taiDice+xiuDice) ? Math.round(Math.max(taiDice,xiuDice)/(taiDice+xiuDice)*100) : 0;
+        document.getElementById('analysisDetail').innerHTML = '🔍 ĐANG PHÂN TÍCH...';
         
-        // === 3. PHÂN TÍCH DÂY (từ diceHistory) ===
-        let trend = "Không đủ dữ liệu";
-        if (diceHistory.length >= 3) {
-            let avgUp = 0, avgDown = 0;
-            for (let h of diceHistory) {
-                let sumB3 = h.b3[0]+h.b3[1]+h.b3[2];
-                let sumB2 = h.b2[0]+h.b2[1]+h.b2[2];
-                let sumB1 = h.b1[0]+h.b1[1]+h.b1[2];
-                let sumCurr = h.current[0]+h.current[1]+h.current[2];
-                if (sumCurr > sumB1) avgUp++; else if (sumCurr < sumB1) avgDown++;
-            }
-            if (avgUp > avgDown + 2) trend = "DÂY ĐANG ĐI LÊN (DÀI)";
-            else if (avgDown > avgUp + 2) trend = "DÂY ĐANG ĐI XUỐNG (DÀI)";
-            else trend = "DÂY ĐI NGANG (NGẮN)";
-        }
+        // 1. Dự đoán từ tổng điểm
+        let totalResult = predictByTotalPoints();
         
-        // === 4. TỔNG HỢP (ưu tiên bộ xí ngầu nếu có đủ mẫu, nếu không dùng tổng điểm) ===
-        let final = '?', finalConf = 0;
-        if (totalMatchesDice >= 3) {
-            final = predDice;
-            finalConf = confDice;
-        } else if (totalMatchesTotal >= 3) {
-            final = predTotal;
-            finalConf = confTotal;
+        // 2. Dự đoán từ xu hướng 3 mặt (dùng 20 phiên hiện tại)
+        let diceHistory = current20.map(s => getDiceArray(s));
+        let diceResult = predictByDiceTrend(diceHistory);
+        
+        // 3. Tổng hợp (ưu tiên bên nào có độ tin cậy cao hơn)
+        let finalPred = '?';
+        let finalConf = 0;
+        let finalDetail = '';
+        
+        if (totalResult.totalMatches >= 3 && totalResult.confidence >= diceResult.confidence) {
+            finalPred = totalResult.prediction;
+            finalConf = totalResult.confidence;
+            finalDetail = `🎯 TỔNG HỢP: Ưu tiên TỔNG ĐIỂM (${totalResult.totalMatches} cầu trùng, độ tin cậy ${totalResult.confidence}%)`;
+        } else if (diceResult.confidence >= 50) {
+            finalPred = diceResult.prediction;
+            finalConf = diceResult.confidence;
+            finalDetail = `🎯 TỔNG HỢP: Ưu tiên XU HƯỚNG 3 MẶT (độ tin cậy ${diceResult.confidence}%)`;
         } else {
-            final = (lastNumber >= 11) ? 'TÀI' : 'XỈU';
-            finalConf = 50;
+            finalPred = totalResult.prediction !== '?' ? totalResult.prediction : (diceResult.prediction !== '?' ? diceResult.prediction : 'XỈU');
+            finalConf = Math.max(totalResult.confidence, diceResult.confidence);
+            finalDetail = `🎯 TỔNG HỢP: Dùng dữ liệu có sẵn`;
         }
         
         // HIỂN THỊ
-        document.getElementById('mainResult').innerText = final;
-        document.getElementById('mainResult').className = `result-value ${final === 'TÀI' ? 'TAI' : 'XIU'}`;
-        document.getElementById('mainConf').innerHTML = `🎲 ĐỘ TIN CẬY: ${finalConf}% | Tổng: ${totalMatchesTotal} cầu | Bộ xí ngầu: ${totalMatchesDice} cầu`;
+        document.getElementById('mainResult').innerText = finalPred;
+        document.getElementById('mainResult').className = `result-value ${finalPred === 'TÀI' ? 'TAI' : 'XIU'}`;
+        document.getElementById('mainConf').innerHTML = `🎲 ĐỘ TIN CẬY: ${finalConf}%`;
         
         let detail = `
-            📊 TỔNG ĐIỂM: tìm được ${totalMatchesTotal} cầu (độ tương đồng ≥ ${SIMILARITY}%)<br>
-            &nbsp;&nbsp;→ Sau số ${lastNumber}: TÀI ${taiTotal}, XỈU ${xiuTotal} → dự đoán ${predTotal} (${confTotal}%)<br>
-            🎲 BỘ XÍ NGẦU [${lastDiceKey}]: tìm được ${totalMatchesDice} lần xuất hiện<br>
-            &nbsp;&nbsp;→ Sau đó: TÀI ${taiDice}, XỈU ${xiuDice} → dự đoán ${predDice} (${confDice}%)<br>
-            📈 PHÂN TÍCH DÂY: ${trend}<br>
-            🧠 KẾT LUẬN: <strong style="color:${final==='TÀI'?'#ff5e5e':'#5eff9e'}">${final}</strong> (${finalConf}%)
+            📊 PHÂN TÍCH TỔNG ĐIỂM:<br>
+            &nbsp;&nbsp;${totalResult.details}<br>
+            🎲 PHÂN TÍCH XU HƯỚNG 3 MẶT (Tím, Vàng, Đỏ):<br>
+            &nbsp;&nbsp;${diceResult.details}<br>
+            ${finalDetail}<br>
+            🧠 KẾT LUẬN: <strong style="color:${finalPred==='TÀI'?'#ff5e5e':'#5eff9e'}">${finalPred}</strong> (${finalConf}%)
         `;
-        if (totalMatchesTotal === 0 && totalMatchesDice === 0) {
-            detail = `⚠️ KHÔNG TÌM THẤY CẦU NÀO. Dùng tạm số cuối ${lastNumber} → ${final} (${finalConf}%)`;
-        }
         document.getElementById('analysisDetail').innerHTML = detail;
         
         // Lưu dự đoán để kiểm tra đúng/sai
@@ -416,7 +412,7 @@
         if (!predictionsLog.some(p => p.phien === currentPhien)) {
             predictionsLog.push({
                 phien: currentPhien,
-                predicted: final,
+                predicted: finalPred,
                 actual: null,
                 correct: false
             });
