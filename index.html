@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PHUC SIX HEX · DỰ ĐOÁN 2000 PHIÊN</title>
+    <title>PHUC SIX HEX · AI TÀI XỈU · PHÂN TÍCH 3 MẶT</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,7 +17,7 @@
             padding: 20px;
         }
         .phucsix-menu {
-            max-width: 950px;
+            max-width: 1000px;
             width: 100%;
             background: rgba(8, 20, 25, 0.94);
             backdrop-filter: blur(14px);
@@ -28,12 +28,12 @@
         }
         .phucsix-header {
             background: linear-gradient(115deg, #0a2a22 0%, #051a12 100%);
-            padding: 16px 22px;
+            padding: 14px 22px;
             border-bottom: 2px solid rgba(0, 255, 180, 0.5);
         }
         .phucsix-header h1 {
             color: #00ffb3;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             display: flex;
             justify-content: space-between;
@@ -42,14 +42,14 @@
             gap: 10px;
         }
         .phucsix-header small {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             background: #1a4a3a;
             padding: 4px 12px;
             border-radius: 40px;
             color: #ccffdd;
         }
         .phucsix-body {
-            padding: 22px;
+            padding: 20px;
             max-height: 85vh;
             overflow-y: auto;
         }
@@ -60,67 +60,67 @@
         .prediction-panel {
             background: linear-gradient(125deg, #001f1a, #000c08);
             border-radius: 28px;
-            padding: 18px;
+            padding: 16px;
             text-align: center;
             margin-bottom: 25px;
             border: 1px solid rgba(0, 255, 180, 0.4);
         }
         .prediction-label { font-size: 0.7rem; letter-spacing: 2px; color: #77ffcc; }
-        .prediction-value { font-size: 3.5rem; font-weight: 900; margin: 8px 0; }
+        .prediction-value { font-size: 3.2rem; font-weight: 900; margin: 8px 0; }
         .prediction-value.TAI { color: #ff5e5e; text-shadow: 0 0 12px #ff4d4d; }
         .prediction-value.XIU { color: #5eff9e; text-shadow: 0 0 12px #33ff88; }
-        .confidence { font-size: 0.8rem; background: #0a2f26; display: inline-block; padding: 4px 18px; border-radius: 40px; color: #bbffdd; }
+        .confidence { font-size: 0.75rem; background: #0a2f26; display: inline-block; padding: 4px 16px; border-radius: 40px; color: #bbffdd; }
 
         .stats-row {
             display: flex;
             justify-content: center;
-            gap: 25px;
-            margin-top: 15px;
+            gap: 20px;
+            margin-top: 12px;
             flex-wrap: wrap;
         }
         .stats-card {
             background: #071f19;
-            padding: 6px 16px;
+            padding: 5px 14px;
             border-radius: 32px;
             border: 1px solid #2a6b55;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
         }
         .win { color: #5eff9e; }
         .lose { color: #ff7777; }
 
-        .chart-block { margin-bottom: 28px; }
+        .chart-block { margin-bottom: 25px; }
         .chart-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             color: #ffdb7e;
-            margin-bottom: 10px;
-            padding-left: 12px;
+            margin-bottom: 8px;
+            padding-left: 10px;
             border-left: 3px solid #ffc107;
         }
         .chart-canvas {
             background: #071a1a;
-            border-radius: 20px;
-            padding: 10px;
+            border-radius: 18px;
+            padding: 8px;
             width: 100%;
-            height: 200px;
+            height: 190px;
             border: 1px solid #2a6b55;
         }
 
         .button-bar {
             display: flex;
-            gap: 18px;
-            margin: 20px 0 20px;
+            gap: 15px;
+            margin: 18px 0 18px;
             flex-wrap: wrap;
         }
         .btn-ai {
             flex: 1;
             background: linear-gradient(95deg, #00cc88, #008866);
             border: none;
-            padding: 12px 0;
+            padding: 11px 0;
             border-radius: 60px;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #021c14;
             cursor: pointer;
             transition: 0.2s;
@@ -130,7 +130,7 @@
             flex: 1;
             background: rgba(0, 255, 180, 0.12);
             border: 1px solid #2a8f70;
-            padding: 12px 0;
+            padding: 11px 0;
             border-radius: 60px;
             font-weight: 700;
             color: #b3ffe0;
@@ -138,29 +138,26 @@
         }
         .analysis-result {
             background: #071a14;
-            border-radius: 24px;
-            padding: 16px;
+            border-radius: 22px;
+            padding: 14px;
             margin-top: 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             line-height: 1.5;
             border-left: 5px solid #ffdb7e;
             color: #cce6dd;
         }
-        .analysis-result strong {
-            color: #ffdb7e;
-        }
         .status-text {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-align: center;
-            margin-top: 20px;
-            padding-top: 12px;
+            margin-top: 18px;
+            padding-top: 10px;
             border-top: 1px dashed #2a6b55;
             color: #4fba97;
         }
         @media (max-width: 680px) {
-            .phucsix-body { padding: 14px; }
-            .prediction-value { font-size: 2.4rem; }
-            .chart-canvas { height: 150px; }
+            .phucsix-body { padding: 12px; }
+            .prediction-value { font-size: 2.2rem; }
+            .chart-canvas { height: 140px; }
         }
     </style>
 </head>
@@ -170,7 +167,7 @@
     <div class="phucsix-header">
         <h1>
             🎲 PHUC SIX HEX · AI TÀI XỈU
-            <small>⚡ QUÉT 2000 PHIÊN | TRÙNG 12/20 (60%)</small>
+            <small>⚡ PHÂN TÍCH 3 MẶT + TỔNG ĐIỂM</small>
         </h1>
     </div>
 
@@ -202,7 +199,7 @@
         </div>
 
         <div class="analysis-result" id="analysisResult">
-            ✨ Bấm "PHÂN TÍCH AI" để dự đoán.
+            ✨ Bấm "PHÂN TÍCH AI" để phân tích 3 mặt + tổng điểm.
         </div>
         <div class="status-text" id="statusText">🟢 ĐANG KẾT NỐI VPS ...</div>
     </div>
@@ -210,8 +207,8 @@
 
 <script>
     const VPS_API = 'https://isa-accomplish-fork-capitol.trycloudflare.com/api/history';
-    const MAX_SCAN = 2000;       // quét 2000 phiên gần nhất
-    const MIN_MATCH = 12;        // chỉ cần 12/20 phiên trùng (60%)
+    const MAX_SCAN = 2000;
+    const SIMILARITY_MIN = 65; // % tối thiểu để coi là gần giống
     
     let fullHistory = [];
     let lastScan = [];
@@ -230,6 +227,29 @@
         return d[0] + d[1] + d[2];
     }
 
+    // Tính độ tương đồng giữa 2 mảng (từ 0-100%)
+    function similarity(arr1, arr2) {
+        if (arr1.length !== arr2.length) return 0;
+        let match = 0;
+        for (let i = 0; i < arr1.length; i++) {
+            if (arr1[i] === arr2[i]) match++;
+        }
+        return (match / arr1.length) * 100;
+    }
+
+    // Phân tích xu hướng dây (tăng/giảm/đi ngang) - KHÔNG TRỌNG SỐ
+    function analyzeTrend(series) {
+        if (series.length < 3) return "chưa đủ dữ liệu";
+        let up = 0, down = 0;
+        for (let i = 1; i < series.length; i++) {
+            if (series[i] > series[i-1]) up++;
+            else if (series[i] < series[i-1]) down++;
+        }
+        if (up > down + 2) return "📈 ĐANG CÓ XU HƯỚNG TĂNG";
+        if (down > up + 2) return "📉 ĐANG CÓ XU HƯỚNG GIẢM";
+        return "🔄 ĐANG ĐI NGANG (DAO ĐỘNG)";
+    }
+
     async function fetchVPS() {
         try {
             const res = await fetch(VPS_API);
@@ -239,8 +259,7 @@
             fullHistory = all;
             lastScan = fullHistory.slice(-MAX_SCAN);
             current20 = lastScan.slice(-20);
-            let info = `🟢 VPS | ${fullHistory.length} phiên | Đang dùng ${lastScan.length} phiên gần nhất (yêu cầu trùng ${MIN_MATCH}/20)`;
-            document.getElementById('statusText').innerHTML = info;
+            document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Đang dùng ${lastScan.length} phiên gần nhất`;
             return true;
         } catch(e) {
             document.getElementById('statusText').innerHTML = `🔴 LỖI: ${e.message}`;
@@ -288,96 +307,143 @@
 
     async function runAIPrediction() {
         if (current20.length < 10) {
-            document.getElementById('analysisResult').innerHTML = '⚠️ Chưa đủ 20 phiên, cần cập nhật thêm dữ liệu.';
+            document.getElementById('analysisResult').innerHTML = '⚠️ Chưa đủ 20 phiên.';
             return;
         }
-        if (lastScan.length < 50) {
-            document.getElementById('analysisResult').innerHTML = '⏳ Đang tải 2000 phiên gần nhất từ VPS...';
+        if (lastScan.length < 100) {
             await fetchVPS();
-            if (lastScan.length < 30) return;
+            if (lastScan.length < 50) return;
         }
 
-        document.getElementById('analysisResult').innerHTML = '🔍 ĐANG QUÉT ' + lastScan.length + ' PHIÊN GẦN NHẤT ...';
+        document.getElementById('analysisResult').innerHTML = '🔍 ĐANG PHÂN TÍCH ' + lastScan.length + ' PHIÊN...';
         
+        // Chuẩn bị mẫu hiện tại
         let targetTotals = current20.map(s => getTotalFromSession(s));
-        let lastTarget = targetTotals[targetTotals.length-1];
-        let matchedNext = [];
+        let targetDice1 = current20.map(s => (s.dice || s.dc)[0]);
+        let targetDice2 = current20.map(s => (s.dice || s.dc)[1]);
+        let targetDice3 = current20.map(s => (s.dice || s.dc)[2]);
+        let lastTotal = targetTotals[targetTotals.length-1];
         
-        // Tìm cầu trùng với yêu cầu >= MIN_MATCH/20 phiên giống + số cuối phải trùng
+        let matchedResults = []; // lưu { total, dice1, dice2, dice3, nextTotal }
+        
+        // Tìm trong lastScan những đoạn 20 phiên gần giống (xét cả 3 mặt)
         for (let i = 0; i <= lastScan.length - 21; i++) {
-            let matchCount = 0;
+            let histTotals = [];
+            let histD1 = [], histD2 = [], histD3 = [];
             for (let j = 0; j < 20; j++) {
-                let histTotal = getTotalFromSession(lastScan[i + j]);
-                if (histTotal === targetTotals[j]) matchCount++;
+                let d = lastScan[i + j].dice || lastScan[i + j].dc;
+                histTotals.push(d[0]+d[1]+d[2]);
+                histD1.push(d[0]);
+                histD2.push(d[1]);
+                histD3.push(d[2]);
             }
-            let lastHist = getTotalFromSession(lastScan[i + 19]);
-            // Chỉ cần matchCount đủ và số cuối trùng
-            if (matchCount >= MIN_MATCH && lastHist === lastTarget) {
-                let nextTotal = getTotalFromSession(lastScan[i + 20]);
-                matchedNext.push(nextTotal);
+            // Tính độ tương đồng với mẫu hiện tại
+            let simTotal = similarity(targetTotals, histTotals);
+            let simD1 = similarity(targetDice1, histD1);
+            let simD2 = similarity(targetDice2, histD2);
+            let simD3 = similarity(targetDice3, histD3);
+            let avgSim = (simTotal + simD1 + simD2 + simD3) / 4;
+            
+            // Yêu cầu độ tương đồng >= SIMILARITY_MIN % VÀ số cuối phải trùng
+            let lastHistTotal = histTotals[19];
+            if (avgSim >= SIMILARITY_MIN && lastHistTotal === lastTotal) {
+                let nextDice = lastScan[i + 20].dice || lastScan[i + 20].dc;
+                let nextTotal = nextDice[0] + nextDice[1] + nextDice[2];
+                matchedResults.push({
+                    total: nextTotal,
+                    tx: getTaiXiu(nextTotal),
+                    similarity: avgSim
+                });
             }
         }
         
-        // THỐNG KÊ SỐ LẦN TÀI / XỈU (bắt buộc phải hiện)
+        // Thống kê
         let tai = 0, xiu = 0;
-        for (let t of matchedNext) {
-            if (t >= 11) tai++;
-            else if (t <= 10) xiu++;
+        for (let r of matchedResults) {
+            if (r.tx === 'TÀI') tai++;
+            else if (r.tx === 'XỈU') xiu++;
         }
-        let totalMatches = matchedNext.length;
+        let totalMatches = matchedResults.length;
         
-        // Nếu không tìm thấy cầu trùng, vẫn phải thống kê dựa trên con số cuối cùng (lastTarget)
-        if (totalMatches === 0) {
-            // Tìm tất cả lần xuất hiện số lastTarget trong lịch sử (2000 phiên)
-            let nextAfterLast = [];
-            for (let i = 0; i < lastScan.length - 1; i++) {
-                let curTotal = getTotalFromSession(lastScan[i]);
-                if (curTotal === lastTarget) {
-                    let nxt = getTotalFromSession(lastScan[i + 1]);
-                    nextAfterLast.push(nxt);
-                }
-            }
-            for (let t of nextAfterLast) {
-                if (t >= 11) tai++;
-                else if (t <= 10) xiu++;
-            }
-            totalMatches = nextAfterLast.length;
+        // Phân tích xu hướng riêng (không trọng số)
+        let trendTotal = analyzeTrend(targetTotals);
+        let trendDice1 = analyzeTrend(targetDice1);
+        let trendDice2 = analyzeTrend(targetDice2);
+        let trendDice3 = analyzeTrend(targetDice3);
+        
+        // Dự đoán: ưu tiên thống kê nếu có đủ mẫu, nếu không thì dùng trend
+        let prediction = '?';
+        let confidence = 0;
+        
+        if (totalMatches >= 3) {
+            prediction = (tai > xiu) ? 'TÀI' : (xiu > tai) ? 'XỈU' : (Math.random()<0.5?'TÀI':'XỈU');
+            confidence = Math.round(Math.max(tai, xiu) / (tai + xiu) * 100);
+        } else {
+            // Dùng trend để suy luận
+            let trendUp = (trendTotal.includes('TĂNG') || trendDice1.includes('TĂNG') || trendDice2.includes('TĂNG') || trendDice3.includes('TĂNG'));
+            let trendDown = (trendTotal.includes('GIẢM') || trendDice1.includes('GIẢM') || trendDice2.includes('GIẢM') || trendDice3.includes('GIẢM'));
+            if (trendUp && !trendDown) prediction = 'TÀI';
+            else if (trendDown && !trendUp) prediction = 'XỈU';
+            else prediction = (targetTotals[targetTotals.length-1] >= 11) ? 'TÀI' : 'XỈU';
+            confidence = 55;
         }
         
-        let prediction = (tai > xiu) ? 'TÀI' : (xiu > tai) ? 'XỈU' : (Math.random()<0.5?'TÀI':'XỈU');
-        let confidence = (tai + xiu) > 0 ? Math.round(Math.max(tai, xiu) / (tai + xiu) * 100) : 0;
-        
-        // Cập nhật giao diện chính
+        // Cập nhật giao diện
         let predEl = document.getElementById('predictionValue');
         predEl.innerText = prediction;
         predEl.className = `prediction-value ${prediction === 'TÀI' ? 'TAI' : 'XIU'}`;
-        document.getElementById('confidenceText').innerHTML = `🎲 ĐỘ TIN CẬY: ${confidence}% | Dựa trên ${tai + xiu} mẫu`;
+        document.getElementById('confidenceText').innerHTML = `🎲 ĐỘ TIN CẬY: ${confidence}% | ${totalMatches} cầu gần giống`;
         
-        // HIỂN THỊ CHI TIẾT SỐ LẦN TÀI / XỈU
+        // HIỂN THỊ CHI TIẾT PHÂN TÍCH
         let detail = `
-            🔍 QUÉT <strong>${lastScan.length}</strong> phiên gần nhất (yêu cầu trùng ≥${MIN_MATCH}/20 + cùng số cuối).<br>
-            📊 SỐ CUỐI CÙNG CỦA 20 PHIÊN: <strong style="color:#ffdb7e">${lastTarget}</strong><br>
-            🎯 SAU SỐ <strong>${lastTarget}</strong> NÀY: 
-            <span style="color:#ff5e5e">TÀI = ${tai} lần</span> &nbsp;|&nbsp; 
-            <span style="color:#5eff9e">XỈU = ${xiu} lần</span> &nbsp;|&nbsp;
-            Tổng mẫu: ${tai + xiu}<br>
-            🧠 DỰ ĐOÁN: <strong style="color:${prediction==='TÀI'?'#ff5e5e':'#5eff9e'}">${prediction}</strong> (${confidence}%)
+            🔍 TÌM ĐƯỢC <strong>${totalMatches}</strong> CẦU GẦN GIỐNG (tối thiểu ${SIMILARITY_MIN}%)<br>
+            📊 SỐ CUỐI: <strong style="color:#ffdb7e">${lastTotal}</strong><br>
+            🎯 THỐNG KÊ: TÀI = ${tai} lần, XỈU = ${xiu} lần (${tai+xiu} mẫu)<br>
+            📈 PHÂN TÍCH XU HƯỚNG (không trọng số):<br>
+            &nbsp;&nbsp;• Tổng điểm: ${trendTotal}<br>
+            &nbsp;&nbsp;• Xí ngầu Tím: ${trendDice1}<br>
+            &nbsp;&nbsp;• Xí ngầu Vàng: ${trendDice2}<br>
+            &nbsp;&nbsp;• Xí ngầu Đỏ: ${trendDice3}<br>
+            🧠 KẾT LUẬN: <strong style="color:${prediction==='TÀI'?'#ff5e5e':'#5eff9e'}">${prediction}</strong> (${confidence}%)
         `;
-        if (totalMatches === 0 && tai + xiu === 0) {
-            detail = `⚠️ KHÔNG TÌM THẤY DỮ LIỆU cho số ${lastTarget} trong ${lastScan.length} phiên gần nhất. Cần thêm phiên lịch sử.`;
+        if (totalMatches === 0) {
+            detail = `⚠️ KHÔNG TÌM THẤY CẦU GẦN GIỐNG (độ tương đồng ≥ ${SIMILARITY_MIN}%). Dùng phân tích xu hướng:<br>
+            📈 ${trendTotal}<br>🎲 Tím: ${trendDice1}<br>🎲 Vàng: ${trendDice2}<br>🎲 Đỏ: ${trendDice3}<br>
+            🧠 DỰ ĐOÁN: <strong style="color:${prediction==='TÀI'?'#ff5e5e':'#5eff9e'}">${prediction}</strong> (${confidence}%)`;
         }
         document.getElementById('analysisResult').innerHTML = detail;
+        
+        // KIỂM TRA ĐÚNG/SAI (so sánh với phiên tiếp theo nếu có trong lịch sử)
+        if (lastScan.length >= 21) {
+            let actualNextTotal = getTotalFromSession(lastScan[lastScan.length - 21]);
+            let actualTx = getTaiXiu(actualNextTotal);
+            let isCorrect = (prediction === actualTx);
+            
+            // Lưu vào log nếu chưa lưu
+            let lastPhien = lastScan[lastScan.length - 1].phien;
+            let alreadyLogged = predictionsLog.some(p => p.phien === lastPhien);
+            if (!alreadyLogged && actualTx !== '?') {
+                predictionsLog.push({
+                    phien: lastPhien,
+                    predicted: prediction,
+                    actual: actualTx,
+                    ok: isCorrect
+                });
+                if (predictionsLog.length > 100) predictionsLog.shift();
+                updateStatsDisplay();
+            }
+        }
     }
     
     async function refreshDataAndCharts() {
-        document.getElementById('analysisResult').innerHTML = '⏳ Đang cập nhật dữ liệu từ VPS...';
+        document.getElementById('analysisResult').innerHTML = '⏳ Đang cập nhật...';
         await fetchVPS();
         if (lastScan.length >= 20) {
             current20 = lastScan.slice(-20);
             drawCharts();
-            document.getElementById('analysisResult').innerHTML = '✅ Đã cập nhật 20 phiên mới nhất. Bấm "PHÂN TÍCH AI" để dự đoán.';
+            document.getElementById('analysisResult').innerHTML = '✅ Đã cập nhật. Bấm "PHÂN TÍCH AI" để dự đoán.';
         } else {
-            document.getElementById('analysisResult').innerHTML = '⚠️ Chưa đủ 20 phiên, cần thêm dữ liệu từ VPS.';
+            document.getElementById('analysisResult').innerHTML = '⚠️ Chưa đủ 20 phiên.';
         }
         updateStatsDisplay();
     }
@@ -388,7 +454,6 @@
         if (lastScan.length !== oldLen || JSON.stringify(current20) !== JSON.stringify(lastScan.slice(-20))) {
             current20 = lastScan.slice(-20);
             drawCharts();
-            document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Tự động cập nhật biểu đồ`;
         }
         updateStatsDisplay();
     }
