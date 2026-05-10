@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PHUC SIX HEX · DỰ ĐOÁN 200 PHIÊN GẦN NHẤT</title>
+    <title>PHUC SIX HEX · DỰ ĐOÁN 1000 PHIÊN GẦN NHẤT</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,7 +17,7 @@
             padding: 20px;
         }
         .phucsix-menu {
-            max-width: 900px;
+            max-width: 920px;
             width: 100%;
             background: rgba(8, 20, 25, 0.94);
             backdrop-filter: blur(14px);
@@ -53,7 +53,6 @@
             max-height: 85vh;
             overflow-y: auto;
         }
-        /* scroll đẹp */
         .phucsix-body::-webkit-scrollbar { width: 5px; }
         .phucsix-body::-webkit-scrollbar-track { background: #0a2a22; border-radius: 10px; }
         .phucsix-body::-webkit-scrollbar-thumb { background: #00ffb3; border-radius: 10px; }
@@ -89,7 +88,6 @@
         }
         .win { color: #5eff9e; }
         .lose { color: #ff7777; }
-        .beauty { color: #ffdb7e; }
 
         .chart-block { margin-bottom: 28px; }
         .chart-title {
@@ -170,7 +168,7 @@
     <div class="phucsix-header">
         <h1>
             🎲 PHUC SIX HEX · AI TÀI XỈU
-            <small>⚡ PHÂN TÍCH 200 PHIÊN GẦN NHẤT</small>
+            <small>⚡ QUÉT 1000 PHIÊN GẦN NHẤT · TRÙNG 14-16/20</small>
         </h1>
     </div>
 
@@ -183,8 +181,7 @@
             <div class="stats-row">
                 <div class="stats-card">✅ ĐÚNG: <span class="win" id="winCount">0</span></div>
                 <div class="stats-card">❌ SAI: <span class="lose" id="loseCount">0</span></div>
-                <div class="stats-card">📊 TỈ LỆ: <span id="winRate">0%</span></div>
-                <div class="stats-card">🌈 DÂY ĐẸP: <span class="beauty" id="beautyRate">0%</span></div>
+                <div class="stats-card">📊 TỈ LỆ ĐÚNG: <span id="winRate">0%</span></div>
             </div>
         </div>
 
@@ -203,7 +200,7 @@
         </div>
 
         <div class="analysis-result" id="analysisResult">
-            ✨ Bấm "PHÂN TÍCH AI" để dự đoán dựa trên <strong>200 phiên gần nhất</strong>.
+            ✨ Bấm "PHÂN TÍCH AI" để dự đoán dựa trên <strong>1000 phiên gần nhất</strong>.
         </div>
         <div class="status-text" id="statusText">🟢 ĐANG KẾT NỐI VPS ...</div>
     </div>
@@ -211,11 +208,14 @@
 
 <script>
     const VPS_API = 'https://isa-accomplish-fork-capitol.trycloudflare.com/api/history';
-    const MAX_SCAN = 200;        // chỉ lấy 200 phiên gần nhất
-    let fullHistory = [];         // toàn bộ dữ liệu từ api
-    let last200 = [];             // 200 phiên gần nhất
-    let current20 = [];           // 20 phiên gần nhất (để vẽ + so khớp)
-    let predictionsLog = [];      // lưu các dự đoán đã đưa ra { actual, predicted, phiên }
+    const MAX_SCAN = 1000;       // quét 1000 phiên gần nhất
+    const MIN_MATCH = 14;        // yêu cầu tối thiểu 14/20 phiên trùng (70%)
+    // có thể điều chỉnh MIN_MATCH thành 15 hoặc 16 tùy mày
+    
+    let fullHistory = [];
+    let lastScan = [];            // 1000 phiên gần nhất
+    let current20 = [];
+    let predictionsLog = [];      // lưu dự đoán để tính đúng/sai
     
     let totalChart = null, diceChart = null;
 
@@ -229,7 +229,6 @@
         return d[0] + d[1] + d[2];
     }
 
-    // Lấy dữ liệu từ VPS + cập nhật 200 phiên gần nhất
     async function fetchVPS() {
         try {
             const res = await fetch(VPS_API);
@@ -237,10 +236,9 @@
             let all = data.sessions || [];
             all.sort((a,b) => parseInt(a.phien) - parseInt(b.phien));
             fullHistory = all;
-            // Chỉ lấy 200 phiên gần nhất
-            last200 = fullHistory.slice(-MAX_SCAN);
-            current20 = last200.slice(-20);
-            document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Dùng ${last200.length} phiên gần nhất để phân tích`;
+            lastScan = fullHistory.slice(-MAX_SCAN);
+            current20 = lastScan.slice(-20);
+            document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Dùng ${lastScan.length} phiên gần nhất để phân tích`;
             return true;
         } catch(e) {
             document.getElementById('statusText').innerHTML = `🔴 LỖI: ${e.message} | Dùng cache`;
@@ -248,7 +246,6 @@
         }
     }
 
-    // Vẽ biểu đồ dựa vào current20
     function drawCharts() {
         if (!current20.length) return;
         let totals = current20.map(s => getTotalFromSession(s));
@@ -278,71 +275,43 @@
         });
     }
 
-    // Cập nhật bảng thống kê đúng/sai + dây đẹp (tỉ lệ đúng 5 lần gần nhất)
     function updateStatsDisplay() {
-        let totalPred = predictionsLog.length;
+        let total = predictionsLog.length;
         let wins = predictionsLog.filter(p => p.ok).length;
+        let winRate = total ? Math.round(wins/total*100) : 0;
         document.getElementById('winCount').innerText = wins;
-        document.getElementById('loseCount').innerText = totalPred - wins;
-        document.getElementById('winRate').innerText = totalPred ? Math.round(wins/totalPred*100) + '%' : '0%';
-
-        // Dây đẹp = tỉ lệ đúng 5 lần dự đoán gần nhất
-        let last5 = predictionsLog.slice(-5);
-        let correctLast5 = last5.filter(p => p.ok).length;
-        let beauty = last5.length ? Math.round(correctLast5 / last5.length * 100) : 0;
-        document.getElementById('beautyRate').innerHTML = beauty + '%';
+        document.getElementById('loseCount').innerText = total - wins;
+        document.getElementById('winRate').innerHTML = winRate + '%';
     }
 
-    // PHÂN TÍCH CHÍNH: tìm trong 200 phiên gần nhất những đoạn 20 phiên giống hoặc gần giống với current20
     async function runAIPrediction() {
         if (current20.length < 10) {
             document.getElementById('analysisResult').innerHTML = '⚠️ Chưa đủ 20 phiên, cần cập nhật thêm dữ liệu.';
             return;
         }
-        if (last200.length < 50) {
-            document.getElementById('analysisResult').innerHTML = '⏳ Đang tải 200 phiên gần nhất từ VPS...';
+        if (lastScan.length < 50) {
+            document.getElementById('analysisResult').innerHTML = '⏳ Đang tải 1000 phiên gần nhất từ VPS...';
             await fetchVPS();
-            if (last200.length < 30) return;
+            if (lastScan.length < 30) return;
         }
 
-        document.getElementById('analysisResult').innerHTML = '🔍 ĐANG TÌM CẦU TRÙNG TRONG 200 PHIÊN GẦN NHẤT...';
+        document.getElementById('analysisResult').innerHTML = '🔍 ĐANG TÌM CẦU TRÙNG TRONG ' + lastScan.length + ' PHIÊN GẦN NHẤT...';
         
-        // Lấy dãy tổng 20 phiên hiện tại
         let targetTotals = current20.map(s => getTotalFromSession(s));
-        let lastTarget = targetTotals[targetTotals.length-1];  // con số cuối cùng (vd 9)
+        let lastTarget = targetTotals[targetTotals.length-1];
+        let matchedNext = [];
         
-        let matchedNext = []; // lưu tổng điểm phiên thứ 21 của các cầu trùng
-        
-        // Duyệt qua last200, cần có ít nhất 21 phiên liên tiếp
-        for (let i = 0; i <= last200.length - 21; i++) {
-            let identical = true;
+        // Duyệt qua lastScan, yêu cầu ít nhất MIN_MATCH/20 phiên trùng + số cuối phải bằng lastTarget
+        for (let i = 0; i <= lastScan.length - 21; i++) {
+            let matchCount = 0;
             for (let j = 0; j < 20; j++) {
-                let histTotal = getTotalFromSession(last200[i + j]);
-                if (histTotal !== targetTotals[j]) {
-                    identical = false;
-                    break;
-                }
+                let histTotal = getTotalFromSession(lastScan[i + j]);
+                if (histTotal === targetTotals[j]) matchCount++;
             }
-            if (identical) {
-                let nextTotal = getTotalFromSession(last200[i + 20]);
+            let lastHist = getTotalFromSession(lastScan[i + 19]);
+            if (matchCount >= MIN_MATCH && lastHist === lastTarget) {
+                let nextTotal = getTotalFromSession(lastScan[i + 20]);
                 matchedNext.push(nextTotal);
-            }
-        }
-        
-        // Nếu không có cầu trùng chính xác, tìm cầu gần giống (18/20 trùng, và bắt buộc số cuối phải giống)
-        if (matchedNext.length === 0) {
-            for (let i = 0; i <= last200.length - 21; i++) {
-                let matchCount = 0;
-                for (let j = 0; j < 20; j++) {
-                    let histTotal = getTotalFromSession(last200[i + j]);
-                    if (histTotal === targetTotals[j]) matchCount++;
-                }
-                // Ít nhất 18/20 trùng VÀ số cuối cùng phải bằng lastTarget
-                let lastHist = getTotalFromSession(last200[i + 19]);
-                if (matchCount >= 18 && lastHist === lastTarget) {
-                    let nextTotal = getTotalFromSession(last200[i + 20]);
-                    matchedNext.push(nextTotal);
-                }
             }
         }
         
@@ -355,28 +324,22 @@
         let prediction = (tai > xiu) ? 'TÀI' : (xiu > tai) ? 'XỈU' : (Math.random()<0.5?'TÀI':'XỈU');
         let confidence = totalMatches ? Math.round(Math.max(tai,xiu)/totalMatches*100) : 0;
         
-        // Cập nhật giao diện
         let predEl = document.getElementById('predictionValue');
         predEl.innerText = prediction;
         predEl.className = `prediction-value ${prediction === 'TÀI' ? 'TAI' : 'XIU'}`;
-        document.getElementById('confidenceText').innerHTML = `🎲 ĐỘ TIN CẬY: ${confidence}% | ${totalMatches} cầu trùng`;
+        document.getElementById('confidenceText').innerHTML = `🎲 ĐỘ TIN CẬY: ${confidence}% | ${totalMatches} cầu trùng (yêu cầu ≥${MIN_MATCH}/20)`;
         
-        let detail = `🔎 Tìm thấy <strong>${totalMatches}</strong> cầu trùng (20/20 hoặc 18/20 + cùng số cuối) trong ${last200.length} phiên gần nhất.<br>
-        📊 Sau con số cuối <strong>${lastTarget}</strong>: TÀI = ${tai} lần, XỈU = ${xiu} lần.<br>
+        let detail = `🔎 Tìm thấy <strong>${totalMatches}</strong> cầu trùng (trùng ≥${MIN_MATCH}/20 phiên + cùng số cuối) trong ${lastScan.length} phiên gần nhất.<br>
+        📊 Sau con số cuối <strong>${lastTarget}</strong> (20 phiên): TÀI = ${tai} lần, XỈU = ${xiu} lần.<br>
         🎯 DỰ ĐOÁN: <strong style="color:${prediction==='TÀI'?'#ff5e5e':'#5eff9e'}">${prediction}</strong> (độ tin cậy ${confidence}%)`;
         document.getElementById('analysisResult').innerHTML = detail;
-        
-        // Lưu dự đoán này vào log (chưa biết kết quả thực, sẽ cập nhật sau khi phiên tiếp theo xuất hiện)
-        // Ở đây chỉ hiển thị, không tự động ghi nhận đúng/sai vì chưa có kết quả thực tế.
-        // Nhưng nếu muốn demo, có thể giả lập.
     }
     
-    // Cập nhật dữ liệu mới và vẽ lại biểu đồ
     async function refreshDataAndCharts() {
         document.getElementById('analysisResult').innerHTML = '⏳ Đang cập nhật dữ liệu từ VPS...';
         await fetchVPS();
-        if (last200.length >= 20) {
-            current20 = last200.slice(-20);
+        if (lastScan.length >= 20) {
+            current20 = lastScan.slice(-20);
             drawCharts();
             document.getElementById('analysisResult').innerHTML = '✅ Đã cập nhật 20 phiên mới nhất. Bấm "PHÂN TÍCH AI" để dự đoán.';
         } else {
@@ -385,20 +348,17 @@
         updateStatsDisplay();
     }
     
-    // Tự động cập nhật biểu đồ + dữ liệu mỗi 12 giây
     async function autoUpdate() {
-        let oldLen = last200.length;
+        let oldLen = lastScan.length;
         await fetchVPS();
-        if (last200.length !== oldLen || JSON.stringify(current20) !== JSON.stringify(last200.slice(-20))) {
-            current20 = last200.slice(-20);
+        if (lastScan.length !== oldLen || JSON.stringify(current20) !== JSON.stringify(lastScan.slice(-20))) {
+            current20 = lastScan.slice(-20);
             drawCharts();
             document.getElementById('statusText').innerHTML = `🟢 VPS | ${fullHistory.length} phiên | Tự động cập nhật biểu đồ`;
         }
-        // Ở đây có thể bổ sung kiểm tra kết quả dự đoán cũ nếu có phiên mới
         updateStatsDisplay();
     }
     
-    // Khởi tạo và gán sự kiện
     document.getElementById('analyzeBtn').addEventListener('click', runAIPrediction);
     document.getElementById('refreshBtn').addEventListener('click', refreshDataAndCharts);
     
